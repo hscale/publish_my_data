@@ -1,0 +1,7 @@
+= PublishMyData
+
+PublishMyData Community Edition.
+
+Work in progress; don't use yet!
+
+Uses MIT-LICENSE.
