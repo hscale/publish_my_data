@@ -3,6 +3,34 @@
 module PublishMyData
   describe ResourcesController do
 
+    describe "#id" do
+
+      context "with html mime type" do
+
+        before do
+          get :id, :path => "this/is/my/path", use_route: :publish_my_data
+        end
+
+        it "should redirect to the corresponding doc view with a 303" do
+          response.status.should eq(303)
+          response.should redirect_to "/doc/this/is/my/path"
+        end
+      end
+
+      context "with an alternative mime type passed in the header" do
+        before do
+          @request.env['HTTP_ACCEPT'] = "application/rdf+xml"
+          get :id, :path => "this/is/my/path", use_route: :publish_my_data
+        end
+
+        it "should keep that mime type when doing the 303" do
+          response.status.should eq(303)
+          response.should redirect_to "/doc/this/is/my/path"
+          response.headers["Content-Type"].should eq("application/rdf+xml; charset=utf-8")
+        end
+      end
+    end
+
     describe "#show" do
 
       context "with a resource not in our database" do
