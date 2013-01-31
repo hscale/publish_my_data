@@ -13,6 +13,6 @@ gemspec
 # To use debugger
 # gem 'debugger'
 
-# while rubygems is down, use local version of tripod.
-gem 'tripod', :path => '../tripod'
+# while rubygems is down, use github version of tripod.
+gem 'tripod', path: '../tripod'
 

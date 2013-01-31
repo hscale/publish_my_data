@@ -16,8 +16,12 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
 
+  s.required_rubygems_version = ">= 1.3.6"
+  s.rubyforge_project         = "publish_my_data"
+
   s.add_dependency "rails", "~> 3.2.11"
-  s.add_dependency "tripod", "~> 0.1"
+  s.add_dependency "tripod", ">= 0.1"
+  s.add_dependency "rdf", "~> 1.0"
 
   s.add_development_dependency "rspec-rails", "~> 2.0"
 

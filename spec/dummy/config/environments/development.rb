@@ -28,4 +28,10 @@ Dummy::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # set up tripod for testing.
+  Tripod.configure do |config|
+    config.update_endpoint = 'http://localhost:3030/pmdtest/update'
+    config.query_endpoint = 'http://localhost:3030/pmdtest/sparql'
+  end
 end
