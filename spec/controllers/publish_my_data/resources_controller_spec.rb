@@ -4,13 +4,16 @@ module PublishMyData
   describe ResourcesController do
 
     describe "#show" do
+
       context "with a resource not in our database" do
 
-        before do
-          get :show, :uri => 'http://purl.org/linked-data/sdmx/2009/dimension%23refArea', use_route: :publish_my_data
-        end
+        uri = "http://purl.org/linked-data/sdmx/2009/dimension%23refArea"
 
         context "html mime type" do
+
+          before do
+            get :show, :uri => uri, use_route: :publish_my_data
+          end
 
           context "with resource not in our database" do
             it "should redirect to the external uri" do
@@ -18,6 +21,17 @@ module PublishMyData
             end
           end
 
+        end
+
+        context "non html mime type" do
+
+          before do
+            get :show, :uri => uri, :format => 'rdf', use_route: :publish_my_data
+          end
+
+          it "should 404" do
+            response.should be_not_found
+          end
         end
       end
 

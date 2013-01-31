@@ -13,9 +13,8 @@ module PublishMyData
         # if it's not there
         respond_to do |format|
           format.html { redirect_to uri }
-          # TODO: cater for other mime types
-          # something like:?
-          # format.any(:rdf, :ttl, :text, :nt, :json)  { render :nothing => true, :status => 404, :content_type => 'text/plain' }
+          # This is meant for UI browsing only, really. Just 404 for other mimes.
+          format.any(:rdf, :ttl, :text, :nt, :json)  { render :nothing => true, :status => 404, :content_type => 'text/plain' }
         end
       end
     end
