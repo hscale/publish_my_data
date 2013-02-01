@@ -32,4 +32,11 @@ Dummy::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # set up tripod for testing.
+  Tripod.configure do |config|
+    config.update_endpoint = 'http://localhost:3030/pmdtest/update'
+    config.query_endpoint = 'http://localhost:3030/pmdtest/sparql'
+  end
+
 end

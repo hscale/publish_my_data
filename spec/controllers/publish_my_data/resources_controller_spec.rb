@@ -31,6 +31,19 @@ module PublishMyData
       end
     end
 
+    describe "#doc" do
+
+      before do
+        @resource = FactoryGirl.create(:unicorn_resource)
+        get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+      end
+
+      it "should respond successfully" do
+        response.should be_success
+      end
+
+    end
+
     describe "#show" do
 
       context "with a resource not in our database" do

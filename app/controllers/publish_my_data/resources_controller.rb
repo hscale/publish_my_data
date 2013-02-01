@@ -32,15 +32,14 @@ module PublishMyData
     # http://example.com/doc/blah
     def doc
       # swap doc for id in the url to arrive at the uri
-      uri = req.sub(/\/doc\//,'/id/').split('?')[0].sub(/\.#{params[:format]}$/,'')
+      uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
       @resource = Resource.find(uri)
 
-      respond_to do |format|
-        format.html
-        # TODO: other views like ontology, dataset, etc?
-
-        # TODO: other mime types.
-      end
+      # respond_to do |format|
+      #   format.html
+      #   # TODO: other views like ontology, dataset, etc?
+      #   # TODO: other mime types.
+      # end
     end
 
 
