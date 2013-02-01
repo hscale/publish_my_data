@@ -3,6 +3,8 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ResourcesController < ApplicationController
 
+    respond_to :html, :ttl, :rdf, :nt, :json # add more.
+
     # /resource?uri=http://foo.bar
     def show
       uri = params[:uri]
@@ -34,12 +36,8 @@ module PublishMyData
       # swap doc for id in the url to arrive at the uri
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
       @resource = Resource.find(uri)
-
-      # respond_to do |format|
-      #   format.html
-      #   # TODO: other views like ontology, dataset, etc?
-      #   # TODO: other mime types.
-      # end
+      # TODO: other views like ontology, dataset, etc?
+      respond_with(@resource)
     end
 
 

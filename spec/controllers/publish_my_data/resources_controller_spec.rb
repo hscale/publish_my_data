@@ -1,4 +1,4 @@
-  require 'spec_helper'
+require 'spec_helper'
 
 module PublishMyData
   describe ResourcesController do
@@ -26,7 +26,7 @@ module PublishMyData
         it "should keep that mime type when doing the 303" do
           response.status.should eq(303)
           response.should redirect_to "/doc/this/is/my/path"
-          response.headers["Content-Type"].should eq("application/rdf+xml; charset=utf-8")
+          response.headers["Content-Type"].should include("application/rdf+xml")
         end
       end
     end
@@ -35,12 +35,47 @@ module PublishMyData
 
       before do
         @resource = FactoryGirl.create(:unicorn_resource)
-        get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
       end
 
       it "should respond successfully" do
+        get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
         response.should be_success
       end
+
+      context "with an alternative mime type passed in the header" do
+
+        before do
+          @request.env['HTTP_ACCEPT'] = "application/rdf+xml"
+          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+        end
+
+        it "should resond with the right mime type" do
+          response.headers["Content-Type"].should eq("application/rdf+xml")
+        end
+
+        it "should respond with the right content" do
+          response.body.should == @resource.to_rdf
+        end
+
+      end
+
+      context "with an alternative fomat passed on the url" do
+
+        before do
+          @request.env['HTTP_ACCEPT'] = "text/turtle"
+          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+        end
+
+        it "should resond with the right mime type" do
+          response.headers["Content-Type"].should eq("text/turtle")
+        end
+
+        it "should respond with the right content" do
+          response.body.should == @resource.to_ttl
+        end
+
+      end
+
 
     end
 
