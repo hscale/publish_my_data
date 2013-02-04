@@ -26,9 +26,10 @@ module PublishMyData
         it "should keep that mime type when doing the 303" do
           response.status.should eq(303)
           response.should redirect_to "/doc/this/is/my/path"
-          response.headers["Content-Type"].should include("application/rdf+xml")
+          response.content_type.should == Mime::RDF
         end
       end
+
     end
 
     describe "#doc" do
@@ -50,7 +51,7 @@ module PublishMyData
         end
 
         it "should resond with the right mime type" do
-          response.headers["Content-Type"].should eq("application/rdf+xml")
+          response.content_type.should == Mime::RDF
         end
 
         it "should respond with the right content" do
@@ -59,23 +60,76 @@ module PublishMyData
 
       end
 
-      context "with an alternative fomat passed on the url" do
+      context "with an alternative format passed on the url" do
 
         before do
           @request.env['HTTP_ACCEPT'] = "text/turtle"
-          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
         end
 
         it "should resond with the right mime type" do
-          response.headers["Content-Type"].should eq("text/turtle")
+          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+          response.content_type.should == Mime::TTL
         end
 
         it "should respond with the right content" do
+          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
           response.body.should == @resource.to_ttl
+        end
+
+        context "and the resource doesn't exist" do
+
+          it "should 404 with a blank response" do
+            get :doc, :path => "unicorns/borat", use_route: :publish_my_data
+            response.should be_not_found
+            response.body.should be_blank
+          end
         end
 
       end
 
+      context "when resource doesn't exist" do
+
+        before do
+          get :doc, :path => "doesnt/exist", use_route: :publish_my_data
+        end
+
+        it "should 404" do
+          response.should be_not_found
+        end
+
+      end
+
+    end
+
+    describe "#definition" do
+
+      before do
+        @resource = FactoryGirl.create(:mean_result)
+      end
+
+      context "for resource in our database" do
+
+        it "should respond successfully" do
+          get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
+          response.should be_success
+        end
+
+        context "with an alternative mime type" do
+          it "should with the right mime type and content" do
+            get :definition, :path => "statistics/meanResult", :format => 'nt', use_route: :publish_my_data
+            response.content_type.should == Mime::NT
+            response.body.should == @resource.to_nt
+          end
+        end
+
+      end
+
+      context "when resource doesn't exist" do
+        it "should 404" do
+          get :definition, :path => "statistics/nonExistent", use_route: :publish_my_data
+          response.should be_not_found
+        end
+      end
 
     end
 

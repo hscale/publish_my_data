@@ -9,4 +9,5 @@ FactoryGirl.define do
       res.write_predicate(RDF::RDFS.label, 'Yuri The Unicorn')
     end
   end
+
 end
