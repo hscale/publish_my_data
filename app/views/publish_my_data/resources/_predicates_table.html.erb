@@ -1,0 +1,23 @@
+<table>
+  <thead>
+    <tr>
+      <th>Predicate</th>
+      <th>Object</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @resource.predicates.each do |predicate| %>
+      <tr>
+        <td>
+          <%= predicate.to_s %>
+        </td>
+        <td>
+          <%# there could be lots of values for each predicate %>
+          <% @resource.read_predicate(predicate).each do |value| %>
+            <%= value.to_s %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

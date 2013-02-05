@@ -3,6 +3,8 @@ module PublishMyData
 
     include Tripod::Resource
 
+    field :label, RDF::RDFS.label
+
     class << self
 
       def uri_from_host_and_doc_path(host, doc_path, format="")

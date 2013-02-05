@@ -3,6 +3,9 @@ module PublishMyData
 
     rescue_from Tripod::Errors::ResourceNotFound, :with => :resource_not_found
 
+    # TODO: handle:
+    # 500s, timeouts (503) etc.
+
     private
 
     def resource_not_found(e)

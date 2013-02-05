@@ -11,6 +11,7 @@ module PublishMyData
       begin
         # try to look it up
         @resource = Resource.find(uri)
+        respond_with(@resource)
       rescue Tripod::Errors::ResourceNotFound
         # if it's not there
         respond_to do |format|
@@ -37,7 +38,9 @@ module PublishMyData
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
       @resource = Resource.find(uri)
       # TODO: special views like ontology, dataset, etc?
-      respond_with(@resource)
+      respond_with(@resource) do |format|
+        format.html { render :template => 'publish_my_data/resources/show' }
+      end
     end
 
 
