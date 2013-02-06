@@ -5,6 +5,11 @@ module PublishMyData
 
     field :label, RDF::RDFS.label
 
+    # Is this resource in our domain?
+    def local?
+      uri.starts_with?("http://pmd.dev")
+    end
+
     class << self
 
       def uri_from_host_and_doc_path(host, doc_path, format="")

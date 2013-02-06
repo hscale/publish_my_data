@@ -1,7 +1,7 @@
 PublishMyData::Engine.routes.draw do
 
   # resource show
-  match "/resource(.:format)" => "resources#show" # http://resource?uri=http://foo.bar
+  match "/resource(.:format)" => "resources#show", :as => 'show_resource' # http://resource?uri=http://foo.bar
 
   # resources lists
   match "/resources(.:format)" => "resources#index"

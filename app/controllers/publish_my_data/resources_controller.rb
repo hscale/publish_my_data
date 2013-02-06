@@ -11,6 +11,7 @@ module PublishMyData
       begin
         # try to look it up
         @resource = Resource.find(uri)
+        eager_load_labels()
         respond_with(@resource)
       rescue Tripod::Errors::ResourceNotFound
         # if it's not there
@@ -37,6 +38,7 @@ module PublishMyData
     def doc
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
       @resource = Resource.find(uri)
+      eager_load_labels()
       # TODO: special views like ontology, dataset, etc?
       respond_with(@resource) do |format|
         format.html { render :template => 'publish_my_data/resources/show' }
@@ -51,5 +53,14 @@ module PublishMyData
       respond_with(@resource)
     end
 
+    private
+
+    def eager_load_labels
+      @resource.eager_load_predicate_triples!
+      @resource.eager_load_object_triples!
+    end
+
   end
+
+
 end
