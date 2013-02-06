@@ -43,6 +43,11 @@ module PublishMyData
         response.should be_success
       end
 
+      it "should render the doc template" do
+        get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+        response.should render_template("publish_my_data/resources/doc")
+      end
+
       context "with an alternative mime type passed in the header" do
 
         before do
@@ -114,6 +119,11 @@ module PublishMyData
           response.should be_success
         end
 
+        it "should render the doc template" do
+          get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
+          response.should render_template("publish_my_data/resources/doc")
+        end
+
         context "with an alternative mime type" do
           it "should with the right mime type and content" do
             get :definition, :path => "statistics/meanResult", :format => 'nt', use_route: :publish_my_data
@@ -179,6 +189,10 @@ module PublishMyData
 
         it "should respond succesfully" do
           response.should be_success
+        end
+
+        it "should render the show template" do
+          response.should render_template("publish_my_data/resources/show")
         end
 
       end

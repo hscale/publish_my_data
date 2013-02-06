@@ -7,6 +7,7 @@ module PublishMyData
 
     # Is this resource in our domain?
     def local?
+      # TODO: parameterize!
       uri.starts_with?("http://pmd.dev")
     end
 

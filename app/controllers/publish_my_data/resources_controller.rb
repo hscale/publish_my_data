@@ -40,9 +40,7 @@ module PublishMyData
       @resource = Resource.find(uri)
       eager_load_labels()
       # TODO: special views like ontology, dataset, etc?
-      respond_with(@resource) do |format|
-        format.html { render :template => 'publish_my_data/resources/show' }
-      end
+      respond_with(@resource)
     end
 
 
@@ -50,7 +48,11 @@ module PublishMyData
     def definition
       uri = 'http://' + request.host + '/def/' + params[:path]
       @resource = Resource.find(uri)
-      respond_with(@resource)
+      eager_load_labels()
+      # TODO: special views like ontology, dataset, etc?
+      respond_with(@resource) do |format|
+        format.html { render :template => 'publish_my_data/resources/doc' }
+      end
     end
 
     private
