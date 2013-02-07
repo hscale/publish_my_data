@@ -3,7 +3,7 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ResourcesController < ApplicationController
 
-    respond_to :html, :ttl, :rdf, :nt, :json, :text
+    respond_to :html, :ttl, :rdf, :nt, :json
 
     # /resource?uri=http://foo.bar
     def show
@@ -28,7 +28,7 @@ module PublishMyData
     # http://example.com/id/blah
     def id
       respond_to do |format|
-        format.any(:html, :rdf, :ttl, :text, :nt, :json) do |format|
+        format.any(:html, :rdf, :ttl, :nt, :json) do |format|
           redirect_to "/doc/#{params[:path]}", :status=> 303
         end
       end
@@ -42,7 +42,6 @@ module PublishMyData
       # TODO: special views like ontology, dataset, etc?
       respond_with(@resource)
     end
-
 
     # http://example.com/def/blah
     def definition

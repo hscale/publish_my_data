@@ -18,15 +18,15 @@ FactoryGirl.define do
     end
     after(:build) do |res|
       res.write_predicate(RDF::RDFS.label, 'Boris The Unicorn')
-      res.write_predicate('http://knows', RDF::URI("http://pmdtest.dev/id/unicorns/yuri")) # knows yuri
-      res.write_predicate('http://resides-in', RDF::URI("http://ordnancesurvey.org/foo")) # resides in foo county
+      res.write_predicate('http://example.com/knows', RDF::URI("http://pmdtest.dev/id/unicorns/yuri")) # knows yuri
+      res.write_predicate('http://example.com/resides-in', RDF::URI("http://locations.example.com/foo")) # resides in foo county
     end
   end
 
   factory :foreign_resource, class: PublishMyData::Resource do
     initialize_with { new(uri, graph_uri) }
     ignore do
-      uri { "http://ordnancesurvey.org/foo" }
+      uri { "http://locations.example.com/foo" }
       graph_uri { "http://pmdtest.dev/geo" }
     end
     after(:build) do |res|

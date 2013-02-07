@@ -7,7 +7,9 @@ Execute a SPARQL query
 <% end %>
 
 <%# results %>
-<pre><code><%= @query_result %></code></pre>
+<pre><code><%= @sparql_query_result.to_s %></code></pre>
+
 
 <%# formats %>
-<%= render 'select_formats' %>
+Query Type: <%= @sparql_query.query_type.to_s %><br/>
+<%= render "#{@sparql_query.query_type.to_s}_formats" %>
