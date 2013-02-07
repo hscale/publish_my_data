@@ -15,6 +15,9 @@ PublishMyData::Engine.routes.draw do
   match "/def/*path.:format" => "resources#definition"
   match "/def/*path" => "resources#definition"
 
+  # SPARQL
+  match "sparql" => "sparql#endpoint", :as => 'sparql_endpoint' # the main sparql endpoint
+
   #http://techoctave.com/c7/posts/36-rails-3-0-rescue-from-routing-error-solution
   match '*a', :to => 'errors#routing'
 end

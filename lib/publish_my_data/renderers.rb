@@ -15,7 +15,8 @@ ActionController::Renderers.add :rdf do |obj, opts|
 end
 
 #ntriples
-Mime::Type.register("application/n-triples", :nt)
+Mime::Type.register("application/n-triples", :nt, %w( text/plain) ) # respond with ntriples to text/plain
+
 ActionController::Renderers.add :nt do |obj, opts|
   str = obj.respond_to?(:to_nt) ? obj.to_nt : obj.to_s
   send_data str, :type => Mime::NT, :disposition => "inline"
