@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe "A visitor viewing a resource not in our domain" do
 
-
   before do
     @foreign_resource = FactoryGirl.build(:foreign_resource)
     @url = "http://pmdtest.dev/resource?uri=#{CGI.escape(@foreign_resource.uri.to_s)}"
