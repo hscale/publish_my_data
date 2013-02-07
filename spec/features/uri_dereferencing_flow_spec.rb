@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "A visitor dereferences a uri then asks for a format" do
 
   before do
-    @resource = FactoryGirl.create(:unicorn_resource)
+    @resource = FactoryGirl.create(:yuri_unicorn_resource)
     visit @resource.uri.to_s
     click_link 'RDF/XML'
   end
@@ -15,16 +15,48 @@ describe "A visitor dereferences a uri then asks for a format" do
 
 end
 
-describe "A visitor dereferences a uri then clicks on a link for another resource in our domain" do
-  it "should render the doc page for that uri"
-end
+describe "A visitor dereferences a uri then clicks on a link for another resource" do
 
-describe "A visitor dereferences a uri then clicks on a link for a resource not in our domain" do
-  context "where we have data" do
-    it "should render the show page for that uri"
+  before do
+    @yuri = FactoryGirl.create(:yuri_unicorn_resource)
+    @boris = FactoryGirl.create(:boris_unicorn_resource)
+    @foo_county = FactoryGirl.build(:foreign_resource)
+
   end
 
-  context "where we don't have data" do
-    it "show redirect away"
+  context "in our domain" do
+    before do
+      visit @boris.uri.to_s
+      click_link "Yuri The Unicorn" # via the knows association
+    end
+
+    it "should render the doc page for that uri" do
+      page.current_url.should == @yuri.uri.to_s.sub(/\/id\//,'/doc/')
+    end
   end
+
+  context "not in our domain" do
+
+    context "where we have data" do
+      before do
+        @foo_county.save!
+        visit @boris.uri.to_s
+        click_link @foo_county.label # via the resides-in association
+      end
+      it "should render the show page for that uri" do
+        page.current_url.should == "http://pmdtest.dev/resource?uri=#{CGI.escape(@foo_county.uri.to_s)}"
+      end
+    end
+
+    context "where we don't have data" do
+      before do
+        visit @boris.uri.to_s
+        click_link @foo_county.uri.to_s # via the resides-in association
+      end
+      it "should redirect away" do
+        page.current_url.should == @foo_county.uri.to_s
+      end
+    end
+  end
+
 end

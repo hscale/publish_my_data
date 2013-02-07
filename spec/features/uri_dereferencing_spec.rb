@@ -4,13 +4,13 @@ describe "A visitor dereferencing a URI" do
 
   context "where a resource exists in the database for that URI" do
     before do
-      @resource = FactoryGirl.create(:unicorn_resource)
+      @resource = FactoryGirl.create(:yuri_unicorn_resource)
     end
 
     context 'for HTML format' do
       it "should redirect to the doc page for that URI" do
         visit @resource.uri.to_s
-        page.current_url.should == 'http://pmdtest.dev/doc/unicorns/yuri'
+        page.current_url.should == @resource.uri.to_s.sub(/\/id\//,'/doc/')
         page.should have_content @resource.uri.to_s
       end
     end

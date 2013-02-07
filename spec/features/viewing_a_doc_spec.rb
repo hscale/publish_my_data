@@ -4,7 +4,7 @@ describe "A visitor navigating straight to the /doc/ page" do
 
   context "where a resource exists in the database for the corresponding URI" do
     before do
-      @resource = FactoryGirl.create(:unicorn_resource)
+      @resource = FactoryGirl.create(:yuri_unicorn_resource)
     end
 
     context 'for HTML format' do

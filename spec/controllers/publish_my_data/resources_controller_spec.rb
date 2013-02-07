@@ -35,7 +35,7 @@ module PublishMyData
     describe "#doc" do
 
       before do
-        @resource = FactoryGirl.create(:unicorn_resource)
+        @resource = FactoryGirl.create(:yuri_unicorn_resource)
       end
 
       it "should respond successfully" do
