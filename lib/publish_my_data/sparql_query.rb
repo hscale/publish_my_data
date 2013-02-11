@@ -1,5 +1,7 @@
 module PublishMyData
 
+  class SparqlQueryException < StandardError;; end
+
   class SparqlQuery
 
     attr_reader :query # the original query string
@@ -43,6 +45,11 @@ module PublishMyData
       PublishMyData::SparqlQueryResult.new(result_str)
     end
 
+    def paginate(page, per_page, look_ahead=0)
+      # make a pagination version and execute that.
+      self.as_pagination_query(page, per_page, look_ahead).execute()
+    end
+
     def has_prefixes?
       self.class.PREFIX_KEYWORDS.each do |k|
         return true if /^#{k}/i.match(query)
@@ -55,6 +62,23 @@ module PublishMyData
       p = query[0..i-1]
       b = query[i..-1]
       return p.strip, b.strip
+    end
+
+    # for selects only, turn this into a paginated version. Returns a whole new SparqlQuery object.
+    def as_pagination_query(page, per_page, look_ahead=0)
+
+      # only allow for :selects
+      raise SparqlQueryException.new("Can't turn this into a subquery") unless self.query_type == :select
+
+      limit = per_page + look_ahead
+      offset = per_page * (page-1)
+      # wrap it in a subselect with limit and offset
+      paginated_query = "SELECT * { #{self.body} } LIMIT #{limit} OFFSET #{offset}"
+      # put the prefixes back on the start
+      paginated_query = "#{self.prefixes} #{paginated_query}" if self.prefixes
+
+      # return the paginated version
+      SparqlQuery.new(paginated_query, self.request_format)
     end
 
     private
