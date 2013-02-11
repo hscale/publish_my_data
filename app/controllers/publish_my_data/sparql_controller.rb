@@ -8,11 +8,17 @@ module PublishMyData
     def endpoint
       @query_text = params[:query]
 
-      if @query_text
-        get_pagination_params
+      unless @query_text.blank?
 
         @sparql_query = PublishMyData::SparqlQuery.new(@query_text, request.format.to_sym)
-        @sparql_query_result = @sparql_query.paginate(@page, @per_page, 0)
+
+        if @sparql_query.allow_pagination?
+          get_pagination_params
+          @sparql_query_result = @sparql_query.paginate(@page, @per_page)
+        else
+          @sparql_query_result = @sparql_query.execute
+        end
+
         respond_with(@sparql_query_result)
       end
 

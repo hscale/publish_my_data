@@ -45,9 +45,16 @@ module PublishMyData
       PublishMyData::SparqlQueryResult.new(result_str)
     end
 
+    # make a pagination version and execute that.
     def paginate(page, per_page, look_ahead=0)
-      # make a pagination version and execute that.
-      self.as_pagination_query(page, per_page, look_ahead).execute()
+      self.as_pagination_query(page, per_page, look_ahead).execute
+    end
+
+    # return the number of results that this query returns
+    # (creates and executes a count query behind the scenes)
+    def count
+      result = JSON.parse(self.as_count_query.execute.to_s)["results"]["bindings"]
+      result[0][".1"]["value"].to_i
     end
 
     def has_prefixes?
@@ -64,10 +71,25 @@ module PublishMyData
       return p.strip, b.strip
     end
 
+    def allow_pagination?
+      self.query_type == :select
+    end
+
+    def as_count_query(format = :json)
+      # only allow for selects
+      raise SparqlQueryException.new("Can't turn this into a subquery") unless self.query_type == :select
+
+      count_query = "SELECT COUNT(*) { #{self.body} }"
+      count_query = "#{self.prefixes} #{count_query}" if self.prefixes
+
+      # return the paginated version
+      SparqlQuery.new(count_query, format)
+    end
+
     # for selects only, turn this into a paginated version. Returns a whole new SparqlQuery object.
     def as_pagination_query(page, per_page, look_ahead=0)
 
-      # only allow for :selects
+      # only allow for selects
       raise SparqlQueryException.new("Can't turn this into a subquery") unless self.query_type == :select
 
       limit = per_page + look_ahead

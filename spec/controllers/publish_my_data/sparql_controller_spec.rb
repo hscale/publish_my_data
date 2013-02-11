@@ -13,7 +13,7 @@ module PublishMyData
         it "should not assign to the pagination vars" do
           get :endpoint, use_route: :publish_my_data
            assigns['per_page'].should be_nil
-          assigns['page'].should be_nil
+           assigns['page'].should be_nil
         end
       end
 
@@ -39,8 +39,8 @@ module PublishMyData
          assigns['sparql_query'].query.should == 'SELECT ?s WHERE {?s ?p ?o}'
       end
 
-      it "should call paginate on a sparql query object, with the right params" do
-        SparqlQuery.any_instance.should_receive(:paginate).with(2, 35, 0).and_call_original
+      it "should call as_pagination_query on a sparql query object, with the right params" do
+        SparqlQuery.any_instance.should_receive(:paginate).with(2, 35).and_call_original
         get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
       end
 
