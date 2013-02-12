@@ -48,6 +48,15 @@ module PublishMyData
         response.should render_template("publish_my_data/resources/doc")
       end
 
+      context "for html" do
+        it "should eager load the labels" do
+          Resource.should_receive(:find).and_return(@resource)
+          @resource.should_receive(:eager_load_predicate_triples!)
+          @resource.should_receive(:eager_load_object_triples!)
+          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+        end
+      end
+
       context "with an alternative mime type passed in the header" do
 
         before do
@@ -63,31 +72,33 @@ module PublishMyData
           response.body.should == @resource.to_rdf
         end
 
-      end
-
-      context "with an alternative format passed on the url" do
-
-        before do
-          @request.env['HTTP_ACCEPT'] = "text/turtle"
-        end
-
-        it "should resond with the right mime type" do
+        it "should not eager load the labels" do
+          Resource.should_receive(:find).and_return(@resource)
+          @resource.should_not_receive(:eager_load_predicate_triples!)
+          @resource.should_not_receive(:eager_load_object_triples!)
           get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
-          response.content_type.should == Mime::TTL
-        end
-
-        it "should respond with the right content" do
-          get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
-          response.body.should == @resource.to_ttl
         end
 
         context "and the resource doesn't exist" do
-
           it "should 404 with a blank response" do
             get :doc, :path => "unicorns/borat", use_route: :publish_my_data
             response.should be_not_found
             response.body.should be_blank
           end
+        end
+
+      end
+
+      context "with an alternative format passed on the url" do
+
+        it "should resond with the right mime type" do
+          get :doc, :path => "unicorns/yuri", format: 'ttl', use_route: :publish_my_data
+          response.content_type.should == Mime::TTL
+        end
+
+        it "should respond with the right content" do
+          get :doc, :path => "unicorns/yuri", format: 'ttl', use_route: :publish_my_data
+          response.body.should == @resource.to_ttl
         end
 
       end
