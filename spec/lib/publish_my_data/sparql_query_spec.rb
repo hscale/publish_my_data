@@ -306,6 +306,77 @@ module PublishMyData
       end
     end
 
+    describe "#as_count_query" do
+      context "for non-selects" do
+        it "should throw an exception" do
+          lambda {
+            q = PublishMyData::SparqlQuery.new('ASK { ?s ?p ?o }')
+            q.as_count_query
+          }.should raise_error(PublishMyData::SparqlQueryException)
+        end
+      end
+
+      context "for selects" do
+        context 'without prefixes' do
+          it "should return a new SparqlQuery with the original query wrapped in a count" do
+            q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+            q.as_count_query.class.should == SparqlQuery
+            q.as_count_query.query.should == 'SELECT COUNT(*) { SELECT ?s WHERE { ?s ?p ?o } }'
+          end
+        end
+
+        context 'with prefixes' do
+          it "should move the prefixes to the start" do
+            q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT ?s WHERE { ?s ?p ?o }')
+            q.as_count_query.query.should == 'PREFIX e: <http://example.com> SELECT COUNT(*) { SELECT ?s WHERE { ?s ?p ?o } }'
+          end
+        end
+      end
+    end
+
+    describe "#paginate" do
+
+      it "should execute the query as a pagination query" do
+        q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+        pagination_q = double("SparqlQuery")
+        q.should_receive(:as_pagination_query).and_return(pagination_q)
+        pagination_q.should_receive(:execute)
+        q.paginate(1,20,0)
+      end
+
+      it "should pass the parameters through to as_pagination_query" do
+        q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+        q.should_receive(:as_pagination_query).with(3,40,1).and_call_original
+        q.paginate(3,40,1)
+      end
+
+    end
+
+    describe "#count" do
+      before do
+        @q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+        count_q = double("SparqlQuery")
+        @q.should_receive(:as_count_query).and_return(count_q)
+        count_q.should_receive(:execute).and_return('{
+          "head": {
+            "vars": [ ".1" ]
+          } ,
+          "results": {
+            "bindings": [
+              {
+                ".1": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "2" }
+              }
+            ]
+          }
+        }')
+      end
+
+      it "should execute the query as a count query and return an integer" do
+        @q.count.class.should == Fixnum
+      end
+
+    end
+
     describe "#as_pagination_query" do
 
       context "for non-selects" do
@@ -319,13 +390,10 @@ module PublishMyData
 
       context "for selects" do
         context "without prefixes" do
-          it "should return a new SparqlQuery" do
-            q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
-            q.as_pagination_query(1, 20, 0).class.should == SparqlQuery
-          end
 
           it "should return a new SparqlQuery with the original query wrapped in a pagination subquery" do
             q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+            q.as_pagination_query(1, 20, 0).class.should == SparqlQuery
             # try a couple of different combos of pagination params
             q.as_pagination_query(1, 20, 0).query.should == 'SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 20 OFFSET 0'
             q.as_pagination_query(1, 20, 1).query.should == 'SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 21 OFFSET 0'
@@ -349,7 +417,6 @@ module PublishMyData
           end
         end
       end
-
 
     end
 
