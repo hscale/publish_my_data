@@ -158,6 +158,20 @@ module PublishMyData
           result.to_s.should_not be_blank
         end
       end
+
+      context "where data is too large to return" do
+        before do
+          PublishMyData::SparqlQueryResult.any_instance.should_receive(:length).and_return(5.megabytes)
+        end
+
+        it "should raise a SparqlResponseTooLargeException" do
+          query_str = 'CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }'
+          q = PublishMyData::SparqlQuery.new(query_str)
+          lambda {
+            q.execute
+          }.should raise_error PublishMyData::SparqlQueryResultTooLargeException
+        end
+      end
     end
 
     describe "#select_format_str" do

@@ -26,8 +26,13 @@ module PublishMyData
     private
 
     def get_pagination_params
+      if request.format.html?
+        default_page_size = 100
+      else
+        default_page_size = 10000
+      end
       @page = (params[:_page] || 1).to_i
-      @per_page = (params[:_per_page] || 100).to_i
+      @per_page = (params[:_per_page] || default_page_size).to_i
     end
 
   end

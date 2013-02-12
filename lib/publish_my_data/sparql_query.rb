@@ -1,6 +1,6 @@
 module PublishMyData
 
-  class SparqlQueryException < StandardError;; end
+  class SparqlQueryException < StandardError; end
 
   class SparqlQuery
 
@@ -102,6 +102,7 @@ module PublishMyData
       # return the paginated version
       SparqlQuery.new(paginated_query, self.request_format)
     end
+
 
     private
 

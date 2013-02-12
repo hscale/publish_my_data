@@ -12,8 +12,8 @@ module PublishMyData
 
         it "should not assign to the pagination vars" do
           get :endpoint, use_route: :publish_my_data
-           assigns['per_page'].should be_nil
-           assigns['page'].should be_nil
+          assigns['per_page'].should be_nil
+          assigns['page'].should be_nil
         end
       end
 
@@ -31,15 +31,27 @@ module PublishMyData
           end
 
         context "with no page or per page paramteres supplied" do
-          it "should set the page and per page variables to defaults" do
-            get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
-            assigns['per_page'].should == 100
-            assigns['page'].should == 1
+
+          context "html format" do
+            it "should set the page and per page variables to defaults" do
+              get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
+              assigns['per_page'].should == 100
+              assigns['page'].should == 1
+            end
+          end
+
+          context "non-html format" do
+            it "should set the page and per page variables to defaults" do
+              @request.env['HTTP_ACCEPT'] = "text/csv"
+              get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
+              assigns['per_page'].should == 10000
+              assigns['page'].should == 1
+            end
           end
         end
 
         context "with page and per page paramteres supplied" do
-          it "should apply the paramters to the variables" do
+          it "should apply the parameters to the variables" do
             get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
             assigns['per_page'].should == 35
             assigns['page'].should == 2
@@ -63,6 +75,12 @@ module PublishMyData
         it "should call execute" do
           SparqlQuery.any_instance.should_receive(:execute)
           get :endpoint, :query => 'CONSTRUCT {?s ?p ?o}', use_route: :publish_my_data
+        end
+
+        it "should not set the pagination variables, even if params are supplied" do
+          get :endpoint, :query => 'CONSTRUCT WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
+          assigns['per_page'].should be_nil
+          assigns['page'].should be_nil
         end
       end
 
