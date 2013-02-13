@@ -30,7 +30,7 @@ module PublishMyData
         it "should pass the right params through to paginate" do
           SparqlQuery.any_instance.should_receive(:paginate).with(2, 35)
           get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
-          end
+        end
 
         context "with no page or per page paramteres supplied" do
 
@@ -52,7 +52,7 @@ module PublishMyData
           end
         end
 
-        context "with page and per page paramteres supplied" do
+        context "with page and per page paramters supplied" do
           it "should apply the parameters to the variables" do
             get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
             assigns['per_page'].should == 35
