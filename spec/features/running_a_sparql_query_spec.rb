@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 # TO TEST:
-# pagination
-# other formats direct - including errors.
+# pagination for selects
 
 describe 'visiting the sparql endpoint' do
 
@@ -207,9 +206,7 @@ describe 'visiting the sparql endpoint' do
       find('form input[type="submit"]').click
     end
 
-    it "should show the message from Fuseki" do
-
-    end
+    it "should show the message from Fuseki"
   end
 
 end

@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+# TO TEST
+# exceptions
+
 module PublishMyData
   describe SparqlController do
     describe "#endpoint" do
