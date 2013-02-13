@@ -16,7 +16,7 @@ module PublishMyData
       @result_str = result_str
 
       if self.length > SparqlQueryResult.MAX_SIZE
-        raise SparqlQueryResultTooLargeException.new 'The results for this query are too large to return'
+        raise SparqlQueryResultTooLargeException.new(self.length)
       end
 
     end

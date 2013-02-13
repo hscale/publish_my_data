@@ -39,7 +39,6 @@ module PublishMyData
 
     end
 
-
     describe "#query_type" do
 
       it 'should return :select given a SELECT query' do
@@ -60,6 +59,11 @@ module PublishMyData
       it 'should return :ask given an ASK query' do
         q = PublishMyData::SparqlQuery.new('ASK <xyz>')
         q.query_type.should == :ask
+      end
+
+      it "should return :unknown given an unknown type" do
+        q = PublishMyData::SparqlQuery.new('FOO <xyz>')
+        q.query_type.should == :unknown
       end
     end
 
@@ -159,9 +163,20 @@ module PublishMyData
         end
       end
 
+      context "with an unknown query type" do
+        before do
+          @query_str = "FOOBAR <#{@yuri.uri.to_s}>"
+          @q = PublishMyData::SparqlQuery.new(@query_str)
+        end
+
+        it "should raise an exception" do
+          lambda { @q.execute }.should raise_error( SparqlQueryExecutionException )
+        end
+      end
+
       context "where data is too large to return" do
         before do
-          PublishMyData::SparqlQueryResult.any_instance.should_receive(:length).and_return(5.megabytes)
+          PublishMyData::SparqlQueryResult.any_instance.should_receive(:length).at_least(:once).and_return(5.megabytes)
         end
 
         it "should raise a SparqlResponseTooLargeException" do
@@ -172,6 +187,34 @@ module PublishMyData
           }.should raise_error PublishMyData::SparqlQueryResultTooLargeException
         end
       end
+
+      context "with a syntax error in the query" do
+
+        context "for query without a parent" do
+          it "should return the error from this query" do
+            query_str = "SELECT * WHERE ?s ?p ?o}"
+            q = PublishMyData::SparqlQuery.new(query_str)
+            lambda {
+              q.execute
+            }.should raise_error(
+              PublishMyData::SparqlQueryExecutionException, /line 1, column 16/
+            )
+          end
+        end
+
+        context "for a query with a parent" do
+          it "should return the error from the original query" do
+            query_str = "SELECT * WHERE ?s ?p ?o}"
+            q = PublishMyData::SparqlQuery.new(query_str)
+            lambda {
+              q.count
+            }.should raise_error(
+              PublishMyData::SparqlQueryExecutionException, /line 1, column 16/
+            )
+          end
+        end
+      end
+
     end
 
     describe "#select_format_str" do
@@ -331,6 +374,12 @@ module PublishMyData
       end
 
       context "for selects" do
+
+        it "should return a new Sparql query with the original query as the parent" do
+          q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+          q.as_count_query.parent_query.query.should == 'SELECT ?s WHERE { ?s ?p ?o }'
+        end
+
         context 'without prefixes' do
           it "should return a new SparqlQuery with the original query wrapped in a count" do
             q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
@@ -363,7 +412,6 @@ module PublishMyData
         q.should_receive(:as_pagination_query).with(3,40,1).and_call_original
         q.paginate(3,40,1)
       end
-
     end
 
     describe "#count" do
@@ -403,6 +451,12 @@ module PublishMyData
       end
 
       context "for selects" do
+
+        it "should return a new Sparql query with the original query as the parent" do
+          q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
+          q.as_pagination_query(1, 20, 0).parent_query.query.should == 'SELECT ?s WHERE { ?s ?p ?o }'
+        end
+
         context "without prefixes" do
 
           it "should return a new SparqlQuery with the original query wrapped in a pagination subquery" do

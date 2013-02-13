@@ -7,24 +7,26 @@ Execute a SPARQL query
 <% end %>
 
 <% if @sparql_query %>
+
   <%# results %>
   <pre><code><%= @sparql_query_result.to_s %></code></pre>
 
-  <% if @sparql_query.allow_pagination? %>
-    <% #only show prev link if there's a previous page %>
-    <div>
-      <%= link_to("&laquo; Previous #{@per_page} results".html_safe, params.merge({:_page => (@page-1)})) if @page > 1 %>
-    </div>
-    <div>
-      <% #only show the next page if the results for this page is bigger than the page size %>
-      <%= link_to("Next #{@per_page} results &raquo;".html_safe, params.merge({:_page => (@page+1)})) if more_sparql_result_pages? %>
-    </div>
-  <% end %>
+  <% if @error_message %>
+    <%= render 'error_message', :error_message => @error_message %>
+  <% else %>
 
-  <%# formats %>
-  <div>
-    Query Type: <%= @sparql_query.query_type.to_s %><br/>
-    <%= render "#{@sparql_query.query_type.to_s}_formats" %>
-  </div>
+    <% if @sparql_query.allow_pagination? %>
+      <%= render "pagination" %>
+    <% end %>
+
+    <%# formats %>
+    <% unless @sparql_query.query_type == :unknown %>
+      <div>
+        Query Type: <%= @sparql_query.query_type.to_s %><br/>
+        <%= render "#{@sparql_query.query_type.to_s}_formats" %>
+      </div>
+    <% end %>
+
+  <% end %>
 <% end %>
 

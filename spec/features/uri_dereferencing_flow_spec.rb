@@ -21,7 +21,6 @@ describe "A visitor dereferences a uri then clicks on a link for another resourc
     @yuri = FactoryGirl.create(:yuri_unicorn_resource)
     @boris = FactoryGirl.create(:boris_unicorn_resource)
     @foo_county = FactoryGirl.build(:foreign_resource)
-
   end
 
   context "in our domain" do

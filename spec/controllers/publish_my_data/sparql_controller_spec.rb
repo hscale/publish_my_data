@@ -19,7 +19,6 @@ module PublishMyData
 
       context "if the query allows pagination (selects)" do
 
-
         it "should call paginate" do
           SparqlQuery.any_instance.should_receive(:paginate)
           get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
