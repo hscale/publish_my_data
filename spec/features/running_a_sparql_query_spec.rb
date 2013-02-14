@@ -1,8 +1,5 @@
 require 'spec_helper'
 
-# TO TEST:
-# pagination for selects
-
 describe 'visiting the sparql endpoint' do
 
   ## shared examples
