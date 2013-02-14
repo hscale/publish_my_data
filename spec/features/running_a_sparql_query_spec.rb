@@ -5,6 +5,8 @@ require 'spec_helper'
 
 describe 'visiting the sparql endpoint' do
 
+  ## shared examples
+
   shared_examples_for 'a non-html error' do
     it "should 400 with a blank response" do
       page.source.should be_blank
@@ -80,13 +82,16 @@ describe 'visiting the sparql endpoint' do
     end
   end
 
+  ######################
+  ## end of shared examples (start of tests!)
+
   before do
     @yuri = FactoryGirl.create(:yuri_unicorn_resource)
     @boris = FactoryGirl.create(:boris_unicorn_resource)
     visit '/sparql'
   end
 
-  describe "and runs a sparql construct" do
+  describe "and running a sparql construct" do
     before do
       @query = 'construct {?s ?p ?o} where {?s ?p ?o}'
       page.fill_in 'query', with: @query
@@ -98,7 +103,7 @@ describe 'visiting the sparql endpoint' do
     it_should_behave_like 'a construct query'
   end
 
-  describe "and runs a sparql describe" do
+  describe "and runnning a sparql describe" do
     before do
       @query = "Describe <#{@yuri.uri.to_s}>"
       page.fill_in 'query', with: @query
@@ -110,26 +115,26 @@ describe 'visiting the sparql endpoint' do
     it_should_behave_like 'a construct query'
   end
 
-  describe "and runs a sparql ask" do
+  describe "and runnning a sparql ask" do
     before do
       @query = "ASK where {?s ?p ?o}"
       page.fill_in 'query', with: @query
       find('form input[type="submit"]').click
     end
 
-    describe 'and clicks JSON format' do
+    describe 'and clicking JSON format' do
       before { page.click_link "JSON" }
 
       it_should_behave_like 'a json response'
     end
 
-    describe 'and clicks XML format' do
+    describe 'and clicking XML format' do
       before { page.click_link "XML" }
 
       it_should_behave_like 'an xml response'
     end
 
-    describe 'and clicks Text format' do
+    describe 'and clicking Text format' do
       before { page.click_link "Text" }
 
       it_should_behave_like 'a text response'
@@ -137,38 +142,92 @@ describe 'visiting the sparql endpoint' do
 
   end
 
-  describe "and runs a sparql select" do
+  describe "and running a sparql select" do
 
-    before do
-      @query = 'select * where {?s ?p ?o}'
-      page.fill_in 'query', with: @query
-      find('form input[type="submit"]').click
+    context 'which returns a single page of results' do
+
+      before do
+        @query = 'select * where {?s ?p ?o}'
+        page.fill_in 'query', with: @query
+        find('form input[type="submit"]').click
+      end
+
+      it_should_behave_like 'a sparql query'
+
+      describe 'and clicking XML format' do
+        before { page.click_link "XML" }
+
+        it_should_behave_like 'an xml response'
+      end
+
+      describe 'and clicking CSV format' do
+        before { page.click_link "CSV" }
+
+        it_should_behave_like 'a csv response'
+      end
+
+      describe 'and clicking JSON format' do
+        before { page.click_link "JSON" }
+
+        it_should_behave_like 'a json response'
+      end
+
+      describe 'and clicking Text format' do
+        before { page.click_link "Text" }
+
+        it_should_behave_like 'a text response'
+      end
+
     end
 
-    it_should_behave_like 'a sparql query'
+    context 'which returns multiple pages' do
+      before do
 
-    describe 'and clicks XML format' do
-      before { page.click_link "XML" }
+        # make some stuff (more results than the page size.
+        (1..30).each do |t|
+          uri = "http://resource#{t.to_s}"
+          r = PublishMyData::Resource.new(uri, "http://graph")
+          r.label = t.to_s
+          r.save
+        end
 
-      it_should_behave_like 'an xml response'
-    end
+        @query = 'select * where {?s ?p ?o}'
+        page.fill_in 'query', with: @query
+        find('form input[type="submit"]').click
+      end
 
-    describe 'and clicks CSV format' do
-      before { page.click_link "CSV" }
+      it "should show the next page link" do
+        page.should have_link("Next 20 results")
+      end
 
-      it_should_behave_like 'a csv response'
-    end
+      context 'and clicking the next page link' do
 
-    describe 'and clicks JSON format' do
-      before { page.click_link "JSON" }
+        before { page.click_link("Next 20 results") }
 
-      it_should_behave_like 'a json response'
-    end
+        it "should go to the next page" do
+          page.current_url.should include('_page=2')
+        end
 
-    describe 'and clicks Text format' do
-      before { page.click_link "Text" }
+        it 'should show the previous page link' do
+          page.should have_link("Previous 20 results")
+        end
 
-      it_should_behave_like 'a text response'
+        context 'where there are no more pages' do
+          it "should not show the next page link" do
+            page.should_not have_link("Next 20 results")
+          end
+        end
+
+        context 'and clicking the previous page link' do
+          before { page.click_link("Previous 20 results") }
+
+          it "should go back to the previous page" do
+            page.current_url.should include('_page=1')
+          end
+        end
+      end
+
+
     end
 
   end
@@ -199,14 +258,16 @@ describe 'visiting the sparql endpoint' do
     end
   end
 
-  describe "and runs a query with a syntax error" do
+  describe "and running a query with a syntax error" do
     before do
       @query = 'SELECT * where ?s ?p ?o}'
       page.fill_in 'query', with: @query
       find('form input[type="submit"]').click
     end
 
-    it "should show the message from Fuseki"
+    it "should show a synatax error message" do
+      page.should have_content(/There was a syntax error in your query/)
+    end
   end
 
 end

@@ -31,7 +31,7 @@ module PublishMyData
 
     def get_pagination_params
       if request.format.html?
-        default_page_size = 100
+        default_page_size = 20
       else
         default_page_size = 10000
       end

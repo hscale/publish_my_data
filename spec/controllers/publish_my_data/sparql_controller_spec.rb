@@ -46,7 +46,7 @@ module PublishMyData
             context "html format" do
               it "should set the page and per page variables to defaults" do
                 get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
-                assigns['per_page'].should == 100
+                assigns['per_page'].should == 20
                 assigns['page'].should == 1
               end
             end
