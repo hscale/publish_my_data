@@ -2,9 +2,11 @@ PublishMyData::Engine.routes.draw do
 
   # resource show
   match "/resource(.:format)" => "resources#show", :as => 'show_resource' # http://resource?uri=http://foo.bar
-
   # resources lists
   match "/resources(.:format)" => "resources#index"
+
+  # datasets
+  resources :datasets, :only => [:show, :index]
 
   # URI dereferencing
   match "/id/*path" => "resources#id"
