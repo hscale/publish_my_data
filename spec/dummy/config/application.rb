@@ -8,7 +8,10 @@ require "active_resource/railtie"
 require "sprockets/railtie"
 #require "rails/test_unit/railtie"
 
+require 'tripod' # for some reason tripod is lazy loaded by the tests unless you stick this here, which we don't want.
+
 Bundler.require
+
 require "publish_my_data"
 
 module Dummy

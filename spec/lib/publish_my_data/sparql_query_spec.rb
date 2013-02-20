@@ -369,7 +369,7 @@ module PublishMyData
           lambda {
             q = PublishMyData::SparqlQuery.new('ASK { ?s ?p ?o }')
             q.as_count_query
-          }.should raise_error(PublishMyData::SparqlQueryException)
+          }.should raise_error(Tripod::SparqlQueryError, "Can't turn this into a subquery")
         end
       end
 
@@ -446,7 +446,7 @@ module PublishMyData
           lambda {
             q = PublishMyData::SparqlQuery.new('ASK { ?s ?p ?o }')
             q.as_pagination_query(1, 20, 0)
-          }.should raise_error(PublishMyData::SparqlQueryException)
+          }.should raise_error(Tripod::SparqlQueryError, "Can't turn this into a subquery")
         end
       end
 
