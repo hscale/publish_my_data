@@ -22,5 +22,6 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 3.2.11"
   s.add_dependency "tripod", "~> 0.3"
   s.add_dependency "rdf", "~> 1.0"
+  s.add_dependency "kaminari"
 
 end

@@ -1,0 +1,7 @@
+<h1>datasets index</h1> </br>
+
+<% @datasets.each do |d| %>
+  dataset <%= link_to d.title, d.uri.to_s %> <br/>
+<% end %>
+
+<%= paginate @datasets %>

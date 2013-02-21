@@ -45,3 +45,9 @@ end
 Capybara.configure do |config|
   config.default_host = 'http://pmdtest.dev'
 end
+
+# set up tripod for dev mode.
+Tripod.configure do |config|
+  config.update_endpoint = 'http://localhost:3030/pmdtest/update'
+  config.query_endpoint = 'http://localhost:3030/pmdtest/sparql'
+end
