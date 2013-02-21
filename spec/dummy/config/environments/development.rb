@@ -29,4 +29,10 @@ Dummy::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  PublishMyData.configure do |config|
+    config.sparql_endpoint = 'http://localhost:3030/pmd/sparql'
+    config.local_domain = 'pmd.dev'
+    config.sparql_timeout_seconds = 30
+  end
+
 end

@@ -33,4 +33,9 @@ Dummy::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
+  PublishMyData.configure do |config|
+    config.sparql_endpoint = 'http://localhost:3030/pmdtest/sparql'
+    config.local_domain = 'pmdtest.dev'
+    config.sparql_timeout_seconds = 30
+  end
 end

@@ -20,8 +20,7 @@ module PublishMyData
 
       # this is the dataset that the actual data will go in
       def data_graph_uri(slug)
-        site_domain = 'pmd.dev' # TODO: make this configurable
-        "http://#{site_domain}/graph/#{slug}"
+        "http://#{PublishMyData.local_domain}/graph/#{slug}"
       end
 
       def find_by_slug(slug)
@@ -29,8 +28,7 @@ module PublishMyData
       end
 
       def uri_from_slug(slug)
-        site_domain = 'pmd.dev' # TODO: make this configurable
-        "http://#{site_domain}/datasets/#{slug}"
+        "http://#{PublishMyData.local_domain}/datasets/#{slug}"
       end
 
       def slug_from_uri(uri)
