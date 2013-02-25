@@ -5,6 +5,15 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json
 
+    before_filter :get_pagination_params, :only => [:index]
+
+    # /resources
+    def index
+      resource_criteria = Resource.all
+      @resources = paginate_resources(resource_criteria)
+      respond_with(@resources)
+    end
+
     # /resource?uri=http://foo.bar
     def show
       uri = params[:uri]

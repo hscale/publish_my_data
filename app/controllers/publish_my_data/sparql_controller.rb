@@ -29,16 +29,6 @@ module PublishMyData
 
     private
 
-    def get_pagination_params
-      if request.format.html?
-        default_page_size = 20
-      else
-        default_page_size = 10000
-      end
-      @page = (params[:_page] || 1).to_i
-      @per_page = (params[:_per_page] || default_page_size).to_i
-    end
-
     def respond_with_error
       respond_to do |format|
         format.html { render 'endpoint' }

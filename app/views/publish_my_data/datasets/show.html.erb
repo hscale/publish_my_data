@@ -1,5 +1,11 @@
-Dataset
+<h1><%= @dataset.title %></h1>
 
-<%= @dataset.title %>
-
+<br/>
 <%= @dataset.description %>
+
+<br/>
+Get this page as:
+<%= link_to 'N-triples', :format => 'nt' %>
+<%= link_to 'Turtle', :format => 'ttl' %>
+<%= link_to 'RDF/XML', :format => 'rdf' %>
+<%= link_to 'JSON', :format => 'json' %>

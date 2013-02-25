@@ -22,7 +22,7 @@ Execute a SPARQL query
     <%# formats %>
     <% unless @sparql_query.query_type == :unknown %>
       <div>
-        Query Type: <%= @sparql_query.query_type.to_s %><br/>
+        Get these results as:
         <%= render "#{@sparql_query.query_type.to_s}_formats" %>
       </div>
     <% end %>

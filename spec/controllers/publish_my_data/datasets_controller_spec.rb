@@ -40,11 +40,12 @@ module PublishMyData
 
       shared_examples_for "kaminari pagination" do
         it "should call kaminari to paginate the results" do
-          datasets = Dataset.all.limit(per_page).offset(offset).resources
+          datasets_array = Dataset.all.limit(per_page).offset(offset).resources.to_a
           count = Dataset.count
-          kam = Kaminari.paginate_array(datasets, total_count: @count)
 
-          Kaminari.should_receive(:paginate_array).with(datasets, total_count: count).and_return(kam)
+          kam = Kaminari.paginate_array(datasets_array, total_count: @count)
+
+          Kaminari.should_receive(:paginate_array).with(datasets_array, total_count: count).and_return(kam)
           kam.should_receive(:page).with(page).and_return(kam)
           kam.should_receive(:per).with(per_page).and_return(kam)
           get :index, _page: page, _per_page: per_page, use_route: :publish_my_data
@@ -52,7 +53,8 @@ module PublishMyData
 
         it "should set @datasets with the right page of datasets" do
           get :index, _page: page, _per_page: per_page, use_route: :publish_my_data
-          assigns['datasets'].map{ |d| d.uri.to_s }.should == Dataset.all.resources[offset...offset+per_page].map{ |d| d.uri.to_s }
+          assigns['datasets'].map{ |d| d.uri.to_s }.should ==
+            Dataset.all.resources[offset...offset+per_page].map{ |d| d.uri.to_s }
           assigns['datasets'].length.should == per_page
         end
 

@@ -43,22 +43,12 @@ module PublishMyData
 
           context "with no page or per page paramteres supplied" do
 
-            context "html format" do
-              it "should set the page and per page variables to defaults" do
-                get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
-                assigns['per_page'].should == 20
-                assigns['page'].should == 1
-              end
+            it "should set the page and per page variables to defaults" do
+              get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
+              assigns['per_page'].should == 20
+              assigns['page'].should == 1
             end
 
-            context "non-html format" do
-              it "should set the page and per page variables to defaults" do
-                @request.env['HTTP_ACCEPT'] = "text/csv"
-                get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
-                assigns['per_page'].should == 10000
-                assigns['page'].should == 1
-              end
-            end
           end
 
           context "with page and per page paramters supplied" do
