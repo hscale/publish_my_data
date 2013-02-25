@@ -208,5 +208,21 @@ module PublishMyData
 
       end
     end
+
+    describe "#index" do
+      context "with no parameters" do
+        it "should respond successfully" do
+          get :index, :use_route => :publish_my_data
+        end
+
+        it "should return paginated results for Resource.all" do
+          subject.should_receive(:paginate_resources).with(Resource.all)
+          get :index, :use_route => :publish_my_data
+        end
+      end
+    end
+
+
+
   end
 end
