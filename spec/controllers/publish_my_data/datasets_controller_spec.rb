@@ -58,10 +58,6 @@ module PublishMyData
           assigns['datasets'].length.should == per_page
         end
 
-        it "should set @count with the total count" do
-          get :index, _page: page, _per_page: per_page, use_route: :publish_my_data
-          assigns['count'].should == Dataset.count
-        end
       end
 
 

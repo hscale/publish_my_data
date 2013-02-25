@@ -3,8 +3,6 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class DatasetsController < ApplicationController
 
-    before_filter :get_pagination_params, :only => [:index]
-
     respond_to :html, :ttl, :rdf, :nt, :json
 
     # /datasets/:id (where :id is the dataset 'slug')

@@ -19,6 +19,9 @@ module PublishMyData
     # from the criteria passed in, sets an instance var for @count and return
     # a Kaminari::PaginatableArray, or Array (as appropriate to the format)
     def paginate_resources(criteria)
+
+      get_pagination_params unless @got_pagination_params
+
       count = criteria.count #this has to happen first, before we modify the criteria with limit/offset
       resources = criteria.limit(@limit).offset(@offset).resources
 
@@ -38,6 +41,8 @@ module PublishMyData
 
       @limit = @per_page
       @offset = @limit.to_i * (@page.to_i-1)
+
+      @got_pagination_params = true
     end
 
   end

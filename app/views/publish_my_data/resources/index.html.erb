@@ -1,5 +1,31 @@
 <h1>Resources</h1>
 
+<!-- Filter info -->
+
+<% if @type_filter %>
+  Of type:
+  <% if @type %>
+    <%= link_to @type.label || @type.uri, resource_path_from_uri(@type.uri) %>
+  <% else %>
+    <%= link_to @type_filter, resource_path_from_uri(@type_filter) %>
+  <% end %>
+<% end %>
+
+<br/>
+
+<% if @type_filter %>
+  In dataset:
+  <% if @dataset %>
+    <%= link_to @dataset.title, @dataset %>
+  <% else %>
+    <%= link_to @dataset_filter, resource_path_from_uri(@dataset_filter) %>
+  <% end %>
+<% end %>
+
+<br/><br/>
+
+Results:<br/>
+
 <% @resources.each do |r| %>
   <%= link_to (r.label || r.uri), resource_path_from_uri(r.uri) %><br/>
 <% end %>

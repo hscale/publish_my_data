@@ -11,6 +11,10 @@ module PublishMyData
       Dataset.slug_from_uri(self.uri)
     end
 
+    def data_graph_uri
+      Dataset.data_graph_uri(self.slug)
+    end
+
     class << self
 
       # this is the graph that dataset metadata goes in.

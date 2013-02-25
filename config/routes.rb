@@ -4,7 +4,7 @@ PublishMyData::Engine.routes.draw do
   match "/resource(.:format)" => "resources#show", :as => 'show_resource' # http://resource?uri=http://foo.bar
 
   # resources lists
-  match "/resources(.:format)" => "resources#index"
+  match "/resources(.:format)" => "resources#index" # +filters on thh query string
 
   # datasets
   resources :datasets, :only => [:show, :index]
@@ -14,7 +14,7 @@ PublishMyData::Engine.routes.draw do
   match "/doc/*path.:format" => "resources#doc"
   match "/doc/*path" => "resources#doc"
 
-  # def pagges
+  # def pages
   match "/def/*path.:format" => "resources#definition"
   match "/def/*path" => "resources#definition"
 
