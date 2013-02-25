@@ -210,14 +210,127 @@ module PublishMyData
     end
 
     describe "#index" do
+
+      let(:dataset) { FactoryGirl.create(:my_dataset) }
+
+      let(:type) do
+        t = Resource.new('http://i-am-a-type', 'http://types')
+        t.label = 'I am a type'
+        t.save!
+        t
+      end
+
+      before do
+
+        # make some resources (in and out of our dataset and type)
+        (1..5).each do |i|
+          r = Resource.new("http://resource-in-ds/#{i}", dataset.data_graph_uri)
+          r.label = "resource #{i}"
+          r.write_predicate(RDF.type, RDF::URI.new(type.uri)) if i.even?
+          r.save!
+        end
+
+        (1..3).each do |i|
+          r = Resource.new("http://resource-not-in-ds/#{i}", 'http://anothergraph')
+          r.label = "resource #{i}"
+          r.write_predicate(RDF.type, RDF::URI.new(type.uri)) if i.even?
+          r.save!
+        end
+      end
+
+      it 'should set the resources variable' do
+        get :index, use_route: :publish_my_data
+        assigns['resources'].should_not be_blank
+      end
+
       context "with no parameters" do
         it "should respond successfully" do
-          get :index, :use_route => :publish_my_data
+          get :index, use_route: :publish_my_data
         end
 
         it "should return paginated results for Resource.all" do
-          subject.should_receive(:paginate_resources).with(Resource.all)
-          get :index, :use_route => :publish_my_data
+          subject.should_receive(:paginate_resources).with(Resource.all).and_call_original
+          get :index, use_route: :publish_my_data
+          assigns['resources'].length.should == 10 # 8 resources, plus ds and type!
+        end
+
+      end
+
+      context 'with a type parameter' do
+        context 'where the type exists' do
+          before do
+            get :index, type_uri: type.uri, use_route: :publish_my_data
+          end
+
+          it 'should filter the results by things of that type' do
+             assigns['resources'].length.should == 3
+          end
+
+          it 'should set the type filter variable' do
+            assigns['type_filter'].should == type.uri
+          end
+
+          it 'should set the dataset variable to the dataset' do
+            assigns['type'].should == type
+          end
+        end
+
+        context 'where the type does not exist' do
+          before do
+            get :index, type_uri: 'bleh', use_route: :publish_my_data
+          end
+
+          it 'should not find any results' do
+            assigns['resources'].length.should == 0
+          end
+
+          it 'should set the type filter variable' do
+            assigns['type_filter'].should == 'bleh'
+          end
+
+          it 'should not set the type variable' do
+            assigns['type'].should be_nil
+          end
+        end
+      end
+
+      context "with a dataset parameter" do
+        context 'where the dataset exists' do
+
+          before do
+            get :index, dataset: dataset.slug, use_route: :publish_my_data
+          end
+
+          it "should filter the results by datasets with that slug" do
+            assigns['resources'].length.should == 5
+          end
+
+          it 'should set the dataset filter variable' do
+            assigns['dataset_filter'].should == dataset.slug
+          end
+
+          it 'should set the dataset variable to the dataset' do
+            assigns['dataset'].should == dataset
+          end
+
+        end
+
+        context 'where the dataset does not exist' do
+          before do
+            get :index, dataset: 'bleh', use_route: :publish_my_data
+          end
+
+          it 'should not find any results' do
+            assigns['resources'].length.should == 0
+          end
+
+          it 'should set the dataset filter variable' do
+            assigns['dataset_filter'].should == 'bleh'
+          end
+
+          it 'should not set the dataset variable to the dataset' do
+            assigns['dataset'].should be_nil
+          end
         end
       end
     end
