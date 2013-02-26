@@ -17,9 +17,7 @@ module PublishMyData
     def index
       dataset_criteria = Dataset.all
       dataset_criteria = add_theme_filter(dataset_criteria)
-
       @datasets = paginate_resources(dataset_criteria)
-
       respond_with(@datasets)
     end
 

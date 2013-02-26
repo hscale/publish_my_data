@@ -14,6 +14,11 @@ module PublishMyData
             get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
             response.should be_success
           end
+
+          it "should set the types variable" do
+            get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
+            assigns['types'].class.should == Tripod::ResourceCollection
+          end
         end
 
         context "with a non-existent dataset slug" do
