@@ -75,7 +75,7 @@ module PublishMyData
     def add_type_filter(criteria)
       unless params[:type_uri].blank?
         @type_filter = params[:type_uri]
-        @type = Resource.find(@type_filter) rescue nil
+        @type = RdfType.find(@type_filter) rescue nil
         criteria.where("?uri a <#{@type_filter}>")
       end
       criteria

@@ -8,6 +8,7 @@ module PublishMyData
     # /datasets/:id (where :id is the dataset 'slug')
     def show
       @dataset = Dataset.find_by_slug(params[:id])
+      @types = PublishMyData::RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
       respond_with(@dataset)
     end
 
@@ -16,7 +17,9 @@ module PublishMyData
     def index
       dataset_criteria = Dataset.all
       dataset_criteria = add_theme_filter(dataset_criteria)
+
       @datasets = paginate_resources(dataset_criteria)
+
       respond_with(@datasets)
     end
 

@@ -252,7 +252,7 @@ module PublishMyData
       let(:dataset) { FactoryGirl.create(:my_dataset) }
 
       let(:type) do
-        t = Resource.new('http://i-am-a-type', 'http://types')
+        t = PublishMyData::RdfType.new('http://i-am-a-type', 'http://types')
         t.label = 'I am a type'
         t.save!
         t

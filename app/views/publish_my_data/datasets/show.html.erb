@@ -3,6 +3,12 @@
 <br/>
 <%= @dataset.description %>
 
+<h2> Types in this ds</h2>
+
+<% @types.each do |t| %>
+  <%= t.inspect %><br/>
+<% end %>
+
 <br/>
 Get this page as:
 <%= link_to 'N-triples', :format => 'nt' %>
