@@ -8,7 +8,15 @@ module PublishMyData
     # /datasets/:id (where :id is the dataset 'slug')
     def show
       @dataset = Dataset.find_by_slug(params[:id])
-      @types = PublishMyData::RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
+      @types = RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
+
+      if request.format.html?
+        @type_resource_counts = {}
+        @types.each do |t|
+          @type_resource_counts[t.uri.to_s] = Resource.where("?uri a <#{t.uri.to_s}>").count
+        end
+      end
+
       respond_with(@dataset)
     end
 
