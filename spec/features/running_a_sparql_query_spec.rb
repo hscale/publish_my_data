@@ -202,7 +202,7 @@ describe 'visiting the sparql endpoint' do
         before { page.click_link("Next 20 results") }
 
         it "should go to the next page" do
-          page.current_url.should include('_page=2')
+          page.current_url.should include('page=2')
         end
 
         it 'should show the previous page link' do
@@ -219,7 +219,7 @@ describe 'visiting the sparql endpoint' do
           before { page.click_link("Previous 20 results") }
 
           it "should go back to the previous page" do
-            page.current_url.should include('_page=1')
+            page.current_url.should include('page=1')
           end
         end
       end

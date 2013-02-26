@@ -211,6 +211,44 @@ module PublishMyData
 
     describe "#index" do
 
+       shared_examples_for "kaminari pagination" do
+        it "should call kaminari to paginate the results" do
+          res_array = Resource.all.limit(per_page).offset(offset).resources.to_a
+          count = Resource.count
+
+          kam = Kaminari.paginate_array(res_array, total_count: count)
+
+          Kaminari.should_receive(:paginate_array).with(res_array, total_count: count).and_return(kam)
+          kam.should_receive(:page).with(page).and_return(kam)
+          kam.should_receive(:per).with(per_page).and_return(kam)
+          get :index, page: page, per_page: per_page, use_route: :publish_my_data
+        end
+
+        it "should set @resources with the right page of datasets" do
+          get :index, page: page, per_page: per_page, use_route: :publish_my_data
+          assigns['resources'].map{ |d| d.uri.to_s }.should ==
+            Resource.all.resources[offset...offset+per_page].map{ |r| r.uri.to_s }
+          assigns['resources'].length.should == per_page
+        end
+      end
+
+      shared_examples_for "a collection in non-html" do
+        it "should render the collection in the right format" do
+          get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
+          response.body.should == Resource.all.limit(per_page).offset(offset).resources.send("to_#{format}")
+        end
+
+        it "shouldn't call Kaminari" do
+          Kaminari.should_not_receive(:paginate_array)
+          get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
+        end
+
+        it "should render successfully" do
+          get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
+          response.should be_success
+        end
+      end
+
       let(:dataset) { FactoryGirl.create(:my_dataset) }
 
       let(:type) do
@@ -253,7 +291,27 @@ module PublishMyData
           get :index, use_route: :publish_my_data
           assigns['resources'].length.should == 10 # 8 resources, plus ds and type!
         end
+      end
 
+      context 'with pagination params' do
+        let(:page) {2}
+        let(:per_page) {2}
+        let(:offset) { (page-1)*per_page }
+
+        it "should retreive the right page of results" do
+          crit = Resource.all
+          Resource.should_receive(:all).at_least(:once).and_return(crit)
+          crit.should_receive(:limit).with(per_page).and_call_original
+          crit.should_receive(:offset).with(offset).and_call_original
+          get :index, page: page, per_page: per_page, use_route: :publish_my_data
+        end
+
+        it_should_behave_like "kaminari pagination"
+
+        context 'with non-html format' do
+          let(:format) {'ttl'}
+          it_should_behave_like "a collection in non-html"
+        end
       end
 
       context 'with a type parameter' do

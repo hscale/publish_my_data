@@ -38,7 +38,7 @@ module PublishMyData
 
           it "should pass the right params through to paginate" do
             SparqlQuery.any_instance.should_receive(:paginate).with(2, 35)
-            get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
+            get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
           end
 
           context "with no page or per page paramteres supplied" do
@@ -53,7 +53,7 @@ module PublishMyData
 
           context "with page and per page paramters supplied" do
             it "should apply the parameters to the variables" do
-              get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
+              get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
               assigns['per_page'].should == 35
               assigns['page'].should == 2
             end
@@ -61,7 +61,7 @@ module PublishMyData
 
           it "should call paginate on a sparql query object, with the right params" do
             SparqlQuery.any_instance.should_receive(:paginate).with(2, 35).and_call_original
-            get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
+            get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
           end
 
         end
@@ -79,7 +79,7 @@ module PublishMyData
           end
 
           it "should not set the pagination variables, even if params are supplied" do
-            get :endpoint, :query => 'CONSTRUCT WHERE {?s ?p ?o}', :_per_page => 35, :_page => 2, use_route: :publish_my_data
+            get :endpoint, :query => 'CONSTRUCT WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
             assigns['per_page'].should be_nil
             assigns['page'].should be_nil
           end

@@ -11,11 +11,23 @@ module PublishMyData
       respond_with(@dataset)
     end
 
-    # /datasets?_page=2&_per_page=10
+    # /datasets?page=2&per_page=10
+    # /datasets?theme=foo
     def index
-      @datasets = paginate_resources(Dataset.all)
+      dataset_criteria = Dataset.all
+      dataset_criteria = add_theme_filter(dataset_criteria)
+      @datasets = paginate_resources(dataset_criteria)
       respond_with(@datasets)
     end
 
+    private
+
+    def add_theme_filter(criteria)
+      unless params[:theme].blank?
+        @theme = params[:theme]
+        criteria.where("?uri <#{PMD_DS.theme}> '#{@theme}'")
+      end
+      criteria
+    end
   end
 end

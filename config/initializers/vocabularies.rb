@@ -1,0 +1,1 @@
+PMD_DS = RDF::Vocabulary.new("http://publishmydata.com/def/dataset#")

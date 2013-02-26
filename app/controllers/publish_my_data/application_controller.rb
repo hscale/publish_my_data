@@ -35,9 +35,9 @@ module PublishMyData
     def get_pagination_params
       default_page_size = 20
 
-      @per_page = (params[:_per_page] || default_page_size).to_i
+      @per_page = (params[:per_page] || default_page_size).to_i
       @per_page = 10000 if @per_page > 10000
-      @page = (params[:_page] || 1).to_i
+      @page = (params[:page] || 1).to_i
 
       @limit = @per_page
       @offset = @limit.to_i * (@page.to_i-1)

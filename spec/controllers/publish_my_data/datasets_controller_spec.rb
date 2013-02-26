@@ -82,23 +82,24 @@ module PublishMyData
           graph = Dataset.metadata_graph_uri(slug)
           d = PublishMyData::Dataset.new(uri, graph)
           d.title = "Dataset #{i.to_s}"
+          d.theme = (i.even? ? 'theme' : 'othertheme')
           d.save!
         end
       end
 
       shared_examples_for "a collection in non-html" do
         it "should render the collection in the right format" do
-          get :index, :_page => page, :_per_page => per_page, :format => format, use_route: :publish_my_data
+          get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
           response.body.should == Dataset.all.limit(per_page).offset(offset).resources.send("to_#{format}")
         end
 
         it "shouldn't call Kaminari" do
           Kaminari.should_not_receive(:paginate_array)
-          get :index, :_page => page, :_per_page => per_page, :format => format, use_route: :publish_my_data
+          get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
         end
 
         it "should render successfully" do
-          get :index, :_page => page, :_per_page => per_page, :format => format, use_route: :publish_my_data
+          get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
           response.should be_success
         end
       end
@@ -108,16 +109,16 @@ module PublishMyData
           datasets_array = Dataset.all.limit(per_page).offset(offset).resources.to_a
           count = Dataset.count
 
-          kam = Kaminari.paginate_array(datasets_array, total_count: @count)
+          kam = Kaminari.paginate_array(datasets_array, total_count: count)
 
           Kaminari.should_receive(:paginate_array).with(datasets_array, total_count: count).and_return(kam)
           kam.should_receive(:page).with(page).and_return(kam)
           kam.should_receive(:per).with(per_page).and_return(kam)
-          get :index, _page: page, _per_page: per_page, use_route: :publish_my_data
+          get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 
         it "should set @datasets with the right page of datasets" do
-          get :index, _page: page, _per_page: per_page, use_route: :publish_my_data
+          get :index, page: page, per_page: per_page, use_route: :publish_my_data
           assigns['datasets'].map{ |d| d.uri.to_s }.should ==
             Dataset.all.resources[offset...offset+per_page].map{ |d| d.uri.to_s }
           assigns['datasets'].length.should == per_page
@@ -158,7 +159,7 @@ module PublishMyData
           Dataset.should_receive(:all).at_least(:once).and_return(crit)
           crit.should_receive(:limit).with(per_page).and_call_original
           crit.should_receive(:offset).with(offset).and_call_original
-          get :index, _page: page, _per_page: per_page, use_route: :publish_my_data
+          get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 
         it_should_behave_like "kaminari pagination"
@@ -166,6 +167,15 @@ module PublishMyData
         context 'with non-html format' do
           let(:format) {'ttl'}
           it_should_behave_like "a collection in non-html"
+        end
+      end
+
+      context "with a theme parameter" do
+        let(:theme) {'theme'}
+
+        it "should filter the results to only datasets in the theme" do
+          get :index, theme: theme, use_route: :publish_my_data
+          assigns['datasets'].length.should == 15 # only the even ones are in this theme
         end
       end
 
