@@ -43,9 +43,9 @@ module PublishMyData
         response.should be_success
       end
 
-      it "should render the doc template" do
+      it "should render the show template" do
         get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
-        response.should render_template("publish_my_data/resources/doc")
+        response.should render_template("publish_my_data/resources/show")
       end
 
       context "for html" do
@@ -132,7 +132,7 @@ module PublishMyData
 
         it "should render the doc template" do
           get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
-          response.should render_template("publish_my_data/resources/doc")
+          response.should render_template("publish_my_data/resources/show")
         end
 
         context "with an alternative mime type" do
@@ -232,7 +232,7 @@ module PublishMyData
         end
       end
 
-      shared_examples_for "a collection in non-html" do
+      shared_examples_for "a resource collection in non-html" do
         it "should render the collection in the right format" do
           get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
           response.body.should == Resource.all.limit(per_page).offset(offset).resources.send("to_#{format}")
@@ -310,7 +310,7 @@ module PublishMyData
 
         context 'with non-html format' do
           let(:format) {'ttl'}
-          it_should_behave_like "a collection in non-html"
+          it_should_behave_like "a resource collection in non-html"
         end
       end
 

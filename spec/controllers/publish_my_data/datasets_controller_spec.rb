@@ -92,7 +92,7 @@ module PublishMyData
         end
       end
 
-      shared_examples_for "a collection in non-html" do
+      shared_examples_for "a dataset collection in non-html" do
         it "should render the collection in the right format" do
           get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
           response.body.should == Dataset.all.limit(per_page).offset(offset).resources.send("to_#{format}")
@@ -150,7 +150,7 @@ module PublishMyData
 
         context 'with non-html format' do
           let(:format) {'rdf'}
-          it_should_behave_like "a collection in non-html"
+          it_should_behave_like "a dataset collection in non-html"
         end
       end
 
@@ -171,7 +171,7 @@ module PublishMyData
 
         context 'with non-html format' do
           let(:format) {'ttl'}
-          it_should_behave_like "a collection in non-html"
+          it_should_behave_like "a dataset collection in non-html"
         end
       end
 

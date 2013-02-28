@@ -54,7 +54,9 @@ module PublishMyData
       eager_load_labels() if request.format.html?
 
       # TODO: special views like ontology, dataset, etc?
-      respond_with(@resource)
+      respond_with(@resource) do |format|
+        format.html { render :template => 'publish_my_data/resources/show' }
+      end
     end
 
     # http://example.com/def/blah
@@ -65,7 +67,7 @@ module PublishMyData
 
       # TODO: special views like ontology, dataset, etc?
       respond_with(@resource) do |format|
-        format.html { render :template => 'publish_my_data/resources/doc' }
+        format.html { render :template => 'publish_my_data/resources/show' }
       end
     end
 

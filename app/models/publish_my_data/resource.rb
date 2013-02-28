@@ -6,8 +6,8 @@ module PublishMyData
     field :label, RDF::RDFS.label
 
     # Is this resource in the host domain?
-    def local?(host)
-      uri.starts_with?("http://" + host)
+    def local?
+      uri.starts_with?("http://" + PublishMyData.local_domain)
     end
 
     class << self

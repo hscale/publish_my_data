@@ -18,7 +18,7 @@ module PublishMyData
 
     def resource_path_from_uri(uri)
       resource = Resource.new(uri)
-      if resource.local?(request.host)
+      if resource.local?
         uri.to_s
       else
         show_resource_path(:uri => uri.to_s)
