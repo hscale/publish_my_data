@@ -211,7 +211,7 @@ module PublishMyData
 
     describe "#index" do
 
-       shared_examples_for "kaminari pagination" do
+       shared_examples_for "resource kaminari pagination" do
         it "should call kaminari to paginate the results" do
           res_array = Resource.all.limit(per_page).offset(offset).resources.to_a
           count = Resource.count
@@ -306,7 +306,7 @@ module PublishMyData
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 
-        it_should_behave_like "kaminari pagination"
+        it_should_behave_like "resource kaminari pagination"
 
         context 'with non-html format' do
           let(:format) {'ttl'}

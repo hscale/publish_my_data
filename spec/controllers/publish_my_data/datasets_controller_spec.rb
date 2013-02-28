@@ -109,7 +109,7 @@ module PublishMyData
         end
       end
 
-      shared_examples_for "kaminari pagination" do
+      shared_examples_for "dataset kaminari pagination" do
         it "should call kaminari to paginate the results" do
           datasets_array = Dataset.all.limit(per_page).offset(offset).resources.to_a
           count = Dataset.count
@@ -145,7 +145,7 @@ module PublishMyData
         end
 
         context 'with html format' do
-          it_should_behave_like "kaminari pagination"
+          it_should_behave_like "dataset kaminari pagination"
         end
 
         context 'with non-html format' do
@@ -167,7 +167,7 @@ module PublishMyData
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 
-        it_should_behave_like "kaminari pagination"
+        it_should_behave_like "dataset kaminari pagination"
 
         context 'with non-html format' do
           let(:format) {'ttl'}
