@@ -29,6 +29,12 @@ module PublishMyData
       respond_with(@datasets)
     end
 
+    def themes
+      # TODO: decide on how the themes will be represented in the metadata.
+      # Get a list of themes.
+      @themes = ['theme1', 'theme2']
+    end
+
     private
 
     def add_theme_filter(criteria)

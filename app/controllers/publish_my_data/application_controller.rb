@@ -22,11 +22,11 @@ module PublishMyData
 
       get_pagination_params unless @got_pagination_params
 
-      count = criteria.count #this has to happen first, before we modify the criteria with limit/offset
+      @count = criteria.count #this has to happen first, before we modify the criteria with limit/offset
       resources = criteria.limit(@limit).offset(@offset).resources
 
       if request.format.html?
-        Kaminari.paginate_array(resources.to_a, total_count: count).page(@page).per(@limit)
+        Kaminari.paginate_array(resources.to_a, total_count: @count).page(@page).per(@limit)
       else
         resources # non html versions just need the raw array
       end
