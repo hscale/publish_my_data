@@ -24,8 +24,6 @@
 
 <br/>
 
-Results:<br/>
-
 <% @resources.each do |r| %>
   <%= link_to (r.label || r.uri), resource_path_from_uri(r.uri) %><br/>
 <% end %>

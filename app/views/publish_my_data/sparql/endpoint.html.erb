@@ -1,32 +1,10 @@
 Execute a SPARQL query
 
 <%# form %>
-<%= form_tag sparql_endpoint_path, :method => :get do %>
-  <%= text_area_tag :query, @query_text %>
-  <%= submit_tag "Run Query" %>
-<% end %>
+<%= render 'form' %>
 
 <% if @sparql_query %>
-
-  <%# results %>
-  <pre><code><%= @sparql_query_result.to_s %></code></pre>
-
-  <% if @error_message %>
-    <%= render 'error_message', :error_message => @error_message %>
-  <% else %>
-
-    <% if @sparql_query.allow_pagination? %>
-      <%= render "pagination" %>
-    <% end %>
-
-    <%# formats %>
-    <% unless @sparql_query.query_type == :unknown %>
-      <div>
-        Get these results as:
-        <%= render "#{@sparql_query.query_type.to_s}_formats" %>
-      </div>
-    <% end %>
-
-  <% end %>
+  <%= render 'results' %>
+  <%= render 'formats' %>
 <% end %>
 

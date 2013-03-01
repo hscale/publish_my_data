@@ -1,0 +1,5 @@
+<% if @error_message %>
+  <%= render 'error_message', :error_message => @error_message %>
+<% else %>
+  <%= render 'results_data' %>
+<% end %>

@@ -1,0 +1,6 @@
+<%# formats %>
+<% unless @error_message || @sparql_query.query_type == :unknown %>
+  <div>
+    <%= render "#{@sparql_query.query_type.to_s}_formats" %>
+  </div>
+<% end %>

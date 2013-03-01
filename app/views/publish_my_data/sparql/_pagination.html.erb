@@ -1,8 +1,6 @@
-<% #only show prev link if there's a previous page %>
-<div>
+<nav class="pagination clearfix">
+  <% #only show prev link if there's a previous page %>
   <%= link_to("Previous #{@per_page} results".html_safe, params.merge({:page => (@page-1)})) if @page > 1 %>
-</div>
-<div>
   <% #only show the next page if the results for this page is bigger than the page size %>
-  <%= link_to("Next #{@per_page} results".html_safe, params.merge({:page => (@page+1)})) if @more_pages %>
-</div>
+  <%= link_to("Next #{@per_page} results".html_safe, params.merge({:page => (@page+1)}), :style => 'float:right'  ) if @more_pages%>
+</nav>
