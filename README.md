@@ -23,6 +23,9 @@ PublishMyData is a Rails Engine that adds Linked Data functionality to your Rail
           config.tripod_cache_store = Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
         end
 
+3. Mount it in your routes.rb
+
+        mount PublishMyData::Engine, at: "/"
 
 ## Notes
 
