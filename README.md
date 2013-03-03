@@ -12,7 +12,7 @@ PublishMyData is a Rails Engine that adds Linked Data functionality to your Rail
 
 1. Add it to your Gemfile
 
-        gem tripod
+        gem publish_my_data
 
 2. Configure it (in application.rb, or development.rb/production.rb/test.rb)
 
