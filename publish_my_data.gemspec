@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = PublishMyData::VERSION
   s.authors     = ["Ric Roberts", "Bill Roberts", "Asa Calow", "Tekin Suleyman", "Guy Hilton"]
   s.email       = ["ric@swirrl.com"]
-  s.homepage    = "http://publishmydata.com"
+  s.homepage    = "http://github.com/publish_my_data"
   s.summary     = "PublishMyData Community Edition"
   s.description = "The PublishMyData Rails Engine. Create rails apps with Linked Data functionality."
 

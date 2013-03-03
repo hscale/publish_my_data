@@ -2,11 +2,14 @@
 
 ## Overview
 
-PublishMyData is a Rails Engine that adds Linked Data functionality to your Rails app including:
+The PublishMyData Community Edition is a Rails Engine that adds Linked Data functionality to your Rails app including:
 
 - URI dereferencing and displaying resources outside your site domain
 - A SPARQL Endpoint
 - Filterable lists of datasets and resources
+
+This is the same code that powers the enterprise, hosted version of PublishMyData. For more details see the [PublishMyData](http://publishmydata.com) website.
+
 
 ## How to use
 
