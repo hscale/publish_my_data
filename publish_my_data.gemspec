@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "PublishMyData Community Edition"
   s.description = "The PublishMyData Rails Engine. Create rails apps with Linked Data functionality."
 
-  s.files = Dir["{app,config,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["spec/**/*"]
 
   s.required_rubygems_version = ">= 1.3.6"
