@@ -13,7 +13,6 @@ module PublishMyData
          template: 'publish_my_data/themes/show',
          locals: {
            theme: @theme,
-           resource: @resource,
            datasets: datasets,
            pagination_params: opts[:pagination_params]
          }

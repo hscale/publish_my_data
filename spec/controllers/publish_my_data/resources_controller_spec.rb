@@ -169,7 +169,6 @@ module PublishMyData
                 :locals => {
                   :theme => theme,
                   :datasets => datasets,
-                  :resource => Resource.find(theme.uri),
                   :pagination_params => pp
                 }
               }).and_call_original

@@ -4,9 +4,8 @@ module PublishMyData
 
     field :title, RDF::DC.title
     field :description, RDF::DC.description
-    field :theme, PMD_DS.theme
-
-    rdf_type PMD_DS.Dataset
+    field :theme, SITE_VOCAB.theme
+    rdf_type PMD_DS_VOCAB.Dataset
 
     def slug
       Dataset.slug_from_uri(self.uri)
