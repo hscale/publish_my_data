@@ -87,7 +87,6 @@ module PublishMyData
           graph = Dataset.metadata_graph_uri(slug)
           d = PublishMyData::Dataset.new(uri, graph)
           d.title = "Dataset #{i.to_s}"
-          d.theme = (i.even? ? 'theme' : 'othertheme')
           d.save!
         end
       end
@@ -172,15 +171,6 @@ module PublishMyData
         context 'with non-html format' do
           let(:format) {'ttl'}
           it_should_behave_like "a dataset collection in non-html"
-        end
-      end
-
-      context "with a theme parameter" do
-        let(:theme) {'theme'}
-
-        it "should filter the results to only datasets in the theme" do
-          get :index, theme: theme, use_route: :publish_my_data
-          assigns['datasets'].length.should == 15 # only the even ones are in this theme
         end
       end
 

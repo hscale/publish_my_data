@@ -1,3 +1,0 @@
-<% @themes.each do |t| %>
-  <%= link_to t, datasets_path(:theme => t) %> (<%= PublishMyData::Dataset.count_by_theme(t) %> datasets) <br/>
-<% end %>

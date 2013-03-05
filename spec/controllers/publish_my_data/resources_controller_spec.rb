@@ -15,6 +15,7 @@ module PublishMyData
           response.status.should eq(303)
           response.should redirect_to "/doc/this/is/my/path"
         end
+
       end
 
       context "with an alternative mime type passed in the header" do
@@ -29,31 +30,30 @@ module PublishMyData
           response.content_type.should == Mime::RDF
         end
       end
-
     end
 
     describe "#doc" do
 
-      before do
-        @resource = FactoryGirl.create(:yuri_unicorn_resource)
-      end
+      let!(:resource) { FactoryGirl.create(:yuri_unicorn_resource) }
 
       it "should respond successfully" do
         get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
         response.should be_success
       end
 
-      it "should render the show template" do
-        get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
-        response.should render_template("publish_my_data/resources/show")
-      end
-
       context "for html" do
         it "should eager load the labels" do
-          Resource.should_receive(:find).and_return(@resource)
-          @resource.should_receive(:eager_load_predicate_triples!)
-          @resource.should_receive(:eager_load_object_triples!)
+          Resource.should_receive(:find).and_return(resource)
+          resource.should_receive(:eager_load_predicate_triples!)
+          resource.should_receive(:eager_load_object_triples!)
           get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+        end
+
+        context "with an arbitrary resource" do
+          it "should render the show template" do
+            get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
+            response.should render_template("publish_my_data/resources/show")
+          end
         end
       end
 
@@ -69,13 +69,13 @@ module PublishMyData
         end
 
         it "should respond with the right content" do
-          response.body.should == @resource.to_rdf
+          response.body.should == resource.to_rdf
         end
 
         it "should not eager load the labels" do
-          Resource.should_receive(:find).and_return(@resource)
-          @resource.should_not_receive(:eager_load_predicate_triples!)
-          @resource.should_not_receive(:eager_load_object_triples!)
+          Resource.should_receive(:find).and_return(resource)
+          resource.should_not_receive(:eager_load_predicate_triples!)
+          resource.should_not_receive(:eager_load_object_triples!)
           get :doc, :path => "unicorns/yuri", use_route: :publish_my_data
         end
 
@@ -98,7 +98,7 @@ module PublishMyData
 
         it "should respond with the right content" do
           get :doc, :path => "unicorns/yuri", format: 'ttl', use_route: :publish_my_data
-          response.body.should == @resource.to_ttl
+          response.body.should == resource.to_ttl
         end
 
       end
@@ -114,13 +114,25 @@ module PublishMyData
         end
 
       end
-
     end
 
     describe "#definition" do
 
+      let!(:resource) { FactoryGirl.create(:mean_result) }
+      let!(:theme) { FactoryGirl.create(:my_theme) }
+
       before do
-        @resource = FactoryGirl.create(:mean_result)
+        # make some datasets
+        (1..30).each do |i|
+          slug = i
+          uri = PublishMyData::Dataset.uri_from_slug(slug)
+          graph = PublishMyData::Dataset.metadata_graph_uri(slug)
+          d = PublishMyData::Dataset.new(uri, graph)
+          d.theme = theme.uri if i.even?
+          d.title = "Dataset #{i.to_s}"
+          d.save!
+        end
+
       end
 
       context "for resource in our database" do
@@ -130,19 +142,52 @@ module PublishMyData
           response.should be_success
         end
 
-        it "should render the doc template" do
-          get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
-          response.should render_template("publish_my_data/resources/show")
+        context "for an html request" do
+
+          context "for an abitrary resource" do
+            it "should render the show template" do
+              get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
+              response.should render_template("publish_my_data/resources/show")
+            end
+          end
+
+          context "when resource is a theme" do
+
+            it "should render the theme#show template" do
+              get :definition, :path => "theme/my_theme", use_route: :publish_my_data
+              response.should render_template("publish_my_data/themes/show")
+            end
+
+            it "should pass a kaminari paginatable array of datasets in the theme as a local to the view" do
+              pp = PaginationParams.from_request(@request)
+              datasets = Paginator.new(theme.datasets_criteria, pp).paginate
+              datasets.class.should == Kaminari::PaginatableArray
+              datasets.total_count.should == 15 # only even ones in the theme
+
+              subject.should_receive(:render).with({
+                :template => "publish_my_data/themes/show",
+                :locals => {
+                  :theme => theme,
+                  :datasets => datasets,
+                  :resource => Resource.find(theme.uri),
+                  :pagination_params => pp
+                }
+              }).and_call_original
+
+              get :definition, :path => "theme/my_theme", use_route: :publish_my_data
+            end
+          end
+
         end
+
 
         context "with an alternative mime type" do
           it "should with the right mime type and content" do
             get :definition, :path => "statistics/meanResult", :format => 'nt', use_route: :publish_my_data
             response.content_type.should == Mime::NT
-            response.body.should == @resource.to_nt
+            response.body.should == resource.to_nt
           end
         end
-
       end
 
       context "when resource doesn't exist" do
@@ -151,7 +196,6 @@ module PublishMyData
           response.should be_not_found
         end
       end
-
     end
 
     describe "#show" do
@@ -211,7 +255,7 @@ module PublishMyData
 
     describe "#index" do
 
-       shared_examples_for "resource kaminari pagination" do
+      shared_examples_for "resource kaminari pagination" do
         it "should call kaminari to paginate the results" do
           res_array = Resource.all.limit(per_page).offset(offset).resources.to_a
           count = Resource.count
@@ -287,7 +331,7 @@ module PublishMyData
         end
 
         it "should return paginated results for Resource.all" do
-          subject.should_receive(:paginate_resources).with(Resource.all).and_call_original
+          Paginator.should_receive(:new).with(Resource.all, PaginationParams.from_request(@request)).and_call_original
           get :index, use_route: :publish_my_data
           assigns['resources'].length.should == 10 # 8 resources, plus ds and type!
         end
@@ -392,8 +436,6 @@ module PublishMyData
         end
       end
     end
-
-
 
   end
 end

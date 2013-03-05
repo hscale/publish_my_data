@@ -10,11 +10,10 @@ PublishMyData::Engine.routes.draw do
   match "/resources(.:format)" => "resources#index", :as => 'list_resources' # +filters on thh query string
 
   # datasets
-  resources :datasets, :only => [:show, :index] do
-    collection do
-      get 'themes'
-    end
-  end
+  resources :datasets, :only => [:show, :index]
+
+  # themes
+  resources :themes, :only => [:index] #Note that rendering themes#show is handled by the resource controller
 
   # URI dereferencing
   match "/id/*path" => "resources#id"

@@ -21,28 +21,13 @@ module PublishMyData
     end
 
     # /datasets?page=2&per_page=10
-    # /datasets?theme=foo
+    # TODO: add tag filters
     def index
       dataset_criteria = Dataset.all
-      dataset_criteria = add_theme_filter(dataset_criteria)
-      @datasets = paginate_resources(dataset_criteria)
+      @pagination_params = PaginationParams.from_request(request)
+      @datasets = Paginator.new(dataset_criteria, @pagination_params).paginate
       respond_with(@datasets)
     end
 
-    def themes
-      # TODO: decide on how the themes will be represented in the metadata.
-      # Get a list of themes.
-      @themes = ['theme1', 'theme2']
-    end
-
-    private
-
-    def add_theme_filter(criteria)
-      unless params[:theme].blank?
-        @theme = params[:theme]
-        criteria.where("?uri <#{PMD_DS.theme}> '#{@theme}'")
-      end
-      criteria
-    end
   end
 end

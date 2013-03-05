@@ -6,14 +6,14 @@
     </tr>
   </thead>
   <tbody>
-    <% @resource.predicates.each do |pred| %>
+    <% resource.predicates.each do |pred| %>
       <tr>
         <td>
-          <%= resource_uri_or_label(pred) %>
+          <%= resource_uri_or_label(resource, pred) %>
         </td>
         <td>
-          <% @resource.read_predicate(pred).each do |obj| %>
-            <%= resource_uri_or_label(obj) %>
+          <% resource.read_predicate(pred).each do |obj| %>
+            <%= resource_uri_or_label(resource, obj) %>
           <% end %>
         </td>
       </tr>

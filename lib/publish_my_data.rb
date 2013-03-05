@@ -3,6 +3,11 @@ require "publish_my_data/renderers"
 require "publish_my_data/sparql_query"
 require "publish_my_data/sparql_query_result"
 
+require "publish_my_data/paginator"
+
+require "publish_my_data/resource_render_params"
+require "publish_my_data/theme_render_params"
+
 module PublishMyData
 
 

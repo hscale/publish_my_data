@@ -14,7 +14,8 @@ module PublishMyData
       resource_criteria = add_type_filter(resource_criteria)
       resource_criteria = add_dataset_filter(resource_criteria)
 
-      @resources = paginate_resources(resource_criteria)
+      @pagination_params = PaginationParams.from_request(request)
+      @resources = Paginator.new(resource_criteria, @pagination_params).paginate
       respond_with(@resources)
     end
 
@@ -22,10 +23,7 @@ module PublishMyData
     def show
       uri = params[:uri]
       begin
-        # try to look it up
-        @resource = Resource.find(uri)
-        eager_load_labels()
-        respond_with(@resource)
+        render_resource_with_uri(uri)
       rescue Tripod::Errors::ResourceNotFound
         # if it's not there
         respond_to do |format|
@@ -50,28 +48,29 @@ module PublishMyData
     # http://example.com/doc/blah
     def doc
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
-      @resource = Resource.find(uri)
-      eager_load_labels() if request.format.html?
-
-      # TODO: special views like ontology, dataset, etc?
-      respond_with(@resource) do |format|
-        format.html { render :template => 'publish_my_data/resources/show' }
-      end
+      render_resource_with_uri(uri)
     end
 
     # http://example.com/def/blah
     def definition
       uri = 'http://' + request.host + '/def/' + params[:path]
-      @resource = Resource.find(uri)
-      eager_load_labels() if request.format.html?
-
-      # TODO: special views like ontology, dataset, etc?
-      respond_with(@resource) do |format|
-        format.html { render :template => 'publish_my_data/resources/show' }
-      end
+      render_resource_with_uri(uri)
     end
 
     private
+
+    def render_resource_with_uri(uri)
+      resource = Resource.find(uri)
+
+      if request.format.html?
+        resource.eager_load_predicate_triples!
+        resource.eager_load_object_triples!
+      end
+
+      respond_with(resource) do |format|
+        format.html { render resource.render_params(request) }
+      end
+    end
 
     # TODO: move the filter management into an object
     def add_type_filter(criteria)
@@ -90,11 +89,6 @@ module PublishMyData
         criteria.graph(Dataset.data_graph_uri(@dataset_filter))
       end
       criteria
-    end
-
-    def eager_load_labels
-      @resource.eager_load_predicate_triples!
-      @resource.eager_load_object_triples!
     end
 
   end

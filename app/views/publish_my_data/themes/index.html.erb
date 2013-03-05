@@ -1,0 +1,12 @@
+<h1>Themes</h1>
+
+<% @themes.each do |t| %>
+  <%= link_to (t.label || t.uri), t.uri.to_s %> (<%= pluralize( t.datasets_criteria.count, "datasets" )%>)
+<% end %>
+
+<br/><br/>
+Get this list as:
+<%= link_to 'N-triples', :format => 'nt' %>
+<%= link_to 'Turtle', :format => 'ttl'  %>
+<%= link_to 'RDF/XML', :format => 'rdf' %>
+<%= link_to 'JSON', :format => 'json' %>

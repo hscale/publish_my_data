@@ -22,18 +22,6 @@ module PublishMyData
 
     class << self
 
-      def by_theme_criteria(theme)
-        Dataset.where("?uri <#{PMD_DS.theme}> '#{theme}'")
-      end
-
-      def count_by_theme(theme)
-        by_theme_criteria(theme).count
-      end
-
-      def by_theme(theme)
-        by_theme_criteria(theme).resources
-      end
-
       # this is the graph that dataset metadata goes in.
       def metadata_graph_uri(slug)
         "#{data_graph_uri(slug)}/metadata"

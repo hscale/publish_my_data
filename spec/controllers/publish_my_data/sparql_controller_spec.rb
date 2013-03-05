@@ -45,8 +45,8 @@ module PublishMyData
 
             it "should set the page and per page variables to defaults" do
               get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
-              assigns['per_page'].should == 20
-              assigns['page'].should == 1
+              assigns['pagination_params'].per_page.should == 20
+              assigns['pagination_params'].page.should == 1
             end
 
           end
@@ -54,8 +54,8 @@ module PublishMyData
           context "with page and per page paramters supplied" do
             it "should apply the parameters to the variables" do
               get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
-              assigns['per_page'].should == 35
-              assigns['page'].should == 2
+              assigns['pagination_params'].per_page.should == 35
+              assigns['pagination_params'].page.should == 2
             end
           end
 

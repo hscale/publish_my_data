@@ -15,9 +15,12 @@ module PublishMyData
         @sparql_query = PublishMyData::SparqlQuery.new(@query_text, request.format.to_sym)
 
         if @sparql_query.allow_pagination?
-          get_pagination_params
-          @sparql_query_result = @sparql_query.paginate(@page, @per_page)
-          @more_pages = @sparql_query.as_pagination_query(@page, @per_page, 1).count > @per_page if request.format.html?
+          @pagination_params = PaginationParams.from_request(request)
+          @sparql_query_result = @sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
+          if request.format.html?
+            count = @sparql_query.as_pagination_query(@pagination_params.page, @pagination_params.per_page, 1).count
+            @more_pages = (count > @pagination_params.per_page)
+          end
         else
           @sparql_query_result = @sparql_query.execute
         end
