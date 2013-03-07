@@ -15,9 +15,9 @@ module PublishMyData
     # Don't worry that these as_xxx methods look like they'll do an extra lookup.
     # In production, it'll be cached from a moment ago anyway!
 
-    def as_theme
-      Theme.find(self.uri)
-    end
+    # def as_theme
+    #   Theme.find(self.uri)
+    # end
 
     def as_ontology
       Ontology.find(self.uri)
@@ -27,9 +27,9 @@ module PublishMyData
       ConceptScheme.find(self.uri)
     end
 
-    def is_theme?
-      read_type_predicate.include?(SITE_VOCAB.Theme)
-    end
+    # def is_theme?
+    #   read_type_predicate.include?(SITE_VOCAB.Theme)
+    # end
 
     def is_ontology?
       read_type_predicate.include?(RDF::OWL.Ontology)
@@ -50,9 +50,11 @@ module PublishMyData
     end
 
     def render_params_class
-      if self.is_theme?
-        ThemeRenderParams
-      elsif self.is_ontology?
+      # if self.is_theme?
+      #   ThemeRenderParams
+      # els
+
+      if self.is_ontology?
         OntologyRenderParams
       elsif self.is_concept_scheme?
         ConceptSchemeRenderParams

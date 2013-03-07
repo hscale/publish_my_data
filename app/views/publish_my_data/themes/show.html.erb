@@ -1,22 +1,15 @@
-<h1>Theme: <%= theme.label %></h1>
+<h1>Theme: <%= @theme.label %></h1>
 
-<p><%= theme.description %></p>
+<p><%= @theme.description %></p>
 
-<% datasets.each do |d| %>
+Datasets in this theme: <br/>
+<% @datasets.each do |d| %>
   <%= link_to d.title, d %> <br/>
 <% end %>
-
-<%= paginate datasets %>
-
 <br/>
-
+<%= paginate @datasets %>
 Get this list of datasets as:
-<%= link_to 'N-triples', :format => 'nt', :page => pagination_params.page, :per_page => pagination_params.per_page, :uri => params[:uri] %>
-<%= link_to 'Turtle', :format => 'ttl', :page => pagination_params.page, :per_page => pagination_params.per_page, :uri => params[:uri] %>
-<%= link_to 'RDF/XML', :format => 'rdf',:page => pagination_params.page, :per_page => pagination_params.per_page, :uri => params[:uri] %>
-<%= link_to 'JSON', :format => 'json', :page => pagination_params.page, :per_page => pagination_params.per_page, :uri => params[:uri] %>
-
-<br/><br/>
-
-Get this theme as:
-<%= render 'publish_my_data/resources/resource_formats', :resource => theme %>
+<%= link_to 'N-triples', :format => 'nt', :page => @pagination_params.page, :per_page => @pagination_params.per_page %>
+<%= link_to 'Turtle', :format => 'ttl', :page => @pagination_params.page, :per_page => @pagination_params.per_page %>
+<%= link_to 'RDF/XML', :format => 'rdf',:page => @pagination_params.page, :per_page => @pagination_params.per_page %>
+<%= link_to 'JSON', :format => 'json', :page => @pagination_params.page, :per_page => @pagination_params.per_page %>

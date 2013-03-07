@@ -21,7 +21,6 @@ module PublishMyData
     end
 
     # /datasets?page=2&per_page=10
-    # TODO: add tag filters
     def index
       dataset_criteria = Dataset.all
       @pagination_params = PaginationParams.from_request(request)

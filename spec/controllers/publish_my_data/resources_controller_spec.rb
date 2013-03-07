@@ -151,30 +151,12 @@ module PublishMyData
             end
           end
 
-          context "when resource is a theme" do
+          context "when resource is an ontology" do
+            it "should render the ontologies#show template"
+          end
 
-            it "should render the theme#show template" do
-              get :definition, :path => "theme/my_theme", use_route: :publish_my_data
-              response.should render_template("publish_my_data/themes/show")
-            end
-
-            it "should pass a kaminari paginatable array of datasets in the theme as a local to the view" do
-              pp = PaginationParams.from_request(@request)
-              datasets = Paginator.new(theme.datasets_criteria, pp).paginate
-              datasets.class.should == Kaminari::PaginatableArray
-              datasets.total_count.should == 15 # only even ones in the theme
-
-              subject.should_receive(:render).with({
-                :template => "publish_my_data/themes/show",
-                :locals => {
-                  :theme => theme,
-                  :datasets => datasets,
-                  :pagination_params => pp
-                }
-              }).and_call_original
-
-              get :definition, :path => "theme/my_theme", use_route: :publish_my_data
-            end
+          context "when resource is a concept scheme" do
+            it "should render the concept_shemes#show template"
           end
 
         end

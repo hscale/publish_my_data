@@ -9,16 +9,25 @@ module PublishMyData
       def theme_graph
         RDF::URI.new("http://#{PublishMyData.local_domain}/def/concept-scheme/themes")
       end
+
+      def by_slug(slug)
+        Theme.where("?uri <#{RDF::SKOS.notation}> '#{slug}'").first
+      end
     end
 
     rdf_type SITE_VOCAB.Theme
     graph_uri Theme.theme_graph
 
     field :label, RDF::RDFS.label
+    field :slug, RDF::SKOS.notation
     field :description, RDF::RDFS.description
 
     def datasets_criteria
       Dataset.where("?uri <#{SITE_VOCAB.theme}> <#{self.uri.to_s}>")
+    end
+
+    def to_param
+      self.slug
     end
 
   end

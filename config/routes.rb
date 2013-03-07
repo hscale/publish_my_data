@@ -13,7 +13,7 @@ PublishMyData::Engine.routes.draw do
   resources :datasets, :only => [:show, :index]
 
   # themes
-  resources :themes, :only => [:index] #Note that rendering themes#show is handled by the resource controller
+  resources :themes, :only => [:index, :show]
 
   # URI dereferencing
   match "/id/*path" => "resources#id"

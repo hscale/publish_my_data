@@ -2,8 +2,8 @@ FactoryGirl.define do
   factory :yuri_unicorn_resource, class: PublishMyData::Resource do
     initialize_with { new(uri, graph_uri) }
     ignore do
-      uri { "http://pmdtest.dev/id/unicorns/yuri" }
-      graph_uri { "http://pmdtest.dev/graph/unicorns" }
+      uri { "http://#{PublishMyData.local_domain}/id/unicorns/yuri" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/unicorns" }
     end
     after(:build) do |res|
       res.write_predicate(RDF::RDFS.label, 'Yuri The Unicorn')
@@ -13,8 +13,8 @@ FactoryGirl.define do
   factory :boris_unicorn_resource, class: PublishMyData::Resource do
     initialize_with { new(uri, graph_uri) }
     ignore do
-      uri { "http://pmdtest.dev/id/unicorns/boris" }
-      graph_uri { "http://pmdtest.dev/graph/unicorns" }
+      uri { "http://#{PublishMyData.local_domain}/id/unicorns/boris" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/unicorns" }
     end
     after(:build) do |res|
       res.write_predicate(RDF::RDFS.label, 'Boris The Unicorn')
@@ -27,7 +27,7 @@ FactoryGirl.define do
     initialize_with { new(uri, graph_uri) }
     ignore do
       uri { "http://locations.example.com/foo" }
-      graph_uri { "http://pmdtest.dev/geo" }
+      graph_uri { "http://#{PublishMyData.local_domain}/geo" }
     end
     after(:build) do |res|
       res.write_predicate(RDF::RDFS.label, 'Foo County')
