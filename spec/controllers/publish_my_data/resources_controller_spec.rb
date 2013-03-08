@@ -120,6 +120,8 @@ module PublishMyData
 
       let!(:resource) { FactoryGirl.create(:mean_result) }
       let!(:theme) { FactoryGirl.create(:my_theme) }
+      let!(:onotology) { FactoryGirl.create(:ontology) }
+      let!(:concept_scheme) { FactoryGirl.create(:concept_scheme) }
 
       before do
         # make some datasets
@@ -132,7 +134,6 @@ module PublishMyData
           d.title = "Dataset #{i.to_s}"
           d.save!
         end
-
       end
 
       context "for resource in our database" do
@@ -152,11 +153,17 @@ module PublishMyData
           end
 
           context "when resource is an ontology" do
-            it "should render the ontologies#show template"
+            it "should render the ontologies#show template" do
+              get :definition, :path => "my-topic/ontology", use_route: :publish_my_data
+              response.should render_template("publish_my_data/ontologies/show")
+            end
           end
 
           context "when resource is a concept scheme" do
-            it "should render the concept_shemes#show template"
+            it "should render the concept_schemes#show template" do
+              get :definition, :path => "my-topic/concept-scheme/my-concept-scheme", use_route: :publish_my_data
+              response.should render_template("publish_my_data/concept_schemes/show")
+            end
           end
 
         end
@@ -213,22 +220,32 @@ module PublishMyData
 
       context "with a resource in our database" do
 
-        before do
-          uri = 'http://uri'
-          graph = 'http://graph'
-          r = Resource.new(uri, graph)
-          r.write_predicate('http://foo', 'blah')
-          r.save!
-
-          get :show, :uri => r.uri, use_route: :publish_my_data
-        end
+        let!(:resource) { FactoryGirl.create(:foreign_resource) }
+        let!(:external_concept_scheme) { FactoryGirl.create(:external_concept_scheme) }
+        let!(:external_ontology) { FactoryGirl.create(:external_ontology) }
 
         it "should respond succesfully" do
+          get :show, :uri => resource.uri, use_route: :publish_my_data
           response.should be_success
         end
 
         it "should render the show template" do
+          get :show, :uri => resource.uri, use_route: :publish_my_data
           response.should render_template("publish_my_data/resources/show")
+        end
+
+        context "when resource is an ontology" do
+          it "should render the ontologies#show template" do
+            get :show, :uri => external_ontology.uri, use_route: :publish_my_data
+            response.should render_template("publish_my_data/ontologies/show")
+          end
+        end
+
+        context "when resource is a concept scheme" do
+          it "should render the concept_schemes#show template" do
+            get :show, :uri => external_concept_scheme.uri, use_route: :publish_my_data
+            response.should render_template("publish_my_data/concept_schemes/show")
+          end
         end
 
       end
