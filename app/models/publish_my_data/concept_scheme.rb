@@ -8,7 +8,7 @@ module PublishMyData
 
     def concepts
       Resource.find_by_sparql(
-        "SELECT DISTINCT ?uri ?p ?o WHERE { <#{self.uri}> <http://www.w3.org/2004/02/skos/core#hasTopConcept> ?uri }"
+        "SELECT DISTINCT ?uri ?graph WHERE { GRAPH ?graph {<#{self.uri}> <http://www.w3.org/2004/02/skos/core#hasTopConcept> ?uri }}"
       )
     end
   end

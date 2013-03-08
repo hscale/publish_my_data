@@ -1,5 +1,13 @@
 <table>
   <thead>
+    <% if defined?(show_title) && show_title %>
+      <tr>
+        <td colspan="2">
+          <%= resource.label %><br/>
+          <%= resource.uri %>
+        </td>
+      </tr>
+    <% end %>
     <tr>
       <th>Predicate</th>
       <th>Object</th>
