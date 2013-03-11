@@ -7,13 +7,14 @@ module PublishMyData
 
     # /datasets/:id (where :id is the dataset 'slug')
     def show
+
       @dataset = Dataset.find_by_slug(params[:id])
 
       @dataset.eager_load_object_triples! # for the owner URI label
 
       @types = RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
 
-      if request.format.html?
+      if request.format && request.format.html?
         @type_resource_counts = {}
         @types.each do |t|
           @type_resource_counts[t.uri.to_s] = Resource.where("?uri a <#{t.uri.to_s}>").count

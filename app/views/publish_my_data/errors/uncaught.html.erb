@@ -1,0 +1,6 @@
+<h1>Uncaught Error</h1>
+
+<% if Rails.env.development? %>
+  <p><strong><%= @e.class.name %>: <%= @e.message %></strong></p>
+  <p><%= @e.backtrace.join("<br/>").html_safe %></p>
+<% end %>

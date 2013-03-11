@@ -1,17 +1,35 @@
 module PublishMyData
   class ApplicationController < ActionController::Base
 
-    rescue_from Tripod::Errors::ResourceNotFound, :with => :resource_not_found
-
-    # TODO: handle:
-    # 500s, timeouts (503) etc.
+    # Note: this order matters. Perversely, need to put more general errors first.
+    rescue_from Exception, :with => :handle_uncaught_error
+    rescue_from Tripod::Errors::ResourceNotFound, :with => :handle_resource_not_found
+    rescue_from RestClient::RequestTimeout, :with => :handle_timeout
 
     private
 
-    def resource_not_found(e)
+    # TODO: deal with javaascript errors - respond with 200
+
+    def handle_uncaught_error(e)
+      @e = e
+      # TODO: notify error handling service.
+      respond_to do |format|
+        format.html { render(:template => "publish_my_data/errors/uncaught", :layout => 'publish_my_data/error', :status => 500) and return false }
+        format.any{ head(:status => 500, :content_type => 'text/plain') and return false }
+      end
+
+    end
+
+    def handle_timeout(e)
+      respond_to do |format|
+        format.html { render(:template => "publish_my_data/errors/timeout", :layout => 'publish_my_data/error', :status => 503) and return false }
+        format.any { head(:status => 503, :content_type => 'text/plain') and return false }
+      end
+    end
+
+    def handle_resource_not_found(e)
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/not_found", :layout => 'publish_my_data/error', :status => 404) and return false }
-        #TODO: ? format.js { render(:template => "publish_my_data/errors/not_found", :status => 200) and return false } # need to return success or the ajax request fails
         format.any { head(:status => 404, :content_type => 'text/plain') and return false }
       end
     end
