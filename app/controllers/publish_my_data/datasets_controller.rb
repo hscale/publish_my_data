@@ -8,6 +8,9 @@ module PublishMyData
     # /datasets/:id (where :id is the dataset 'slug')
     def show
       @dataset = Dataset.find_by_slug(params[:id])
+
+      @dataset.eager_load_object_triples! # for the owner URI label
+
       @types = RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
 
       if request.format.html?

@@ -1,10 +1,21 @@
 module PublishMyData
   class Dataset
     include Tripod::Resource
+    include PublishMyData::ResourceModule #some common methods for resources.
 
     field :title, RDF::DC.title
-    field :description, RDF::DC.description
+    field :comment, RDF::RDFS.comment #short desc
+    field :description, RDF::DC.description # long desc
+
     field :theme, SITE_VOCAB.theme
+    field :tags, 'http://www.w3.org/ns/dcat#keyword', :mutlivalued => true
+    field :modified, RDF::DC.modified
+    field :created, RDF::DC.created
+
+    field :owner, RDF::DC.publisher
+    field :license, RDF::DC.license
+    field :contact, RDF::FOAF.mbox
+
     rdf_type PMD_DS_VOCAB.Dataset
 
     def slug
@@ -17,6 +28,14 @@ module PublishMyData
 
     def to_param
       slug
+    end
+
+    def resources_in_dataset_criteria
+      Resource.all.graph(self.data_graph_uri)
+    end
+
+    def resources_count
+      resources_in_dataset_criteria.count
     end
 
     class << self
