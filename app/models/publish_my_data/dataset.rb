@@ -38,6 +38,10 @@ module PublishMyData
       resources_in_dataset_criteria.count
     end
 
+    def theme_obj
+      Theme.find(self.theme) rescue nil
+    end
+
     class << self
 
       # this is the graph that dataset metadata goes in.
@@ -62,6 +66,9 @@ module PublishMyData
         uri.to_s.split('/').last
       end
 
+      def slug_from_data_graph_uri(data_graph_uri)
+        data_graph_uri.to_s.split("/").last
+      end
     end
   end
 end

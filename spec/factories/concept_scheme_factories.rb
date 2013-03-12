@@ -8,15 +8,16 @@ FactoryGirl.define do
     end
     after(:create) do |cs, evaluator|
       # set up some concepts
-      c = PublishMyData::Resource.new("http://#{PublishMyData.local_domain}/def/my-topic/concept/my-concept", evaluator.graph_uri )
+      c = PublishMyData::Concept.new("http://#{PublishMyData.local_domain}/def/my-topic/concept/my-concept", evaluator.graph_uri )
       c.label = "my concept"
+      c.in_scheme = cs.uri
       c.save!
 
-      c2 = PublishMyData::Resource.new("http://#{PublishMyData.local_domain}/def/my-topic/concept/my-concept-2", evaluator.graph_uri )
+      c2 = PublishMyData::Concept.new("http://#{PublishMyData.local_domain}/def/my-topic/concept/my-concept-2", evaluator.graph_uri )
       c2.label = "my other concept"
+      c2.in_scheme = cs.uri
       c2.save!
 
-      cs.write_predicate(RDF::SKOS.hasTopConcept, [c.uri, c2.uri])
       cs.save!
     end
   end
@@ -30,15 +31,16 @@ FactoryGirl.define do
     end
     after(:create) do |cs, evaluator|
       # set up some concepts
-      c = PublishMyData::Resource.new("http://example.com/def/my-topic/concept/my-concept", evaluator.graph_uri )
+      c = PublishMyData::Concept.new("http://example.com/def/my-topic/concept/my-concept", evaluator.graph_uri )
       c.label = "my concept"
+      c.in_scheme = cs.uri
       c.save!
 
-      c2 = PublishMyData::Resource.new("http://example.com/def/my-topic/concept/my-concept-2", evaluator.graph_uri )
+      c2 = PublishMyData::Concept.new("http://example.com/def/my-topic/concept/my-concept-2", evaluator.graph_uri )
       c2.label = "my other concept"
+      c2.in_scheme = cs.uri
       c2.save!
 
-      cs.write_predicate(RDF::SKOS.hasTopConcept, [c.uri, c2.uri])
       cs.save!
     end
   end

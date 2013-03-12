@@ -3,6 +3,7 @@ require "publish_my_data/renderers"
 require "publish_my_data/sparql_query"
 require "publish_my_data/sparql_query_result"
 require "publish_my_data/resource_module"
+require "publish_my_data/defined_by_ontology"
 require "publish_my_data/paginator"
 require "publish_my_data/render_params"
 

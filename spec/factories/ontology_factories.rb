@@ -9,23 +9,23 @@ FactoryGirl.define do
     end
     after(:create) do |o, evaluator|
       # set up some classes and props
-      c = PublishMyData::Resource.new("http://#{PublishMyData.local_domain}/def/my-topic/my-class", evaluator.graph_uri )
-      c.write_predicate(RDF::RDFS.isDefinedBy, o.uri)
+      c = PublishMyData::OntologyClass.new("http://#{PublishMyData.local_domain}/def/my-topic/my-class", evaluator.graph_uri )
+      c.defined_by = o.uri
       c.write_predicate(RDF.type, RDF::OWL.Class)
       c.save!
 
-      c2 = PublishMyData::Resource.new("http://#{PublishMyData.local_domain}/def/my-topic/my-class-2", evaluator.graph_uri )
-      c2.write_predicate(RDF::RDFS.isDefinedBy, o.uri)
+      c2 = PublishMyData::OntologyClass.new("http://#{PublishMyData.local_domain}/def/my-topic/my-class-2", evaluator.graph_uri )
+      c2.defined_by = o.uri
       c2.write_predicate(RDF.type, RDF::OWL.Class)
       c2.save!
 
-      p = PublishMyData::Resource.new("http://#{PublishMyData.local_domain}/def/my-topic/my-property", evaluator.graph_uri)
-      p.write_predicate(RDF::RDFS.isDefinedBy, o.uri)
+      p = PublishMyData::Property.new("http://#{PublishMyData.local_domain}/def/my-topic/my-property", evaluator.graph_uri)
+      p.defined_by = o.uri
       p.write_predicate(RDF.type, RDF.Property)
       p.save!
 
-      p2 = PublishMyData::Resource.new("http://#{PublishMyData.local_domain}/def/my-topic/my-property-2", evaluator.graph_uri )
-      p2.write_predicate(RDF::RDFS.isDefinedBy, o.uri)
+      p2 = PublishMyData::Property.new("http://#{PublishMyData.local_domain}/def/my-topic/my-property-2", evaluator.graph_uri )
+      p2.defined_by = o.uri
       p2.write_predicate(RDF.type, RDF.Property)
       p2.save!
     end
@@ -40,13 +40,13 @@ FactoryGirl.define do
     end
     after(:create) do |o, evaluator|
       # set up some classes and props
-      c = PublishMyData::Resource.new("http://example.com/def/my-topic/my-class", evaluator.graph_uri )
-      c.write_predicate(RDF::RDFS.isDefinedBy, o.uri)
+      c = PublishMyData::OntologyClass.new("http://example.com/def/my-topic/my-class", evaluator.graph_uri )
+      c.defined_by = o.uri
       c.write_predicate(RDF.type, RDF::OWL.Class)
       c.save!
 
-      p = PublishMyData::Resource.new("http://example.com/def/my-topic/my-property", evaluator.graph_uri)
-      p.write_predicate(RDF::RDFS.isDefinedBy, o.uri)
+      p = PublishMyData::Property.new("http://example.com/def/my-topic/my-property", evaluator.graph_uri)
+      p.defined_by = o.uri
       p.write_predicate(RDF.type, RDF.Property)
       p.save!
     end

@@ -1,4 +1,7 @@
 require "publish_my_data/render_params/resource_render_params"
 require "publish_my_data/render_params/ontology_render_params"
 require "publish_my_data/render_params/theme_render_params"
+require "publish_my_data/render_params/property_render_params"
+require "publish_my_data/render_params/ontology_class_render_params"
 require "publish_my_data/render_params/concept_scheme_render_params"
+require "publish_my_data/render_params/concept_render_params"
