@@ -7,7 +7,7 @@ module PublishMyData
 
     class << self
       def theme_graph
-        RDF::URI.new("http://#{PublishMyData.local_domain}/def/concept-scheme/themes")
+        RDF::URI.new("http://#{PublishMyData.local_domain}/graph/concept-scheme/themes")
       end
 
       def by_slug(slug)
