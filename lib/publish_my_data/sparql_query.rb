@@ -18,13 +18,13 @@ module PublishMyData
       begin
         case query_type
           when :select
-            result_str = Tripod::SparqlClient::Query.select(self.query, select_format_str)
+            result_str = Tripod::SparqlClient::Query.query(self.query, "*/*", {:output => select_format_str} )
           when :ask
-            result_str = Tripod::SparqlClient::Query.ask(self.query, ask_format_str)
+            result_str = Tripod::SparqlClient::Query.query(self.query, "*/*", {:output => ask_format_str} )
           when :construct
-            result_str = Tripod::SparqlClient::Query.construct(self.query, construct_or_describe_header)
+            result_str = Tripod::SparqlClient::Query.query(self.query, construct_or_describe_header)
           when :describe
-            result_str = Tripod::SparqlClient::Query.describe(self.query, construct_or_describe_header)
+            result_str = Tripod::SparqlClient::Query.query(self.query, construct_or_describe_header)
           else
             raise SparqlQueryExecutionException.new("Unsupported Query Type. Please enter only SELECT, CONSTRUCT, DESCRIBE or ASK queries.")
         end

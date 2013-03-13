@@ -92,7 +92,7 @@ module PublishMyData
         end
 
         it "should call Tripod::SparqlClient::Query.select with the right args" do
-          Tripod::SparqlClient::Query.should_receive(:select).with(@query_str, @q.send(:select_format_str)).and_call_original
+          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, "*/*", {:output => @q.send(:select_format_str)}).and_call_original
           @q.execute
         end
 
@@ -112,7 +112,7 @@ module PublishMyData
         end
 
         it "should call Tripod::SparqlClient::Query.ask with the right args" do
-          Tripod::SparqlClient::Query.should_receive(:ask).with(@query_str, @q.send(:ask_format_str)).and_call_original
+          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, "*/*", {:output => @q.send(:ask_format_str)}).and_call_original
           @q.execute
         end
 
@@ -132,7 +132,7 @@ module PublishMyData
         end
 
         it "should call Tripod::SparqlClient::Query.construct with the right args" do
-          Tripod::SparqlClient::Query.should_receive(:construct).with(@query_str, @q.send(:construct_or_describe_header)).and_call_original
+          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, @q.send(:construct_or_describe_header)).and_call_original
           @q.execute
         end
 
@@ -152,7 +152,7 @@ module PublishMyData
         end
 
         it "should call Tripod::SparqlClient::Query.select with the right args" do
-          Tripod::SparqlClient::Query.should_receive(:describe).with(@query_str, @q.send(:construct_or_describe_header)).and_call_original
+          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, @q.send(:construct_or_describe_header)).and_call_original
           @q.execute
         end
 
