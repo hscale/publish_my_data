@@ -2,15 +2,30 @@ require 'spec_helper'
 
 describe "A visitor dereferences a uri then asks for a format" do
 
-  before do
-    @resource = FactoryGirl.create(:yuri_unicorn_resource)
-    visit @resource.uri.to_s
-    click_link 'RDF/XML'
+
+  context "in our domain" do
+    before do
+      @resource = FactoryGirl.create(:yuri_unicorn_resource)
+      visit @resource.uri.to_s
+      click_link 'RDF/XML'
+    end
+
+    it "should show the right serlialisation" do
+      page.source.should == @resource.to_rdf
+    end
   end
 
-  it "should show the right serlialisation, on the doc page url (+format)" do
-    page.source.should == @resource.to_rdf
-    page.current_url.should == @resource.uri.to_s.sub(/\/id\//,'/doc/') + ".rdf"
+  context "not in our domain" do
+    before do
+      @resource = FactoryGirl.create(:foreign_resource)
+      visit "/resource?uri=#{@resource.uri.to_s}"
+      click_link 'RDF/XML'
+    end
+
+    it "should show the right serlialisation" do
+      page.source.should == @resource.to_rdf
+    end
+
   end
 
 end

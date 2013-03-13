@@ -1,11 +1,4 @@
-<% if resource.local? %>
-  <%= link_to "JSON", :format => 'json' %>
-  <%= link_to "RDF/XML", :format => 'rdf' %>
-  <%= link_to "Turtle", :format => 'ttl' %>
-  <%= link_to "N-triples", :format => 'nt' %>
-<% else %>
-  <%= link_to "JSON", show_resource_path(:uri => resource.uri, :format => 'json') %>
-  <%= link_to "RDF/XML", show_resource_path(:uri => resource.uri, :format => 'rdf') %>
-  <%= link_to "Turtle", show_resource_path(:uri => resource.uri, :format => 'ttl') %>
-  <%= link_to "N-triples", show_resource_path(:uri => resource.uri, :format => 'nt') %>
-<% end %>
+<%= link_to "JSON", show_resource_path(:uri => resource.uri, :format => 'json') %>
+<%= link_to "RDF/XML", show_resource_path(:uri => resource.uri, :format => 'rdf') %>
+<%= link_to "Turtle", show_resource_path(:uri => resource.uri, :format => 'ttl') %>
+<%= link_to "N-triples", show_resource_path(:uri => resource.uri, :format => 'nt') %>
