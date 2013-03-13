@@ -15,9 +15,8 @@ module PublishMyData
       @theme = Theme.by_slug(params[:id])
 
       if @theme
-        dataset_criteria = Dataset.where("?uri <#{SITE_VOCAB.theme}> <#{@theme.uri.to_s}>")
         @pagination_params = PaginationParams.from_request(request)
-        @datasets = Paginator.new(dataset_criteria, @pagination_params).paginate
+        @datasets = Paginator.new(@theme.datasets_criteria, @pagination_params).paginate
         respond_with(@datasets)
       else
         raise Tripod::Errors::ResourceNotFound

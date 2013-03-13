@@ -3,20 +3,36 @@ module PublishMyData
     include Tripod::Resource
     include PublishMyData::ResourceModule #some common methods for resources.
 
+    # basics
     field :title, RDF::DC.title
     field :comment, RDF::RDFS.comment #short desc
     field :description, RDF::DC.description # long desc
 
-    field :theme, SITE_VOCAB.theme
-    field :tags, 'http://www.w3.org/ns/dcat#keyword', :mutlivalued => true
-    field :modified, RDF::DC.modified
-    field :created, RDF::DC.created
+    # licence, owner, contact
+    field :publisher, RDF::DC.publisher # value is a URI of a publisher
+    field :license, RDF::DC.license # value is URI of where licence is defined.
+    # NOTE: for contact, use :publisher's foaf:mbox value (in this metadata graph).
 
-    field :owner, RDF::DC.publisher
-    field :license, RDF::DC.license
-    field :contact, RDF::FOAF.mbox
+    # quality, updates, maintenance
+    field :issued, RDF::DC.issued, :datatype => RDF::XSD.dateTime # value is DateTime literal
+    field :modified, RDF::DC.modified, :datatype => RDF::XSD.dateTime # value is DateTime literal
+    field :update_periodicity, RDF::DC.accrualPeriodicity # waiting for response on what the value should be.
 
-    rdf_type PMD_DS_VOCAB.Dataset
+    # where to get it
+    field :data_dump, RDF::VOID.dataDump # full download URI
+
+     # what the data is about
+    field :theme, RDF::DCAT.theme
+    field :tags, RDF::DCAT.keyword, :multivalued => true # values are string literals
+
+    field :spatial_coverage, RDF::DC.spatial # value is a URI for region covered, e.g. England.
+    field :temporal_coverage, RDF::DC.temporal # value is a time interval URI
+    field :spatial_granularity, RDF::DC.spatial # value is class of the objects of refArea
+    field :temporal_granularity, RDF::DC.temporal # value is class of objects of refPeriod
+
+    field :size, RDF::VOID.triples # value is integer.
+
+    rdf_type RDF::PMD_DS.Dataset
 
     def slug
       Dataset.slug_from_uri(self.uri)
@@ -40,6 +56,12 @@ module PublishMyData
 
     def theme_obj
       Theme.find(self.theme) rescue nil
+    end
+
+    # use :publisher's foaf:mbox value (in this metadata graph).
+    def contact_email
+      publisher_obj = Resource.find(self.publisher) if publisher
+      publisher_obj.read_predicate(RDF::FOAF.mbox) if publisher_obj
     end
 
     class << self

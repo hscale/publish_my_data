@@ -15,7 +15,7 @@ module PublishMyData
       end
     end
 
-    rdf_type SITE_VOCAB.Theme
+    rdf_type RDF::SITE.Theme
     graph_uri Theme.theme_graph
 
     field :label, RDF::RDFS.label
@@ -23,7 +23,7 @@ module PublishMyData
     field :description, RDF::RDFS.description
 
     def datasets_criteria
-      Dataset.where("?uri <#{SITE_VOCAB.theme}> <#{self.uri.to_s}>")
+      Dataset.where("?uri <#{RDF::DCAT.theme}> <#{self.uri.to_s}>")
     end
 
     def to_param

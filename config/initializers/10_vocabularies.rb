@@ -1,2 +1,6 @@
-SITE_VOCAB = RDF::Vocabulary.new("http://#{PublishMyData.local_domain}/def/")
-PMD_DS_VOCAB = RDF::Vocabulary.new("http://#{PublishMyData.local_domain}/def/dataset#")
+module RDF
+  SITE = RDF::Vocabulary.new("http://#{PublishMyData.local_domain}/def/")
+  PMD_DS = RDF::Vocabulary.new("http://#{PublishMyData.local_domain}/def/dataset#")
+  DCAT = RDF::Vocabulary.new("http://www.w3.org/ns/dcat#")
+  VOID = RDF::Vocabulary.new("http://rdfs.org/ns/void#")
+end
