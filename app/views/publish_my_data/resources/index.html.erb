@@ -32,8 +32,9 @@
 
 <br/>
 
+<% other_params = {:per_page => @pagination_params.per_page, :page => @pagination_params.page, :dataset => @dataset_filter, :type_uri => @type_filter} %>
 Get this list as:
-<%= link_to 'N-triples', :format => 'nt', :page => @pagination_params.page, :per_page => @pagination_params.per_page %>
-<%= link_to 'Turtle', :format => 'ttl', :page => @pagination_params.page, :per_page => @pagination_params.per_page %>
-<%= link_to 'RDF/XML', :format => 'rdf',:page => @pagination_params.page, :per_page => @pagination_params.per_page %>
-<%= link_to 'JSON', :format => 'json', :page => @pagination_params.page, :per_page => @pagination_params.per_page %>
+<%= link_to('N-triples', {:format => 'nt'}.merge(other_params)) %>
+<%= link_to("Turtle", {:format => 'ttl'}.merge(other_params)) %>
+<%= link_to("RDF/XML", {:format => 'rdf'}.merge(other_params)) %>
+<%= link_to("JSON", {:format => 'json'}.merge(other_params)) %>
