@@ -12,7 +12,10 @@ module PublishMyData
 
     def handle_uncaught_error(e)
       @e = e
-      # TODO: notify error handling service.
+      Rails.logger.info "***UNCAUGHT ERROR***"
+      Rails.logger.info e.class.name
+      Rails.logger.info e.message
+      Rails.logger.debug e.backtrace.join("\n")
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/uncaught", :layout => 'publish_my_data/error', :status => 500) and return false }
         format.any{ head(:status => 500, :content_type => 'text/plain') and return false }
