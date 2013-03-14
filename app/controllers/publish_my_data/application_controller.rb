@@ -12,6 +12,7 @@ module PublishMyData
 
     def handle_uncaught_error(e)
       @e = e
+      Raven.capture_exception(e) if defined?(Raven)
       Rails.logger.info "***UNCAUGHT ERROR***"
       Rails.logger.info e.class.name
       Rails.logger.info e.message
