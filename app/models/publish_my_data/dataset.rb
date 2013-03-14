@@ -61,7 +61,7 @@ module PublishMyData
     # use :publisher's foaf:mbox value (in this metadata graph).
     def contact_email
       publisher_obj = Resource.find(self.publisher) if publisher
-      publisher_obj.read_predicate(RDF::FOAF.mbox) if publisher_obj
+      publisher_obj.read_predicate(RDF::FOAF.mbox).first if publisher_obj
     end
 
     class << self
