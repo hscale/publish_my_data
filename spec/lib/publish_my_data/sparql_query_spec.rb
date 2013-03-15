@@ -19,6 +19,36 @@ module PublishMyData
           q.body.should == 'SELECT xyz'
         end
       end
+
+      context 'interpolations_supplied' do
+        it 'should call interpolate, passing the interpolations' do
+          q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT %{interpolate_me}',
+            :interpolations => {:interpolate_me => 'xyz'})
+          q.prefixes.should == 'PREFIX e: <http://example.com>'
+          q.body.should == 'SELECT xyz'
+          q.query.should == 'PREFIX e: <http://example.com> SELECT xyz'
+        end
+
+        it 'should replace the %-denoted interpolations using the hash provided' do
+          PublishMyData::SparqlQuery.new(
+            "SELECT %{foo} WHERE %{bar}", :interpolations => {:foo => 'baz', :bar => 'bozo'}
+          ).query.should == "SELECT baz WHERE bozo"
+        end
+
+        it 'should work where the same variable is used more than once' do
+          PublishMyData::SparqlQuery.new(
+            "SELECT %{foo} WHERE %{foo}", :interpolations => {:foo => 'baz'}
+            ).query.should == "SELECT baz WHERE baz"
+        end
+      end
+
+      context 'interpolations missing' do
+        it 'shoud throw an exception if interpolation variables are missing' do
+          expect { PublishMyData::SparqlQuery.new(
+            "SELECT %{foo} WHERE %{bar} %{baz}", :interpolations => {:foo => 'baz'}
+            ) }.to raise_error(PublishMyData::SparqlQueryMissingVariablesException, "Missing parameters for interpolation: bar, baz")
+        end
+      end
     end
 
     describe "#has_prefixes?" do
@@ -67,13 +97,23 @@ module PublishMyData
       end
     end
 
-    describe '#extract_prefixes' do
-      it 'should return the prefixes and query body separately' do
-        q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT xyz')
-        p, b = q.extract_prefixes
-        p.should == 'PREFIX e: <http://example.com>'
-        b.should == 'SELECT xyz'
+    describe '#expected_variables' do
+
+      context 'interpolations required' do
+        it 'should be an array of symbols representing the expected variables in the query' do
+          q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT %{hello} %{good_bye}',
+            :interpolations => {:hello => 'hello', :good_bye => 'good bye'})
+          q.expected_variables.should == [:hello, :good_bye]
+        end
       end
+
+      context "interpolations don't appear in query" do
+        it 'should be empty array' do
+          q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT x')
+          q.expected_variables.should == []
+        end
+      end
+
     end
 
     describe "#execute" do

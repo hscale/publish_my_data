@@ -2,18 +2,42 @@ module PublishMyData
 
   class SparqlQueryExecutionException < StandardError; end
 
+  class SparqlQueryMissingVariablesException < StandardError
+    attr_reader :missing_variables, :expected_variables
+
+    def initialize(missing_variables, expected_variables)
+      raise ArgumentError.new("Missing parameters should be an array") unless missing_variables.is_a?(Array)
+      @missing_variables = missing_variables
+      @expected_variables = expected_variables
+    end
+
+    def to_s
+      "Missing parameters for interpolation: #{@missing_variables.map(&:to_s).join(', ')}"
+    end
+  end
+
   class SparqlQuery < Tripod::SparqlQuery
 
     attr_reader :request_format # symbol representing the format of the original request
     attr_reader :parent_query # set if this query originated from another (e.g. pagination or count)
+
+    attr_reader :interpolations # interpolations supplied at construct-time
+    attr_reader :expected_variables # list of variables used in the query,
 
     # options
     #  :request_format (symbol, e.g. :html, :json )
     #  :parent_query
     #  :interpolations => { :a => 'blah', :b => 'bleh' }
     def initialize(query_string, opts={})
+      @opts = opts # save off the original opts
+
+      @interpolations = opts[:interpolations] || {}
+
+      # modify the query string, before constructing
+      query_string = interpolate_query(query_string, self.interpolations)
+
       super(query_string)
-      @opts = opts
+
       @parent_query = opts[:parent_query]
       @request_format = opts[:request_format] || :html
     end
@@ -84,7 +108,22 @@ module PublishMyData
       PublishMyData::SparqlQuery.new(paginated_query, {:request_format => self.request_format, :parent_query => self}) # pass in the original query
     end
 
+    def self.get_expected_variables(query_string)
+      query_string.scan(/[.]?\%\{(\w+)\}[.]?/).flatten.uniq.map &:to_sym
+    end
+
     private
+
+    def interpolate_query(query_string, interpolations)
+      i = interpolations.symbolize_keys.select{ |k,v| v && v.length > 0 }
+      # regular expression finds words inside %{variable} tokens
+      @expected_variables = self.class.get_expected_variables(query_string)
+      missing_variables = @expected_variables - i.keys
+      if missing_variables.length > 0
+        raise SparqlQueryMissingVariablesException.new(missing_variables, @expected_variables)
+      end
+      query_string % i # do the interpolating
+    end
 
     def process_sparql_parse_failed_exception_message(bad_sparql_request)
       message = bad_sparql_request.message
