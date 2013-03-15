@@ -21,7 +21,7 @@ module PublishMyData
       if resource.in_domain?(request.host)
         uri.to_s
       else
-        show_resource_path(:uri => uri.to_s)
+        publish_my_data.show_resource_path(:uri => uri.to_s)
       end
     end
   end
