@@ -19,43 +19,43 @@ describe 'visiting the sparql endpoint' do
 
   shared_examples_for "a json response" do
     it 'should render json' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :json).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format => :json).execute.to_s
     end
   end
 
   shared_examples_for "an xml response" do
     it 'should render xml' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :xml).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format => :xml).execute.to_s
     end
   end
 
   shared_examples_for "an rdf response" do
     it 'should render rdf' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :rdf).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:rdf).execute.to_s
     end
   end
 
   shared_examples_for "a csv response" do
     it 'should render csv' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :csv).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:csv).execute.to_s
     end
   end
 
   shared_examples_for "a text response" do
     it 'should render text' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :text).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:text).execute.to_s
     end
   end
 
   shared_examples_for "an n-triples response" do
     it 'should render ntriples' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :nt).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:nt).execute.to_s
     end
   end
 
   shared_examples_for "a turtle response" do
     it 'should render turtle' do
-      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :ttl).execute.to_s
+      page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:ttl).execute.to_s
     end
   end
 
@@ -292,7 +292,7 @@ describe "calling a sparql query programmatically (non-html)" do
       end
 
       it 'should render the default (in this case "text")' do
-        page.source.should ==  PublishMyData::SparqlQuery.new(@query, :text).execute.to_s
+        page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:text).execute.to_s
       end
 
     end

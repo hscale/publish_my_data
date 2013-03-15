@@ -7,10 +7,15 @@ module PublishMyData
     attr_reader :request_format # symbol representing the format of the original request
     attr_reader :parent_query # set if this query originated from another (e.g. pagination or count)
 
-    def initialize(query_string, request_format_symbol = :html, parent_query = nil)
+    # options
+    #  :request_format (symbol, e.g. :html, :json )
+    #  :parent_query
+    #  :interpolations => { :a => 'blah', :b => 'bleh' }
+    def initialize(query_string, opts={})
       super(query_string)
-      @parent_query = parent_query
-      @request_format = request_format_symbol
+      @opts = opts
+      @parent_query = opts[:parent_query]
+      @request_format = opts[:request_format] || :html
     end
 
     # executes the query, using the right format parameters (for fuseki) for the query type and request format
@@ -60,7 +65,7 @@ module PublishMyData
 
     def as_count_query(format = :json)
       # return the paginated version
-      PublishMyData::SparqlQuery.new(as_count_query_str, format, self) # pass in the original query
+      PublishMyData::SparqlQuery.new(as_count_query_str, {:request_format => format, :parent_query => self}) # pass in the original query
     end
 
     # for selects only, turn this into a paginated version. Returns a whole new SparqlQuery object.
@@ -76,7 +81,7 @@ module PublishMyData
       paginated_query = "#{self.prefixes} #{paginated_query}" if self.prefixes
 
       # return the paginated version
-      PublishMyData::SparqlQuery.new(paginated_query, self.request_format, self) # pass in the original query
+      PublishMyData::SparqlQuery.new(paginated_query, {:request_format => self.request_format, :parent_query => self}) # pass in the original query
     end
 
     private

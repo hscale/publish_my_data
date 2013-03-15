@@ -12,7 +12,7 @@ module PublishMyData
       @query_text = params[:query]
 
       unless @query_text.blank?
-        @sparql_query = PublishMyData::SparqlQuery.new(@query_text, request.format.to_sym)
+        @sparql_query = PublishMyData::SparqlQuery.new(@query_text, {:request_format => request.format.to_sym})
 
         if @sparql_query.allow_pagination?
           @pagination_params = PaginationParams.from_request(request)
