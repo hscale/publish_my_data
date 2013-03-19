@@ -81,7 +81,7 @@ module PublishMyData
       end
 
       def uri_from_slug(slug)
-        "http://#{PublishMyData.local_domain}/datasets/#{slug}"
+        "http://#{PublishMyData.local_domain}/data/#{slug}"
       end
 
       def slug_from_uri(uri)

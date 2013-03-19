@@ -6,7 +6,7 @@ module PublishMyData
     describe ".uri_from_slug" do
       it "returns the a uri given the slug" do
         slug = "my-slug"
-        Dataset.uri_from_slug(slug).should == "http://pmdtest.dev/datasets/#{slug}"
+        Dataset.uri_from_slug(slug).should == "http://pmdtest.dev/data/#{slug}"
       end
     end
 

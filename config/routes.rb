@@ -10,7 +10,8 @@ PublishMyData::Engine.routes.draw do
   match "/resources(.:format)" => "resources#index", :as => 'list_resources' # +filters on thh query string
 
   # datasets
-  resources :datasets, :only => [:show, :index]
+  match "/data/:id(.:format)" => "datasets#show", :as => 'dataset'
+  match "/data(.:format)" => "datasets#index",  :as => 'datasets'
 
   # themes
   resources :themes, :only => [:index, :show]
