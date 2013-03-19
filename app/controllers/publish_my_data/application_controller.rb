@@ -40,7 +40,7 @@ module PublishMyData
 
     def handle_resource_not_found(e)
       Rails.logger.info(">>> NOT FOUND")
-      Rails.logger.info(e.inspect)
+      Rails.logger.info(e.message.inspect)
       Rails.logger.debug(e.backtrace.join("\n"))
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/not_found", :layout => 'publish_my_data/error', :status => 404) and return false }
