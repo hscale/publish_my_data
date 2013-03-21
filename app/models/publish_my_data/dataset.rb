@@ -42,6 +42,10 @@ module PublishMyData
       Dataset.data_graph_uri(self.slug)
     end
 
+    def metadata_graph_uri
+      Dataset.metadata_graph_uri(self.slug)
+    end
+
     def to_param
       slug
     end
@@ -60,7 +64,8 @@ module PublishMyData
 
     # use :publisher's foaf:mbox value (in this metadata graph).
     def contact_email
-      publisher_obj = Resource.find(self.publisher) if publisher
+      # notice that we only look in the metadata graph for this as each metadata has a different mbox for the publisher.
+      publisher_obj = Resource.find(self.publisher, metadata_graph_uri) if publisher
       publisher_obj.read_predicate(RDF::FOAF.mbox).first if publisher_obj
     end
 

@@ -29,24 +29,31 @@ module PublishMyData
     # Don't worry that these as_xxx methods look like they'll do an extra lookup.
     # In production, it'll be cached from a moment ago anyway!
 
+    # this copies all teh data from this resource's repository into that of a new instance of the class passed in.
+    def as_resource_of_class(klass)
+      r = klass.new(self.uri)
+      r.hydrate!(graph: self.repository_as_graph)
+      r
+    end
+
     def as_ontology
-      Ontology.find(self.uri)
+      as_resource_of_class(Ontology)
     end
 
     def as_concept_scheme
-      ConceptScheme.find(self.uri)
+      as_resource_of_class(ConceptScheme)
     end
 
     def as_concept
-      Concept.find(self.uri)
+      as_resource_of_class(Concept)
     end
 
     def as_property
-      Property.find(self.uri)
+      as_resource_of_class(Property)
     end
 
     def as_ontology_class
-      OntologyClass.find(self.uri)
+      as_resource_of_class(OntologyClass)
     end
 
     def is_ontology?
