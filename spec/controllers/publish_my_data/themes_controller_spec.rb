@@ -25,7 +25,7 @@ module PublishMyData
         t = PublishMyData::Theme.new(uri)
         t.slug = slug
         t.label = "Theme #{i}"
-        t.description = "A theme"
+        t.comment = "A theme"
         t.save!
       end
 
