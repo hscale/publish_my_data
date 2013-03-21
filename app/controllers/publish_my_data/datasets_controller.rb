@@ -17,7 +17,7 @@ module PublishMyData
       if request.format && request.format.html?
         @type_resource_counts = {}
         @types.each do |t|
-          @type_resource_counts[t.uri.to_s] = Resource.where("?uri a <#{t.uri.to_s}>").count
+          @type_resource_counts[t.uri.to_s] = Resource.where("?uri a <#{t.uri.to_s}>").graph(@dataset.data_graph_uri).count
         end
       end
 
