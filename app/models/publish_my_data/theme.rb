@@ -20,7 +20,7 @@ module PublishMyData
 
     field :label, RDF::RDFS.label
     field :slug, RDF::SKOS.notation
-    field :description, RDF::RDFS.description
+    field :comment, RDF::RDFS.comment
 
     def datasets_criteria
       Dataset.where("?uri <#{RDF::DCAT.theme}> <#{self.uri.to_s}>")
