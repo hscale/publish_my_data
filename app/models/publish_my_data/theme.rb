@@ -3,7 +3,7 @@ module PublishMyData
   class Theme
 
     include Tripod::Resource
-    include PublishMyData::ResourceModule #some common methods for resources.
+    include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
 
     class << self
       def theme_graph

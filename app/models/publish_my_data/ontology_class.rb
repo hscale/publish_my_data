@@ -1,7 +1,7 @@
 module PublishMyData
   class OntologyClass
     include Tripod::Resource
-    include PublishMyData::ResourceModule
+    include PublishMyData::Concerns::Models::Resource
     include PublishMyData::DefinedByOntology
 
     field :label, RDF::RDFS.label

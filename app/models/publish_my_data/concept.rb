@@ -1,7 +1,7 @@
 module PublishMyData
   class Concept
     include Tripod::Resource
-    include PublishMyData::ResourceModule
+    include PublishMyData::Concerns::Models::Resource
     field :label, RDF::RDFS.label
     field :in_scheme, RDF::SKOS.inScheme
 

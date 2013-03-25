@@ -2,7 +2,7 @@ module PublishMyData
   class Resource
 
     include Tripod::Resource
-    include PublishMyData::ResourceModule #some common methods for resources.
+    include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
 
     field :label, RDF::RDFS.label
     field :rdf_type, RDF.type, :multivalued => true

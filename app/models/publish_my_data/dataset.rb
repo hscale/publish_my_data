@@ -1,7 +1,7 @@
 module PublishMyData
   class Dataset
     include Tripod::Resource
-    include PublishMyData::ResourceModule #some common methods for resources.
+    include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
 
     # basics
     field :title, RDF::DC.title

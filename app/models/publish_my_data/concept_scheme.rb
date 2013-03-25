@@ -1,7 +1,7 @@
 module PublishMyData
   class ConceptScheme
     include Tripod::Resource
-    include PublishMyData::ResourceModule #some common methods for resources.
+    include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
 
     rdf_type RDF::SKOS.ConceptScheme
     field :label, RDF::RDFS.label

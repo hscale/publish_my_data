@@ -3,24 +3,19 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class SparqlController < ApplicationController
 
-    rescue_from PublishMyData::SparqlQueryResultTooLargeException, :with => :show_response_too_large_message
-    rescue_from PublishMyData::SparqlQueryExecutionException, :with => :show_sparql_execution_message
+    include PublishMyData::Concerns::Controllers::Sparql
 
-    respond_to :html, :csv, :text, :nt, :ttl, :xml, :rdf, :json
+    before_filter :check_format, :only => [:endpoint]
 
     def endpoint
       @query_text = params[:query]
 
       unless @query_text.blank?
-        @sparql_query = PublishMyData::SparqlQuery.new(@query_text, {:request_format => request.format.to_sym})
+
+        @sparql_query = build_sparql_query(@query_text)
 
         if @sparql_query.allow_pagination?
-          @pagination_params = PaginationParams.from_request(request)
-          @sparql_query_result = @sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
-          if request.format.html?
-            count = @sparql_query.as_pagination_query(@pagination_params.page, @pagination_params.per_page, 1).count
-            @more_pages = (count > @pagination_params.per_page)
-          end
+          paginate_sparql_query(@sparql_query)
         else
           @sparql_query_result = @sparql_query.execute
         end
@@ -28,25 +23,6 @@ module PublishMyData
         respond_with(@sparql_query_result)
       end
 
-    end
-
-    private
-
-    def respond_with_error
-      respond_to do |format|
-        format.html { render 'endpoint' }
-        format.any { head :status => 400 }
-      end
-    end
-
-    def show_response_too_large_message(e)
-      @error_message = "The results for this query are too large to return."
-      respond_with_error
-    end
-
-    def show_sparql_execution_message(e)
-      @error_message = "There was a syntax error in your query: #{e.message}"
-      respond_with_error
     end
 
   end
