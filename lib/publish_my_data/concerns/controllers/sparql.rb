@@ -6,7 +6,7 @@ module PublishMyData
 
         included do
 
-          rescue_from PublishMyData::SparqlQueryResultTooLargeException, :with => :show_response_too_large_message
+          rescue_from Tripod::Errors::SparqlResponseTooLarge, :with => :show_response_too_large_message
           rescue_from PublishMyData::SparqlQueryExecutionException, :with => :show_sparql_execution_message
           respond_to :html, :csv, :text, :nt, :ttl, :xml, :rdf, :json
 

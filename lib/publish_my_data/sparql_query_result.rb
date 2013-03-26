@@ -1,24 +1,12 @@
-require 'active_support/core_ext/numeric/bytes'
-
 module PublishMyData
-
-  class SparqlQueryResultTooLargeException < StandardError; end
 
   # class to wrap up a string sparql result
   class SparqlQueryResult
-
-    cattr_accessor :MAX_SIZE
-    @@MAX_SIZE = 4.megabytes
 
     attr_reader :result_str
 
     def initialize(result_str)
       @result_str = result_str
-
-      if self.length > SparqlQueryResult.MAX_SIZE
-        raise SparqlQueryResultTooLargeException.new(self.length)
-      end
-
     end
 
     # responds to a bunch of to_x methods to help with rails responders /rendering.

@@ -244,7 +244,7 @@ describe 'visiting the sparql endpoint' do
 
   describe "and runs a query with a large response" do
     before do
-      PublishMyData::SparqlQueryResult.any_instance.should_receive(:length).at_least(:once).and_return(10.megabytes)
+      Tripod::SparqlClient::Query.should_receive(:query).and_raise(Tripod::Errors::SparqlResponseTooLarge)
       @query = 'CONSTRUCT {?s ?p ?o} where {?s ?p ?o}'
       page.fill_in 'query', with: @query
       find('form input[type="submit"]').click

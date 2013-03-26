@@ -214,20 +214,6 @@ module PublishMyData
         end
       end
 
-      context "where data is too large to return" do
-        before do
-          PublishMyData::SparqlQueryResult.any_instance.should_receive(:length).at_least(:once).and_return(5.megabytes)
-        end
-
-        it "should raise a SparqlResponseTooLargeException" do
-          query_str = 'CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }'
-          q = PublishMyData::SparqlQuery.new(query_str)
-          lambda {
-            q.execute
-          }.should raise_error PublishMyData::SparqlQueryResultTooLargeException
-        end
-      end
-
       context "with a syntax error in the query" do
 
         context "for query without a parent" do

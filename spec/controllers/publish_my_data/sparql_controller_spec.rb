@@ -101,7 +101,7 @@ module PublishMyData
 
           context 'for html format' do
             before do
-              SparqlQuery.any_instance.should_receive(:execute).and_raise(PublishMyData::SparqlQueryResultTooLargeException)
+              SparqlQuery.any_instance.should_receive(:execute).and_raise(Tripod::Errors::SparqlResponseTooLarge)
               get :endpoint,  :query => 'SELECT * WHERE { ?s ?p ?o }', use_route: :publish_my_data
             end
 

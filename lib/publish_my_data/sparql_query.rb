@@ -59,6 +59,9 @@ module PublishMyData
         end
 
       rescue Tripod::Errors::BadSparqlRequest => bad_sparql
+
+        Rails.logger.debug bad_sparql.inspect
+
         if self.parent_query
           # call execute on the parent(this will fail too), but it means that we get the right error for
           # the user-entered query
@@ -150,9 +153,9 @@ module PublishMyData
 
     def construct_or_describe_header
       if [:nt, :ttl, :rdf].include?(request_format)
-        Mime::Type.lookup_by_extension( request_format.to_s )
+        Mime::Type.lookup_by_extension( request_format.to_s ).to_s
       else
-        Mime::NT
+        Mime::NT.to_s
       end
     end
 
