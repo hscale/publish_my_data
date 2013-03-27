@@ -58,23 +58,26 @@ module PublishMyData
 
     # returns a Kaminari paginatable array, or a plain old array
     def paginate
-      count = criteria.count #this has to happen first, before we modify the criteria with limit/offset
-
-      Rails.logger.debug "per page: #{self.pagination_params.per_page}"
-      criteria.limit(self.pagination_params.per_page) if self.pagination_params.per_page
-      criteria.offset(self.pagination_params.offset) if self.pagination_params.offset
-      resources = criteria.resources
-
       if self.pagination_params.format == :html && pagination_params.per_page && pagination_params.page
-        paginatable = Kaminari.paginate_array(resources.to_a, total_count: count).page(self.pagination_params.page).per(self.pagination_params.per_page)
+        count = criteria.count #this has to happen first, before we modify the criteria with limit/offset
+        add_limit_and_offset_criteria(criteria)
+        paginatable = Kaminari.paginate_array(criteria.resources.to_a, total_count: count).page(self.pagination_params.page).per(self.pagination_params.per_page)
       else
-        resources # non html versions just need the raw array
+        add_limit_and_offset_criteria(criteria)
+        criteria.resources # non html versions just need the raw array
       end
     end
 
     def ==(other)
       self.pagination_params == other.pagination_params &&
         self.criteria == other.criteria
+    end
+
+    private
+
+    def add_limit_and_offset_criteria(criteria)
+      criteria.limit(self.pagination_params.per_page) if self.pagination_params.per_page
+      criteria.offset(self.pagination_params.offset) if self.pagination_params.offset
     end
 
   end
