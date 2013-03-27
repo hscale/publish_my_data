@@ -16,7 +16,7 @@ module PublishMyData
   @@local_domain = 'pmd.dev'
 
   mattr_accessor :sparql_timeout_seconds
-  @@sparql_timeout_seconds = 30
+  @@sparql_timeout_seconds = 10
 
   mattr_accessor :sparql_endpoint
   @@sparql_endpoint = 'http://localhost:3030/pmd/sparql'
@@ -32,9 +32,10 @@ module PublishMyData
   mattr_accessor :default_resources_per_page
   @@default_resources_per_page = 20
 
-  # maximum allowable page size for lists of resources.
+  # Maximum allowable page size for lists of resources.
+  # This is constrained by Fuseki's sparql request size. 500 is about the max it can handle (for lists of DESCRIBES).
   mattr_accessor :max_resources_per_page
-  @@max_resources_per_page = 2000
+  @@max_resources_per_page = 500
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
   # (defaults shown)
@@ -42,7 +43,7 @@ module PublishMyData
   #   PublishMyData.configure do |config|
   #     config.sparql_endpoint = 'http://localhost:3030/pmd/sparql'
   #     config.local_domain = 'pmd.dev'
-  #     config.sparql_timeout_seconds = 30
+  #     config.sparql_timeout_seconds = 10
   #     config.response_limit_bytes = 10.megabytes
   #     config.default_resources_per_page = 20
   #     config.max_resources_per_page = 5000

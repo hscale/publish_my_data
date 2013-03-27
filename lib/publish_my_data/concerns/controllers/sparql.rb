@@ -6,7 +6,6 @@ module PublishMyData
 
         included do
 
-          rescue_from Tripod::Errors::SparqlResponseTooLarge, :with => :show_response_too_large_message
           rescue_from PublishMyData::SparqlQueryExecutionException, :with => :show_sparql_execution_message
           respond_to :html, :csv, :text, :nt, :ttl, :xml, :rdf, :json
 
@@ -45,11 +44,6 @@ module PublishMyData
               format.html { render 'publish_my_data/sparql/endpoint' }
               format.any { head :status => 400 }
             end
-          end
-
-          def show_response_too_large_message(e)
-            @error_message = "The results for this query are too large to return."
-            respond_with_error
           end
 
           def show_sparql_execution_message(e)

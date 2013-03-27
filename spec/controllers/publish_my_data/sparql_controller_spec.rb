@@ -105,24 +105,24 @@ module PublishMyData
               get :endpoint,  :query => 'SELECT * WHERE { ?s ?p ?o }', use_route: :publish_my_data
             end
 
-            it "should set an error message" do
-              assigns['error_message'].should_not be_blank
+            it "should show the response_too_large template" do
+              response.should render_template("publish_my_data/errors/response_too_large")
             end
 
-            it "should respond succesfully" do
-              response.should be_success
+            it "should respond with a 400" do
+              response.status.should == 400
             end
           end
 
           context 'for a data format' do
             before do
               @request.env['HTTP_ACCEPT'] = "text/csv"
-              SparqlQuery.any_instance.should_receive(:execute).and_raise(PublishMyData::SparqlQueryExecutionException)
+              SparqlQuery.any_instance.should_receive(:execute).and_raise(Tripod::Errors::SparqlResponseTooLarge)
               get :endpoint,  :query => 'SELECT * WHERE { ?s ?p ?o }', use_route: :publish_my_data
             end
 
-            it "should respond with an empty body" do
-              response.body.should be_blank
+            it "should respond with text in the body" do
+              response.body.should == "Response too large."
             end
 
             it "should respond with bad response" do

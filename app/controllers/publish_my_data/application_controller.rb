@@ -4,7 +4,8 @@ module PublishMyData
     # Note: this order matters. Perversely, need to put more general errors first.
     rescue_from Exception, :with => :handle_uncaught_error
     rescue_from Tripod::Errors::ResourceNotFound, :with => :handle_resource_not_found
-    rescue_from RestClient::RequestTimeout, :with => :handle_timeout
+    rescue_from Tripod::Errors::Timeout, :with => :handle_timeout
+    rescue_from Tripod::Errors::SparqlResponseTooLarge, :with => :handle_response_too_large
 
     private
 
@@ -35,6 +36,13 @@ module PublishMyData
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/timeout", :layout => 'publish_my_data/error', :status => 503) and return false }
         format.any { head(:status => 503, :content_type => 'text/plain') and return false }
+      end
+    end
+
+    def handle_response_too_large(e)
+      respond_to do |format|
+        format.html { render(:template => "publish_my_data/errors/response_too_large", :layout => 'publish_my_data/error', :status => 400) and return false }
+        format.any { render(:text => "Response too large.", :status => 400, :content_type => 'text/plain') and return false }
       end
     end
 

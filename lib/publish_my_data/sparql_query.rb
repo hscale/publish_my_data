@@ -83,7 +83,7 @@ module PublishMyData
     # (creates and executes a count query behind the scenes)
     def count
       result = JSON.parse(self.as_count_query.execute.to_s)["results"]["bindings"]
-      result[0][".1"]["value"].to_i
+      result[0]["c"]["value"].to_i
     end
 
     def allow_pagination?
