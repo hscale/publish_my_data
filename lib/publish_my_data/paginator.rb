@@ -2,9 +2,6 @@ module PublishMyData
 
   class PaginationParams
 
-    DEFAULT_PAGE_SIZE = 20
-    MAX_PAGE_SIZE = 10000
-
     attr_accessor :page
     attr_accessor :per_page
     attr_accessor :offset
@@ -13,8 +10,8 @@ module PublishMyData
     # example opts:
     #  {:per_page => 10, :page => 2, :format => :html}
     def initialize(opts={})
-      self.per_page = (opts[:per_page] || PaginationParams::DEFAULT_PAGE_SIZE).to_i
-      self.per_page = PaginationParams::MAX_PAGE_SIZE if self.per_page > PaginationParams::MAX_PAGE_SIZE
+      self.per_page = (opts[:per_page] || PublishMyData.default_resources_per_page).to_i
+      self.per_page = PublishMyData.max_resources_per_page if self.per_page > PublishMyData.max_resources_per_page
       self.page = (opts[:page] || 1).to_i
       self.offset = self.per_page.to_i * (self.page.to_i-1)
       self.format = opts[:format]
