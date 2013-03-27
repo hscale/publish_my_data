@@ -14,11 +14,7 @@ module PublishMyData
 
       @sparql_query = build_sparql_query(@query_text)
 
-      if @sparql_query.allow_pagination?
-        paginate_sparql_query(@sparql_query)
-      else
-        @sparql_query_result = @sparql_query.execute
-      end
+      process_sparql_query(@sparql_query)
 
       respond_with(@sparql_query_result) do |format|
         format.html { render template: 'publish_my_data/sparql/endpoint' }

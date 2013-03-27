@@ -28,9 +28,13 @@ module PublishMyData
   mattr_accessor :response_limit_bytes
   @@response_limit_bytes = 10.megabytes
 
-  # default page size for lists of resources.
-  mattr_accessor :default_resources_per_page
-  @@default_resources_per_page = 20
+  # default page size for sparql-select results in the html interface
+  mattr_accessor :default_html_sparql_per_page
+  @@default_html_sparql_per_page = 20
+
+  # default page size for lists of resources in the html interface
+  mattr_accessor :default_html_resources_per_page
+  @@default_html_resources_per_page = 20
 
   # Maximum allowable page size for lists of resources.
   # This is constrained by Fuseki's sparql request size. 500 is about the max it can handle (for lists of DESCRIBES).
@@ -45,7 +49,8 @@ module PublishMyData
   #     config.local_domain = 'pmd.dev'
   #     config.sparql_timeout_seconds = 10
   #     config.response_limit_bytes = 10.megabytes
-  #     config.default_resources_per_page = 20
+  #     config.default_html_resources_per_page = 20
+  #     config.default_html_sparql_per_page = 20
   #     config.max_resources_per_page = 5000
   #     config.tripod_cache_store = nil #e.g Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
   #       # note: if using memcached, make sure you set the -I (slab size) to big enough to store each result (i.e. to more than SparqlQueryResult.MAX_SIZE)

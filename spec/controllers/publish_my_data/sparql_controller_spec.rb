@@ -66,6 +66,49 @@ module PublishMyData
 
         end
 
+        context "non-html queries" do
+          context 'for SELECTs' do
+
+            let(:query) { 'SELECT ?s WHERE {?s ?p ?o}' }
+
+            context "without pagination params" do
+              let(:opts) { {:query => query, :format => 'csv', use_route: :publish_my_data} }
+
+              it "should not call paginate" do
+                SparqlQuery.any_instance.should_not_receive(:paginate)
+                get :endpoint, opts
+              end
+
+              it "should just call execute" do
+                SparqlQuery.any_instance.should_receive(:execute)
+                get :endpoint, opts
+              end
+
+            end
+
+            context "with pagination params" do
+              let(:opts) { {:query => query, :per_page => 35, :page => 2, :format => 'csv', use_route: :publish_my_data} }
+
+              it "should call paginate" do
+                SparqlQuery.any_instance.should_receive(:paginate)
+                get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', use_route: :publish_my_data
+              end
+
+              it "should pass the right params through to paginate" do
+                SparqlQuery.any_instance.should_receive(:paginate).with(2, 35)
+                get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
+              end
+
+              it "should set the right pagination params" do
+                get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
+                assigns['pagination_params'].per_page.should == 35
+                assigns['pagination_params'].page.should == 2
+              end
+
+            end
+          end
+        end
+
 
         context "if the query does not allow pagination (non-selects)" do
           it "should not call paginate" do
@@ -80,8 +123,7 @@ module PublishMyData
 
           it "should not set the pagination variables, even if params are supplied" do
             get :endpoint, :query => 'CONSTRUCT WHERE {?s ?p ?o}', :per_page => 35, :page => 2, use_route: :publish_my_data
-            assigns['per_page'].should be_nil
-            assigns['page'].should be_nil
+            assigns['pagination_params'].should be_nil
           end
         end
 

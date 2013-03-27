@@ -52,8 +52,8 @@ module PublishMyData
       context "with a non-html format" do
         it "should respond with the paginated collection of datasets in that theme" do
           get :show, :id => theme.slug, :use_route => :publish_my_data, :format => 'ttl', :per_page => 5
-          pagination_params = PaginationParams.from_request(@request)
-          paginator = Paginator.new(theme.datasets_criteria, PaginationParams.from_request(@request))
+          pagination_params = ResourcePaginationParams.from_request(@request)
+          paginator = Paginator.new(theme.datasets_criteria, ResourcePaginationParams.from_request(@request))
           paginator.paginate.length.should == 5 #just the page's worth
           response.body.should == paginator.paginate.to_ttl
         end

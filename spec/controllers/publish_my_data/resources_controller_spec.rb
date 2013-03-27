@@ -329,7 +329,7 @@ module PublishMyData
         end
 
         it "should return paginated results for Resource.all" do
-          Paginator.should_receive(:new).with(Resource.all, PaginationParams.from_request(@request)).and_call_original
+          Paginator.should_receive(:new).with(Resource.all, ResourcePaginationParams.from_request(@request)).and_call_original
           get :index, use_route: :publish_my_data
           assigns['resources'].length.should == 10 # 8 resources, plus ds and type!
         end

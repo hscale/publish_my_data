@@ -23,7 +23,7 @@ module PublishMyData
     # this calls render_params on the right type of RenderParams object.
     # (strategy pattern-ish).
     def render_params(request)
-      render_params_class.new(self).render_params(pagination_params: PaginationParams.from_request(request))
+      render_params_class.new(self).render_params(pagination_params: ResourcePaginationParams.from_request(request))
     end
 
     # Don't worry that these as_xxx methods look like they'll do an extra lookup.

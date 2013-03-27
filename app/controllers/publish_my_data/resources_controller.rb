@@ -14,7 +14,7 @@ module PublishMyData
       resource_criteria = add_type_filter(resource_criteria)
       resource_criteria = add_dataset_filter(resource_criteria)
 
-      @pagination_params = PaginationParams.from_request(request)
+      @pagination_params = ResourcePaginationParams.from_request(request)
       @resources = Paginator.new(resource_criteria, @pagination_params).paginate
       respond_with(@resources)
     end

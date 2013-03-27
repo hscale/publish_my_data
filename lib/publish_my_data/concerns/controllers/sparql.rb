@@ -26,16 +26,26 @@ module PublishMyData
             })
           end
 
-          def interpolate_query(sparql_query)
+          # process the sparql query, paginating if appropriate
+          def process_sparql_query(sparql_query)
+            if sparql_query.allow_pagination?
 
-          end
+              @pagination_params = SparqlPaginationParams.from_request(request)
 
-          def paginate_sparql_query(sparql_query)
-            @pagination_params = PaginationParams.from_request(request)
-            @sparql_query_result = sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
-            if request.format.html?
-              count = sparql_query.as_pagination_query(@pagination_params.page, @pagination_params.per_page, 1).count
-              @more_pages = (count > @pagination_params.per_page)
+              # if there are paramters, then use them
+              if @pagination_params.per_page && @pagination_params.page
+                @sparql_query_result = sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
+                if request.format.html?
+                  count = sparql_query.as_pagination_query(@pagination_params.page, @pagination_params.per_page, 1).count
+                  @more_pages = (count > @pagination_params.per_page)
+                end
+              # otherwise just execute
+              else
+                @sparql_query_result = @sparql_query.execute
+              end
+            else
+              # pagination not allowed - just execute.
+              @sparql_query_result = @sparql_query.execute
             end
           end
 
