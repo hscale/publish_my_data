@@ -9,26 +9,26 @@ module PublishMyData
     field :description, RDF::DC.description # long desc
 
     # licence, owner, contact
-    field :publisher, RDF::DC.publisher # value is a URI of a publisher
-    field :license, RDF::DC.license # value is URI of where licence is defined.
+    field :publisher, RDF::DC.publisher, :is_uri => true # value is a URI of a publisher
+    field :license, RDF::DC.license, :is_uri => true # value is URI of where licence is defined.
     # NOTE: for contact, use :publisher's foaf:mbox value (in this metadata graph).
 
     # quality, updates, maintenance
     field :issued, RDF::DC.issued, :datatype => RDF::XSD.dateTime # value is DateTime literal
     field :modified, RDF::DC.modified, :datatype => RDF::XSD.dateTime # value is DateTime literal
-    field :update_periodicity, RDF::DC.accrualPeriodicity # waiting for response on what the value should be.
+ #   field :update_periodicity, RDF::DC.accrualPeriodicity # waiting for response on what the value should be.
 
     # where to get it
-    field :data_dump, RDF::VOID.dataDump # full download URI
+    field :data_dump, RDF::VOID.dataDump, :is_uri => true # full download URI
 
      # what the data is about
     field :theme, RDF::DCAT.theme
     field :tags, RDF::DCAT.keyword, :multivalued => true # values are string literals
 
-    field :spatial_coverage, RDF::DC.spatial # value is a URI for region covered, e.g. England.
-    field :temporal_coverage, RDF::DC.temporal # value is a time interval URI
-    field :spatial_granularity, RDF::DC.spatial # value is class of the objects of refArea
-    field :temporal_granularity, RDF::DC.temporal # value is class of objects of refPeriod
+    # field :spatial_coverage, RDF::DC.spatial # value is a URI for region covered, e.g. England.
+    # field :temporal_coverage, RDF::DC.temporal # value is a time interval URI
+    # field :spatial_granularity, RDF::DC.spatial # value is class of the objects of refArea
+    # field :temporal_granularity, RDF::DC.temporal # value is class of objects of refPeriod
 
     field :size, RDF::VOID.triples # value is integer.
 

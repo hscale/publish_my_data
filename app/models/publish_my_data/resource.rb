@@ -5,7 +5,7 @@ module PublishMyData
     include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
 
     field :label, RDF::RDFS.label
-    field :rdf_type, RDF.type, :multivalued => true
+    field :rdf_type, RDF.type, :multivalued => true, :is_uri => true
 
     def self.uri_from_host_and_doc_path(host, doc_path, format="")
       'http://' + host + '/id/' + doc_path.split('?')[0].sub(/\.#{format}$/,'')

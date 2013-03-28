@@ -4,7 +4,7 @@ module PublishMyData
     # uses eager loaded data to get the uri or label for a term
     def resource_uri_or_label(resource, term)
 
-      if term.uri?
+      if term.try(:uri?) # if it's a RDF::URI it will respond to uri? with true
         res = resource.get_related_resource(term, PublishMyData::Resource)
         if res
           link_to((res.label || res.uri.to_s), resource_path_from_uri(res.uri))
