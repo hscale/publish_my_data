@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = "publish_my_data"
 
   s.add_dependency "rails", "~> 3.2.11"
-  s.add_dependency "tripod", "~> 0.6"
+  s.add_dependency "tripod", "~> 0.7"
   s.add_dependency "rdf", "~> 1.0"
   s.add_dependency "kaminari"
   s.add_dependency "rdiscount"

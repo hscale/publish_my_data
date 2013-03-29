@@ -31,7 +31,7 @@ module PublishMyData
 
   # default page size for sparql-select results in the html interface
   mattr_accessor :default_html_sparql_per_page
-  @@default_html_sparql_per_page = 50
+  @@default_html_sparql_per_page = 20
 
   # default page size for lists of resources in the html interface
   mattr_accessor :default_html_resources_per_page
@@ -51,7 +51,7 @@ module PublishMyData
   #     config.sparql_timeout_seconds = 10
   #     config.response_limit_bytes = 10.megabytes
   #     config.default_html_resources_per_page = 20
-  #     config.default_html_sparql_per_page = 50
+  #     config.default_html_sparql_per_page = 20
   #     config.max_resources_per_page = 1000
   #     config.tripod_cache_store = nil #e.g Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
   #       # note: if using memcached, make sure you set the -I (slab size) to big enough to store each result (i.e. to more than SparqlQueryResult.MAX_SIZE)
