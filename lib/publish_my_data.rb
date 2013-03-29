@@ -24,13 +24,14 @@ module PublishMyData
   mattr_accessor :tripod_cache_store
   @@tripod_cache_store = nil
 
-  # max allowable size of a sparql response. Applies to all sparql requests. Allow at least 1K per resource for pages of resources.
+  # max allowable size of a sparql response. Applies to all sparql requests.
+  # Note: Allow a few KB per resource (for max_resources_per_page config)
   mattr_accessor :response_limit_bytes
-  @@response_limit_bytes = 10.megabytes
+  @@response_limit_bytes = 5.megabytes
 
   # default page size for sparql-select results in the html interface
   mattr_accessor :default_html_sparql_per_page
-  @@default_html_sparql_per_page = 20
+  @@default_html_sparql_per_page = 50
 
   # default page size for lists of resources in the html interface
   mattr_accessor :default_html_resources_per_page
@@ -39,7 +40,7 @@ module PublishMyData
   # Maximum allowable page size for lists of resources.
   # This is constrained by Fuseki's sparql request size. 500 is about the max it can handle (for lists of DESCRIBES).
   mattr_accessor :max_resources_per_page
-  @@max_resources_per_page = 500
+  @@max_resources_per_page = 1000
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
   # (defaults shown)
@@ -50,8 +51,8 @@ module PublishMyData
   #     config.sparql_timeout_seconds = 10
   #     config.response_limit_bytes = 10.megabytes
   #     config.default_html_resources_per_page = 20
-  #     config.default_html_sparql_per_page = 20
-  #     config.max_resources_per_page = 5000
+  #     config.default_html_sparql_per_page = 50
+  #     config.max_resources_per_page = 1000
   #     config.tripod_cache_store = nil #e.g Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
   #       # note: if using memcached, make sure you set the -I (slab size) to big enough to store each result (i.e. to more than SparqlQueryResult.MAX_SIZE)
   #       # and set the -m (total size) to something quite big (or the cache will recycle too often).
