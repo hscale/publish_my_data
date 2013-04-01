@@ -176,5 +176,57 @@ module PublishMyData
 
     end
 
+    describe "#download" do
+
+      before do
+        s3 = AWS::S3.new
+        bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
+        bucket.clear! # wipe the bucket
+      end
+
+      context "when a dataset with the slug exists" do
+
+        let(:dataset) { FactoryGirl.create(:my_dataset) }
+
+        context "when a download exists on s3" do
+
+          before do
+            # make some downloads.
+            s3 = AWS::S3.new
+            bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
+
+            @obj1 = bucket.objects.create("dataset_data_#{dataset.slug}_20100701.nt.zip", 'data')
+            @obj2 = bucket.objects.create("dataset_data_#{dataset.slug}_20100702.nt.zip", 'data')
+            @obj3 = bucket.objects.create("dataset_data_#{dataset.slug}_20100703.nt.zip", 'data')
+
+            # make them public readable
+            [@obj1, @obj2, @obj3].each { |o| o.acl = :public_read }
+          end
+
+          it "should redirect to the latest download that exists for that dataset" do
+            get "download", :id => dataset.slug, :use_route => :publish_my_data
+            response.should be_redirect
+            response.should redirect_to(@obj3.public_url.to_s)
+          end
+
+        end
+
+        context "when a download doesn't exist on s3" do
+          it "should 404" do
+            get "download", :id => dataset.slug, :use_route => :publish_my_data
+            response.should be_not_found
+          end
+        end
+      end
+
+      context "when a dataset with that slug doesn't exist" do
+        it "should 404" do
+          get "download", :id => 'foo', :use_route => :publish_my_data
+          response.should be_not_found
+        end
+      end
+
+    end
+
   end
 end

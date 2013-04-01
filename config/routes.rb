@@ -8,7 +8,10 @@ PublishMyData::Engine.routes.draw do
 
   # datasets
   match "/data/:id(.:format)" => "datasets#show", :as => 'dataset'
+  match "/data/:id/download" => "datasets#download", :as => 'dataset_download'
   match "/data(.:format)" => "datasets#index",  :as => 'datasets'
+
+  resources :datasets, :only => [:index, :show]
 
   # themes
   resources :themes, :only => [:index, :show]

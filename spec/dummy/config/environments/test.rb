@@ -29,13 +29,15 @@ Dummy::Application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
   PublishMyData.configure do |config|
     config.sparql_endpoint = 'http://localhost:3030/pmdtest/sparql'
     config.local_domain = 'pmdtest.dev'
-    config.sparql_timeout_seconds = 30
+
+    config.dataset_downloads_s3_bucket = "publishmydata-dev"
+    config.aws_access_key_id = "AKIAIMGJ3RKNJJ6CVGTA"
+    config.aws_secret_access_key = "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"
   end
 end

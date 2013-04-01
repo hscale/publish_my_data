@@ -5,9 +5,8 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json
 
-    # /datasets/:id (where :id is the dataset 'slug')
+    # /data/:id (where :id is the dataset 'slug')
     def show
-
       @dataset = Dataset.find_by_slug(params[:id])
 
       @dataset.eager_load_object_triples! # for the owner URI label
@@ -24,12 +23,35 @@ module PublishMyData
       respond_with(@dataset)
     end
 
-    # /datasets?page=2&per_page=10
+    # /data?page=2&per_page=10
     def index
       dataset_criteria = Dataset.all
       @pagination_params = ResourcePaginationParams.from_request(request)
       @datasets = Paginator.new(dataset_criteria, @pagination_params).paginate
       respond_with(@datasets)
+    end
+
+    # /data/:id/download
+    def download
+      s3 = AWS::S3.new
+      @dataset = Dataset.find_by_slug(params[:id])
+
+      # find the latest download for this dataset
+      # Note, filenames take the format: "dataset_data-<slug>-time.nt.zip"
+      prefix = "dataset_data_#{@dataset.slug}_"
+      Rails.logger.debug "**PREFIX: #{prefix}"
+
+      downloads = s3.buckets[PublishMyData.dataset_downloads_s3_bucket].objects.with_prefix(prefix).to_a
+
+      Rails.logger.debug "**DOWNLOADS: #{downloads}"
+
+      if downloads.any?
+        latest_download = downloads.last
+        Rails.logger.debug "**LATEST DOWNLOAD: #{latest_download.key}"
+        redirect_to latest_download.public_url.to_s
+      else
+        raise Tripod::Errors::ResourceNotFound
+      end
     end
 
   end
