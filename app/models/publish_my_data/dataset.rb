@@ -11,6 +11,7 @@ module PublishMyData
     # licence, owner, contact
     field :publisher, RDF::DC.publisher, :is_uri => true # value is a URI of a publisher
     field :license, RDF::DC.license, :is_uri => true # value is URI of where licence is defined.
+    field :contact_email, RDF::PMD_DS.contactEmail, :is_uri => true
     # NOTE: for contact, use :publisher's foaf:mbox value (in this metadata graph).
 
     # quality, updates, maintenance
@@ -60,13 +61,6 @@ module PublishMyData
 
     def theme_obj
       Theme.find(self.theme) rescue nil
-    end
-
-    # use :publisher's foaf:mbox value (in this metadata graph).
-    def contact_email
-      # notice that we only look in the metadata graph for this as each metadata has a different mbox for the publisher.
-      publisher_obj = Resource.find(self.publisher, metadata_graph_uri) if publisher
-      publisher_obj.read_predicate(RDF::FOAF.mbox).first if publisher_obj
     end
 
     class << self
