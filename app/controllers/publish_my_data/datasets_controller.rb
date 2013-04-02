@@ -31,23 +31,20 @@ module PublishMyData
       respond_with(@datasets)
     end
 
-    # /data/:id/download
-    def download
+    # /data/:id/dump
+    def dump
       s3 = AWS::S3.new
       @dataset = Dataset.find_by_slug(params[:id])
 
       # find the latest download for this dataset
       # Note, filenames take the format: "dataset_data-<slug>-time.nt.zip"
-      prefix = "dataset_data_#{@dataset.slug}_"
-      Rails.logger.debug "**PREFIX: #{prefix}"
-
+      # Only look for ones that were made on the same day as the the modified date, to restrict the results
+      # (v. small possibility of errors for changes aroung midnight, but unlikely people will be changing datasets then anyway!)
+      prefix = "dataset_data_#{@dataset.slug}_#{@dataset.modified.strftime("%Y%m%d")}"
       downloads = s3.buckets[PublishMyData.dataset_downloads_s3_bucket].objects.with_prefix(prefix).to_a
-
-      Rails.logger.debug "**DOWNLOADS: #{downloads}"
 
       if downloads.any?
         latest_download = downloads.last
-        Rails.logger.debug "**LATEST DOWNLOAD: #{latest_download.key}"
         redirect_to latest_download.public_url.to_s
       else
         raise Tripod::Errors::ResourceNotFound
