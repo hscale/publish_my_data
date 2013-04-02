@@ -37,7 +37,7 @@ module PublishMyData
       @dataset = Dataset.find_by_slug(params[:id])
 
       # find the latest download for this dataset
-      # Note: filenames on s3 take the format: "dataset_data-<slug>-time.nt.zip"
+      # Note: filenames on s3 take the format: "dataset_data_<slug>_time.nt.zip"
       # Only look for ones that were made on the same day as the the modified date, to restrict the results
       # (v. small possibility of errors for changes aroung midnight, but unlikely people will be changing datasets then anyway!)
       prefix = "dataset_data_#{@dataset.slug}_#{@dataset.modified.strftime("%Y%m%d")}"

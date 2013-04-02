@@ -65,7 +65,7 @@ module PublishMyData
         end
 
         it "should resond with the right mime type" do
-          response.content_type.should == Mime::RDF
+          response.content_type.should == Mime::RDF.to_s + "; charset=utf-8"
         end
 
         it "should respond with the right content" do
@@ -93,7 +93,7 @@ module PublishMyData
 
         it "should resond with the right mime type" do
           get :doc, :path => "unicorns/yuri", format: 'ttl', use_route: :publish_my_data
-          response.content_type.should == Mime::TTL
+          response.content_type.should == Mime::TTL.to_s + "; charset=utf-8"
         end
 
         it "should respond with the right content" do
