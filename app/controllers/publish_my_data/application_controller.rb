@@ -14,14 +14,13 @@ module PublishMyData
     def handle_uncaught_error(e)
       @e = e
 
+      Raven::Event.capture_rack_exception(e, request.env) if defined?(Raven)
+
       if Rails.env.development?
         #re-raise in dev mode.
+        # uncomment the following line send exceptions to sentry in dev mode
         raise e
       else
-        # TODO: move this out of the CE.
-        #Raven.capture_exception(e) if defined?(Raven)
-        Raven::Event.capture_rack_exception(e, request.env) if defined?(Raven)
-
         #log so the error appears in the rails log.
         Rails.logger.info ">>> UNCAUGHT ERROR"
         Rails.logger.info e.class.name
