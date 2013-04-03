@@ -14,7 +14,7 @@ module PublishMyData
     def handle_uncaught_error(e)
       @e = e
 
-      if false #Rails.env.development?
+      if Rails.env.development?
         #re-raise in dev mode.
         raise e
       else
