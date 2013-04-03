@@ -3,7 +3,7 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class DatasetsController < ApplicationController
 
-    respond_to :html, :ttl, :rdf, :nt, :json
+    respond_to :html, :ttl, :rdf, :nt, :json, :text
 
     # /data/:id (where :id is the dataset 'slug')
     def show

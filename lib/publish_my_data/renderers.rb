@@ -26,7 +26,7 @@ end
 
 # re-register JSON with extra headers
 Mime::Type.unregister(:json)
-Mime::Type.register "application/json", :json, %w( application/json text/x-json application/jsonrequest application/sparql-results+json )
+Mime::Type.register "application/json", :json, %w( application/ld+json text/x-json application/jsonrequest application/sparql-results+json )
 # json already has a renderer
 
 # likewise for XML

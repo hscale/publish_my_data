@@ -7,6 +7,9 @@ module PublishMyData
         included do
 
           rescue_from PublishMyData::SparqlQueryExecutionException, :with => :show_sparql_execution_message
+
+          rescue_from PublishMyData::SparqlQueryMissingVariablesException, :with => :missing_variables
+
           respond_to :html, :csv, :text, :nt, :ttl, :xml, :rdf, :json
 
           private
@@ -52,8 +55,13 @@ module PublishMyData
           def respond_with_error
             respond_to do |format|
               format.html { render 'publish_my_data/sparql/endpoint' }
-              format.any { head :status => 400 }
+              format.any { render :text => @error_message, :status => 400 }
             end
+          end
+
+          def missing_variables(e)
+            @error_message = e.message
+            respond_with_error
           end
 
           def show_sparql_execution_message(e)

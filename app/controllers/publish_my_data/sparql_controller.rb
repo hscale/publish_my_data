@@ -8,6 +8,8 @@ module PublishMyData
     before_filter :check_format, :only => [:endpoint]
 
     def endpoint
+      foo
+
       @query_text = params[:query]
 
       unless @query_text.blank?

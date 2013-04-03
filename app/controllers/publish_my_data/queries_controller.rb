@@ -17,7 +17,7 @@ module PublishMyData
       process_sparql_query(@sparql_query)
 
       respond_with(@sparql_query_result) do |format|
-        format.html { render template: 'publish_my_data/sparql/endpoint' }
+        format.html { head :status => 406 }
       end
 
     end

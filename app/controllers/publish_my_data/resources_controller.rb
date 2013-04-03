@@ -3,7 +3,7 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ResourcesController < ApplicationController
 
-    respond_to :html, :ttl, :rdf, :nt, :json
+    respond_to :html, :ttl, :rdf, :nt, :json, :text
 
     # /resources
     # /resources?type=[http://type-uri]&dataset=[dataset-slug]
