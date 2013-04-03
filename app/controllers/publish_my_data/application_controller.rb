@@ -14,6 +14,7 @@ module PublishMyData
     def handle_uncaught_error(e)
       @e = e
 
+      Rails.logger.info "Raven defined? #{defined?(Raven)}"
       Raven::Event.capture_rack_exception(e, request.env) if defined?(Raven)
 
       if Rails.env.development?
