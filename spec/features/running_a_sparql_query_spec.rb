@@ -5,8 +5,8 @@ describe 'visiting the sparql endpoint' do
   ## shared examples
 
   shared_examples_for 'a non-html error' do
-    it "should 400 with a blank response" do
-      page.source.should be_blank
+    it "should 400 with a message" do
+      page.source.should_not be_blank
       page.status_code.should == 400
     end
   end

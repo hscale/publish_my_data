@@ -178,7 +178,7 @@ module PublishMyData
 
           context 'for html format' do
             before do
-              SparqlQuery.any_instance.should_receive(:execute).and_raise(PublishMyData::SparqlQueryExecutionException)
+              SparqlQuery.any_instance.should_receive(:execute).and_raise(PublishMyData::SparqlQueryExecutionException.new("foobar"))
               get :endpoint,  :query => 'DODGY QUERY', use_route: :publish_my_data
             end
 
@@ -194,12 +194,12 @@ module PublishMyData
           context 'for a data format' do
             before do
               @request.env['HTTP_ACCEPT'] = "text/csv"
-              SparqlQuery.any_instance.should_receive(:execute).and_raise(PublishMyData::SparqlQueryExecutionException)
+              SparqlQuery.any_instance.should_receive(:execute).and_raise(PublishMyData::SparqlQueryExecutionException.new("foobar"))
               get :endpoint,  :query => 'DODGY QUERY', use_route: :publish_my_data
             end
 
-            it "should respond with an empty body" do
-              response.body.should be_blank
+            it "should respond with a message in the body" do
+              response.body.should == "There was a syntax error in your query: foobar"
             end
 
             it "should respond with bad response" do
