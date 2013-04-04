@@ -5,8 +5,13 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
+    caches_action :show, :index, :cache_path => Proc.new { |c| [c.params, c.request.format] }
+
     # /data/:id (where :id is the dataset 'slug')
     def show
+
+      Rails.logger.debug request.params.to_s
+
       @dataset = Dataset.find_by_slug(params[:id])
 
       @dataset.eager_load_object_triples!(:labels_only => true) # for the owner URI label

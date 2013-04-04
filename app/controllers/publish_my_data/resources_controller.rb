@@ -5,6 +5,8 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
+    caches_action :show, :doc, :definition :cache_path => Proc.new { |c| [c.params, c.request.format] }
+
     # /resources
     # /resources?type=[http://type-uri]&dataset=[dataset-slug]
     def index

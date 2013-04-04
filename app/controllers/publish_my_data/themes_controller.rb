@@ -3,6 +3,8 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ThemesController < ApplicationController
 
+    caches_action :show, :index, :cache_path => Proc.new { |c| [c.params, c.request.format] }
+
     respond_to :html, :ttl, :rdf, :nt, :json
 
     def index
