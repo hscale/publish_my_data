@@ -3,7 +3,7 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ThemesController < ApplicationController
 
-    caches_action :show, :index, :cache_path => Proc.new { |c| [c.params, c.request.format] }
+    caches_action :show, :index, :cache_path => Proc.new { |c| get_cache_path(c) }
 
     respond_to :html, :ttl, :rdf, :nt, :json
 

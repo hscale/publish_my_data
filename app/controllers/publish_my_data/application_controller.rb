@@ -9,6 +9,10 @@ module PublishMyData
 
     private
 
+    def get_cache_path(c)
+      c.params.merge({:format => c.request.format.to_sym})
+    end
+
     # TODO: deal with javaascript errors - respond with 200
 
     def handle_uncaught_error(e)

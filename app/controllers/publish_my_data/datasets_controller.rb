@@ -5,12 +5,10 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
-    caches_action :show, :index, :cache_path => Proc.new { |c| [c.params, c.request.format] }
+    caches_action :show, :index, :cache_path => Proc.new { |c| get_cache_path(c) }
 
     # /data/:id (where :id is the dataset 'slug')
     def show
-
-      Rails.logger.debug request.params.to_s
 
       @dataset = Dataset.find_by_slug(params[:id])
 
@@ -30,6 +28,7 @@ module PublishMyData
 
     # /data?page=2&per_page=10
     def index
+
       dataset_criteria = Dataset.all
       @pagination_params = ResourcePaginationParams.from_request(request)
       @datasets = Paginator.new(dataset_criteria, @pagination_params).paginate
