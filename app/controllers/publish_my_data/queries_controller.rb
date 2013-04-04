@@ -11,15 +11,11 @@ module PublishMyData
     # GET /queries/:id, where id is the slug.
     def show
       @query_text = get_query_sparql(params[:id])
-
       @sparql_query = build_sparql_query(@query_text)
-
-      process_sparql_query(@sparql_query)
-
+      @sparql_query_result = process_sparql_query(@sparql_query)
       respond_with(@sparql_query_result) do |format|
         format.html { head :status => 406 }
       end
-
     end
 
     # not implemented yet - will list all named queries

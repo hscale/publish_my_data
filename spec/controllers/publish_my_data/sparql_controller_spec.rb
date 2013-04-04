@@ -2,6 +2,14 @@ require 'spec_helper'
 
 module PublishMyData
   describe SparqlController do
+
+    shared_examples_for "a json-p response" do
+      it "should wrap the response in the callback" do
+        response.should be_success
+        response.body.should eq('foo(json_results);')
+      end
+    end
+
     describe "#endpoint" do
 
       context "with no query" do
@@ -105,6 +113,36 @@ module PublishMyData
                 assigns['pagination_params'].page.should == 2
               end
 
+            end
+
+            context "with a callback parameter" do
+              context "for json" do
+
+                context "with a header" do
+                  before do
+                    @request.env['HTTP_ACCEPT'] = "application/json"
+                    SparqlQuery.any_instance.should_receive(:execute).and_return('json_results')
+                    get :endpoint, :query => 'SELECT WHERE', :format => 'json', :callback => 'foo', use_route: :publish_my_data
+                  end
+                  it_should_behave_like "a json-p response"
+                end
+
+                context "with a format extension" do
+                  before do
+                    SparqlQuery.any_instance.should_receive(:execute).and_return('json_results')
+                    get :endpoint, :query => 'SELECT WHERE', :format => 'json', :callback => 'foo', use_route: :publish_my_data
+                  end
+                  it_should_behave_like "a json-p response"
+                end
+
+              end
+              context "for another format" do
+                it "should not wrap the results" do
+                  get :endpoint, :query => 'SELECT ?s WHERE {?s ?p ?o}', :format => 'txt', :callback => 'iamacallback', use_route: :publish_my_data
+                  response.should be_success
+                  response.body.should_not include('iamacallback')
+                end
+              end
             end
           end
         end

@@ -21,6 +21,8 @@ module PublishMyData
 
     # /resource?uri=http://foo.bar
     def show
+      # RubyProf.start
+
       uri = params[:uri]
       begin
         render_resource_with_uri(uri)
@@ -66,6 +68,11 @@ module PublishMyData
         resource.eager_load_predicate_triples!(:labels_only => true)
         resource.eager_load_object_triples!(:labels_only => true)
       end
+
+      # result = RubyProf.stop
+      # File.open "#{Rails.root}/tmp/profile-graph.html", 'w' do |file|
+      #   RubyProf::CallStackPrinter.new(result).print(file)
+      # end
 
       respond_with(resource) do |format|
         format.html { render resource.render_params(request) }

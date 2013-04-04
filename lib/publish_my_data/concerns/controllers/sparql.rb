@@ -35,21 +35,23 @@ module PublishMyData
 
               @pagination_params = SparqlPaginationParams.from_request(request)
 
-              # if there are paramters, then use them
+              # if there are pagination paramters, then use them
               if @pagination_params.per_page && @pagination_params.page
-                @sparql_query_result = sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
+                sparql_query_result = sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
                 if request.format.html?
                   count = sparql_query.as_pagination_query(@pagination_params.page, @pagination_params.per_page, 1).count
                   @more_pages = (count > @pagination_params.per_page)
                 end
               # otherwise just execute
               else
-                @sparql_query_result = @sparql_query.execute
+                sparql_query_result = @sparql_query.execute
               end
             else
               # pagination not allowed - just execute.
-              @sparql_query_result = @sparql_query.execute
+              sparql_query_result = @sparql_query.execute
             end
+
+            add_json_p_callback(sparql_query_result)
           end
 
           def respond_with_error
@@ -69,6 +71,13 @@ module PublishMyData
             respond_with_error
           end
 
+          def add_json_p_callback(result)
+            if request.format && request.format.json?
+              params[:callback] ? "#{params[:callback]}(#{result});" : result
+            else
+              result
+            end
+          end
         end
 
       end

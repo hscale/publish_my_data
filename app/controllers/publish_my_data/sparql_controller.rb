@@ -14,9 +14,7 @@ module PublishMyData
       unless @query_text.blank?
 
         @sparql_query = build_sparql_query(@query_text)
-
-        process_sparql_query(@sparql_query)
-
+        @sparql_query_result = process_sparql_query(@sparql_query)
         respond_with(@sparql_query_result)
       end
 
