@@ -9,7 +9,7 @@ module PublishMyData
     def show
       @dataset = Dataset.find_by_slug(params[:id])
 
-      @dataset.eager_load_object_triples! # for the owner URI label
+      @dataset.eager_load_object_triples!(:labels_only => true) # for the owner URI label
 
       @types = RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
 

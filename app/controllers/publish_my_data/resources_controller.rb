@@ -63,8 +63,8 @@ module PublishMyData
       resource = Resource.find(uri)
 
       if request.format.html?
-        resource.eager_load_predicate_triples!
-        resource.eager_load_object_triples!
+        resource.eager_load_predicate_triples!(:labels_only => true)
+        resource.eager_load_object_triples!(:labels_only => true)
       end
 
       respond_with(resource) do |format|
