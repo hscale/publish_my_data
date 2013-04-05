@@ -3,7 +3,7 @@ module PublishMyData
     include Tripod::Resource
     include PublishMyData::Concerns::Models::Resource
     field :label, RDF::RDFS.label
-    field :in_scheme, RDF::SKOS.inScheme
+    field :in_scheme, RDF::SKOS.inScheme, :is_uri => true
 
     rdf_type RDF::SKOS.Concept
 

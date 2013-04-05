@@ -5,7 +5,7 @@ module PublishMyData
     include PublishMyData::DefinedByOntology
 
     field :label, RDF::RDFS.label
-    field :defined_by, RDF::RDFS.isDefinedBy
+    field :defined_by, RDF::RDFS.isDefinedBy, :is_uri => true
 
   end
 end
