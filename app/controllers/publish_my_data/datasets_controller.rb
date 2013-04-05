@@ -5,7 +5,8 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
-    caches_action :show, :index, :cache_path => Proc.new { |c| get_cache_path(c) }
+    caches_action :show, :index,
+      :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| c.request.format.html? }
 
     # /data/:id (where :id is the dataset 'slug')
     def show
