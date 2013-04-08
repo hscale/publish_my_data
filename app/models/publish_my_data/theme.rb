@@ -23,7 +23,9 @@ module PublishMyData
     field :comment, RDF::RDFS.comment
 
     def datasets_criteria
-      Dataset.where("?uri <#{RDF::DCAT.theme}> <#{self.uri.to_s}>")
+      Dataset
+        .ordered_datasets_criteria
+        .where("?uri <#{RDF::DCAT.theme}> <#{self.uri.to_s}>")
     end
 
     def to_param

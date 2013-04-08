@@ -90,6 +90,10 @@ module PublishMyData
       def slug_from_data_graph_uri(data_graph_uri)
         data_graph_uri.to_s.split("/").last
       end
+
+      def ordered_datasets_criteria
+        Dataset.all.where("?uri <#{RDF::DC.title}> ?title").order("?title")
+      end
     end
   end
 end
