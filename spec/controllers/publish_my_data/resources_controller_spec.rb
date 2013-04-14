@@ -294,7 +294,7 @@ module PublishMyData
       let(:dataset) { FactoryGirl.create(:my_dataset) }
 
       let(:type) do
-        t = PublishMyData::RdfType.new('http://i-am-a-type', 'http://types')
+        t = PublishMyData::RdfType.new('http://example.com/i-am-a-type', 'http://example.com/types')
         t.label = 'I am a type'
         t.save!
         t
@@ -304,14 +304,14 @@ module PublishMyData
 
         # make some resources (in and out of our dataset and type)
         (1..5).each do |i|
-          r = Resource.new("http://resource-in-ds/#{i}", dataset.data_graph_uri)
+          r = Resource.new("http://example.com/resource-in-ds/#{i}", dataset.data_graph_uri)
           r.label = "resource #{i}"
           r.write_predicate(RDF.type, RDF::URI.new(type.uri)) if i.even?
           r.save!
         end
 
         (1..3).each do |i|
-          r = Resource.new("http://resource-not-in-ds/#{i}", 'http://anothergraph')
+          r = Resource.new("http://example.com/resource-not-in-ds/#{i}", 'http://example.com/anothergraph')
           r.label = "resource #{i}"
           r.write_predicate(RDF.type, RDF::URI.new(type.uri)) if i.even?
           r.save!

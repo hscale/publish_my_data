@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
   s.rubyforge_project         = "publish_my_data"
 
-  s.add_dependency "rails", "~> 3.2.11"
-  s.add_dependency "tripod", "~> 0.7"
+  s.add_dependency "rails", "~> 3.2"
+  s.add_dependency "tripod", "0.7.7"
   s.add_dependency "rdf", "~> 1.0"
   s.add_dependency "aws-sdk"
   s.add_dependency "kaminari"

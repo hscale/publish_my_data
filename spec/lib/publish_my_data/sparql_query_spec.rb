@@ -410,14 +410,14 @@ module PublishMyData
           it "should return a new SparqlQuery with the original query wrapped in a count" do
             q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
             q.as_count_query.class.should == SparqlQuery
-            q.as_count_query.query.should == 'SELECT (COUNT(*) as ?c) { SELECT ?s WHERE { ?s ?p ?o } }'
+            q.as_count_query.query.should == 'SELECT (COUNT(*) as ?tripod_count_var) { SELECT ?s WHERE { ?s ?p ?o } }'
           end
         end
 
         context 'with prefixes' do
           it "should move the prefixes to the start" do
             q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT ?s WHERE { ?s ?p ?o }')
-            q.as_count_query.query.should == 'PREFIX e: <http://example.com> SELECT (COUNT(*) as ?c) { SELECT ?s WHERE { ?s ?p ?o } }'
+            q.as_count_query.query.should == 'PREFIX e: <http://example.com> SELECT (COUNT(*) as ?tripod_count_var) { SELECT ?s WHERE { ?s ?p ?o } }'
           end
         end
       end
@@ -447,12 +447,12 @@ module PublishMyData
         @q.should_receive(:as_count_query).and_return(count_q)
         count_q.should_receive(:execute).and_return('{
           "head": {
-            "vars": [ "c" ]
+            "vars": [ "tripod_count_var" ]
           } ,
           "results": {
             "bindings": [
               {
-                "c": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "2" }
+                "tripod_count_var": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "2" }
               }
             ]
           }
