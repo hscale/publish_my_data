@@ -10,7 +10,7 @@ module PublishMyData
 
     def index
       # don't bother paginating this for now - there probably wont be that many themes
-      @themes = Theme.all.resources
+      @themes = Theme.all.where("?uri <#{RDF::RDFS.label}> ?label").order("?label").resources
       respond_with(@themes)
     end
 
