@@ -83,7 +83,7 @@ module PublishMyData
           it "should 404 with a blank response" do
             get :doc, :path => "unicorns/borat", use_route: :publish_my_data
             response.should be_not_found
-            response.body.should be_blank
+            response.body.should == "Not Found"
           end
         end
 

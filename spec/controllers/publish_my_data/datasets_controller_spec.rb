@@ -41,7 +41,7 @@ module PublishMyData
         context "for a non-existent dataset slug" do
           it "should return a blank body" do
             get :show, id: "slug-that-doesnt-exist", use_route: :publish_my_data, :format => format
-            response.body.should be_blank
+            response.body.should == "Not Found"
           end
         end
       end
@@ -72,7 +72,7 @@ module PublishMyData
         context "for a non-existent dataset slug" do
           it "should return a blank body" do
             get :show, id: "slug-that-doesnt-exist", use_route: :publish_my_data, :format => format
-            response.body.should be_blank
+            response.body.should == "Not Found"
           end
         end
 

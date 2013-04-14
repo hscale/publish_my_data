@@ -80,7 +80,7 @@ describe "A visitor dereferencing a URI" do
       it "should 404, with blank response" do
         visit 'http://pmdtest.dev/foo/'
         page.status_code.should == 404
-        page.source.should be_blank
+        page.source.should == "Not Found"
       end
     end
 

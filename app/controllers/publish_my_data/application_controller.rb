@@ -30,7 +30,7 @@ module PublishMyData
         Rails.logger.info e.backtrace.join("\n")
         respond_to do |format|
           format.html { render(:template => "publish_my_data/errors/uncaught", :layout => 'publish_my_data/error', :status => 500) and return false }
-          format.any{ head(:status => 500, :content_type => 'text/plain') and return false }
+          format.any{ render(:text => 'Error', :status => 500, :content_type => 'text/plain') and return false }
         end
       end
 
@@ -44,12 +44,13 @@ module PublishMyData
           },
           :tags => {
             'message_type' => 'timeout'
-          }
+          },
+          :level => 'warning'
         })
       end
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/timeout", :layout => 'publish_my_data/error', :status => 503) and return false }
-        format.any { head(:status => 503, :content_type => 'text/plain') and return false }
+        format.any { render(:text => 'Timeout', :status => 503, :content_type => 'text/plain') and return false }
       end
     end
 
@@ -61,7 +62,8 @@ module PublishMyData
           },
           :tags => {
             'message_type' => 'too_Large'
-          }
+          },
+          :level => 'warning'
         })
       end
       respond_to do |format|
@@ -76,7 +78,7 @@ module PublishMyData
       Rails.logger.debug(e.backtrace.join("\n"))
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/not_found", :layout => 'publish_my_data/error', :status => 404) and return false }
-        format.any { head(:status => 404, :content_type => 'text/plain') and return false }
+        format.any { render(:text => "Not Found" ,:status => 404, :content_type => 'text/plain') and return false }
       end
     end
 

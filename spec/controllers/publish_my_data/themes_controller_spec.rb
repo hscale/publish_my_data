@@ -66,7 +66,8 @@ module PublishMyData
 
           it "should respond with an empty body" do
             get :show, :id => "theme-that-doesnt-exist", :use_route => :publish_my_data, :format => 'rdf'
-            response.body.strip.should be_blank
+            response.body.strip.should == "Not Found"
+
           end
         end
       end
