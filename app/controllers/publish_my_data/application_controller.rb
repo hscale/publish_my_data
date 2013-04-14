@@ -9,6 +9,9 @@ module PublishMyData
 
     private
 
+    def is_request_html_format?
+      (request.format.to_sym || :html) == :html
+    end
     # TODO: deal with javaascript errors - respond with 200
 
     def handle_uncaught_error(e)

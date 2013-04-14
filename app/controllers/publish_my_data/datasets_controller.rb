@@ -17,7 +17,7 @@ module PublishMyData
 
       @types = RdfType.where('?s a ?uri').graph(@dataset.data_graph_uri).resources
 
-      if request.format && request.format.html?
+      if is_request_html_format?
         @type_resource_counts = {}
         @resources_count = 0
         @types.each do |t|

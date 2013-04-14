@@ -12,7 +12,7 @@ module PublishMyData
       @query_text = params[:query]
 
       if @query_text.blank?
-        unless request.format.html? #the html view handles this ok
+        unless is_request_html_format? #the html view handles this ok
           render :text => "no query supplied", :status => 400
         end
       else

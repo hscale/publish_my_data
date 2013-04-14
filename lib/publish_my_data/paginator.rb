@@ -17,7 +17,7 @@ module PublishMyData
     end
 
     def self.from_request(request)
-      self.new(per_page: request.params[:per_page], page: request.params[:page], format: request.format.to_sym)
+      self.new(per_page: request.params[:per_page], page: request.params[:page], format: (request.format.to_sym || :html))
     end
 
     def ==(other)

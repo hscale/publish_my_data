@@ -67,7 +67,7 @@ module PublishMyData
     def render_resource_with_uri(uri)
       resource = Resource.find(uri)
 
-      if request.format.html?
+      if is_request_html_format?
         resource.eager_load_predicate_triples!(:labels_only => true)
         resource.eager_load_object_triples!(:labels_only => true)
       end

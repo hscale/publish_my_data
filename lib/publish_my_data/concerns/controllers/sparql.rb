@@ -38,7 +38,7 @@ module PublishMyData
               # if there are pagination paramters, then use them
               if @pagination_params.per_page && @pagination_params.page
                 sparql_query_result = sparql_query.paginate(@pagination_params.page, @pagination_params.per_page)
-                if request.format.html?
+                if is_request_html_format?
                   count = sparql_query.as_pagination_query(@pagination_params.page, @pagination_params.per_page, 1).count
                   @more_pages = (count > @pagination_params.per_page)
                 end
