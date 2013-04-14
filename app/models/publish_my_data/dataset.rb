@@ -55,10 +55,6 @@ module PublishMyData
       Resource.all.graph(self.data_graph_uri)
     end
 
-    def resources_count
-      resources_in_dataset_criteria.count
-    end
-
     def theme_obj
       Theme.find(self.theme) rescue nil
     end

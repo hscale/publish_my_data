@@ -19,9 +19,13 @@ module PublishMyData
 
       if request.format && request.format.html?
         @type_resource_counts = {}
+        @resources_count = 0
         @types.each do |t|
-          @type_resource_counts[t.uri.to_s] = Resource.where("?uri a <#{t.uri.to_s}>").graph(@dataset.data_graph_uri).count
+          count_query = "SELECT ?uri WHERE { GRAPH <#{@dataset.data_graph_uri.to_s}> { ?uri a <#{t.uri.to_s}> } }"
+          @type_resource_counts[t.uri.to_s] = SparqlQuery.new(count_query).count
+          @resources_count += @type_resource_counts[t.uri.to_s]
         end
+
       end
 
       respond_with(@dataset)
@@ -29,7 +33,6 @@ module PublishMyData
 
     # /data?page=2&per_page=10
     def index
-
       dataset_criteria = Dataset.ordered_datasets_criteria
       @pagination_params = ResourcePaginationParams.from_request(request)
       @datasets = Paginator.new(dataset_criteria, @pagination_params).paginate
