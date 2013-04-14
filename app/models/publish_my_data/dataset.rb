@@ -23,7 +23,7 @@ module PublishMyData
     field :data_dump, RDF::VOID.dataDump, :is_uri => true # full download URI
 
      # what the data is about
-    field :theme, RDF::DCAT.theme
+    field :theme, RDF::DCAT.theme, :is_uri => true
     field :tags, RDF::DCAT.keyword, :multivalued => true # values are string literals
 
     # field :spatial_coverage, RDF::DC.spatial # value is a URI for region covered, e.g. England.
@@ -56,7 +56,7 @@ module PublishMyData
     end
 
     def theme_obj
-      Theme.find(self.theme) rescue nil
+      Theme.find(self.theme.to_s) rescue nil
     end
 
     class << self

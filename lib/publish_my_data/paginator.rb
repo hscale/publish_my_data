@@ -59,9 +59,10 @@ module PublishMyData
     # returns a Kaminari paginatable array, or a plain old array
     # Note that this uses the :return_graph => false option for criteria execution to avoid duplicate graphs in the results
     # (which could mess with the pagination counts)
-    def paginate
+    # optionally pass an integer to use for the total count.
+    def paginate(total_count=nil)
       if self.pagination_params.format == :html && pagination_params.per_page && pagination_params.page
-        count = criteria.count #this has to happen first, before we modify the criteria with limit/offset
+        count = total_count || criteria.count #this has to happen first, before we modify the criteria with limit/offset
         add_limit_and_offset_criteria(criteria)
         paginatable = Kaminari.paginate_array(criteria.resources(:return_graph => false).to_a, total_count: count).page(self.pagination_params.page).per(self.pagination_params.per_page)
       else
