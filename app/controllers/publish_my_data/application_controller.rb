@@ -37,6 +37,16 @@ module PublishMyData
     end
 
     def handle_timeout(e)
+      if defined?(Raven)
+        Raven.capture_message("query timeout", {
+          :extra => {
+            'url' => request.url
+          },
+          :tags => {
+            'message_type' => 'timeout'
+          }
+        })
+      end
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/timeout", :layout => 'publish_my_data/error', :status => 503) and return false }
         format.any { head(:status => 503, :content_type => 'text/plain') and return false }
@@ -44,6 +54,16 @@ module PublishMyData
     end
 
     def handle_response_too_large(e)
+      if defined?(Raven)
+        Raven.capture_message("response too large", {
+          :extra => {
+            'url' => request.url
+          },
+          :tags => {
+            'message_type' => 'too_Large'
+          }
+        })
+      end
       respond_to do |format|
         format.html { render(:template => "publish_my_data/errors/response_too_large", :layout => 'publish_my_data/error', :status => 400) and return false }
         format.any { render(:text => "Response too large.", :status => 400, :content_type => 'text/plain') and return false }
