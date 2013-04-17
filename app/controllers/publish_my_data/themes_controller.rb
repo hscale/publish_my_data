@@ -6,7 +6,7 @@ module PublishMyData
     caches_action :show, :index,
       :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| c.request.format.html? }
 
-    respond_to :html, :ttl, :rdf, :nt, :json
+    respond_to :html, :ttl, :rdf, :nt, :json, :text
 
     def index
       # don't bother paginating this for now - there probably wont be that many themes
