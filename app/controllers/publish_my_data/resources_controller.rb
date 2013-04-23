@@ -27,15 +27,20 @@ module PublishMyData
       # RubyProf.start
 
       uri = params[:uri]
-      begin
-        render_resource_with_uri(uri)
-      rescue Tripod::Errors::ResourceNotFound
-        # if it's not there
-        respond_to do |format|
-          format.html { redirect_to uri }
-          # This is meant for UI browsing only, really. Just 404 for other mimes.
-          format.any { render :nothing => true, :status => 404, :content_type => 'text/plain' }
+
+      if uri.present?
+        begin
+          render_resource_with_uri(uri)
+        rescue Tripod::Errors::ResourceNotFound
+          # if it's not there
+          respond_to do |format|
+            format.html { redirect_to uri }
+            # This is meant for UI browsing only, really. Just 404 for other mimes.
+            format.any { render :nothing => true, :status => 404, :content_type => 'text/plain' }
+          end
         end
+      else
+        raise Tripod::Errors::ResourceNotFound.new
       end
     end
 

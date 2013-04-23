@@ -188,6 +188,15 @@ module PublishMyData
 
     describe "#show" do
 
+      context "with no uri parameter" do
+        before do
+          get :show, use_route: :publish_my_data
+        end
+        it "should respond with not found" do
+          response.should be_not_found
+        end
+      end
+
       context "with a resource not in our database" do
 
         uri = "http://purl.org/linked-data/sdmx/2009/dimension%23refArea"
