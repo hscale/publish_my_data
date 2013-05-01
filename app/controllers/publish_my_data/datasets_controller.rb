@@ -51,8 +51,18 @@ module PublishMyData
       prefix = "dataset_data_#{@dataset.slug}_#{@dataset.modified.strftime("%Y%m%d")}"
       downloads = s3.buckets[PublishMyData.dataset_downloads_s3_bucket].objects.with_prefix(prefix).to_a
 
-      if downloads.any?
-        latest_download = downloads.last
+      # filter the downloads to only include ones with a timestamp equal to or after the dataset modified date.
+      # (ones older than this are out of date)
+      current_downloads = downloads.select do |d|
+        date_portion = d.public_url.to_s.split("_").last.split('.').first  #between last underscore and first dot.
+        file_timestamp = DateTime.parse(date_portion)
+        file_timestamp >= @dataset.modified
+      end
+
+      # if we can't find a current download it's cos we haven't generated it yet since ds was modified
+      # ... and we should 404.
+      if current_downloads.any?
+        latest_download = current_downloads.last
         redirect_to latest_download.public_url.to_s
       else
         raise Tripod::Errors::ResourceNotFound

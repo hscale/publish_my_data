@@ -204,7 +204,7 @@ module PublishMyData
 
         let(:dataset) { FactoryGirl.create(:my_dataset) }
 
-        context "when a download exists on s3" do
+        context "when a download exists on s3 for today" do
 
           before do
             # make some downloads.
@@ -229,12 +229,33 @@ module PublishMyData
 
         end
 
+        context "when a download exists on s3 for today, but before the modified date" do
+
+          before do
+            # make some downloads.
+            s3 = AWS::S3.new
+            bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
+
+            @obj1 = bucket.objects.create("dataset_data_#{dataset.slug}_201007011159.nt.zip", 'data')
+
+            # make them public readable
+            [@obj1].each { |o| o.acl = :public_read }
+          end
+
+          it "should 404" do
+            get "dump", :id => dataset.slug, :use_route => :publish_my_data
+            response.should be_not_found
+          end
+
+        end
+
         context "when a download doesn't exist on s3" do
           it "should 404" do
             get "dump", :id => dataset.slug, :use_route => :publish_my_data
             response.should be_not_found
           end
         end
+
       end
 
       context "when a dataset with that slug doesn't exist" do
