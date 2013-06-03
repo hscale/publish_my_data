@@ -6,7 +6,7 @@ module PublishMyData
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
     caches_action :show, :index, :doc, :definition,
-      :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| is_request_html_format?(c)  }
+      :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| (!respond_to?(:user_signed_in) || !user_signed_in?) && is_request_html_format?(c)  }
 
     # /resources
     # /resources?type=[http://type-uri]&dataset=[dataset-slug]

@@ -4,7 +4,7 @@ module PublishMyData
   class ThemesController < ApplicationController
 
     caches_action :show, :index,
-      :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| is_request_html_format?(c)  }
+      :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| (!respond_to?(:user_signed_in) || !user_signed_in?) &&  is_request_html_format?(c)  }
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
