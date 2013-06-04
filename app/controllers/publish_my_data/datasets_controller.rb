@@ -5,9 +5,6 @@ module PublishMyData
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
-    caches_action :show, :index,
-      :cache_path => Proc.new { |c| c.params }, :if => Proc.new { |c| (!respond_to?(:user_signed_in) || !user_signed_in?) && is_request_html_format?(c) }
-
     # /data/:id (where :id is the dataset 'slug')
     def show
 
