@@ -7,11 +7,12 @@ PublishMyData::Engine.routes.draw do
   match "/resources(.:format)" => "resources#index", :as => 'list_resources' # +filters on thh query string
 
   # datasets
-  match "/data/:id(.:format)" => "datasets#show", :as => 'dataset'
-  match "/data/:id/dump" => "datasets#dump", :as => 'dataset_dump'
-  match "/data(.:format)" => "datasets#index",  :as => 'datasets'
 
-  resources :datasets, :only => [:index, :show]
+  # note that the separate .:format and no-format verisons allow extensions like .json on the end of the uri not to be globbed as the *id
+  match "/data/*id/dump" => "datasets#dump", :as => 'dataset_dump'
+  match "/data/*id.:format" => "information_resources#show"
+  match "/data/*id" => "information_resources#show", :as => 'dataset'
+  match "/data(.:format)" => "datasets#index",  :as => 'datasets'
 
   # themes
   resources :themes, :only => [:index, :show]

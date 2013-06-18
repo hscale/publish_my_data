@@ -61,6 +61,10 @@ module PublishMyData
 
     class << self
 
+      def uri_from_data_graph_uri(data_graph_uri)
+        data_graph_uri.to_s.gsub("graph/", "data/")
+      end
+
       # this is the graph that dataset metadata goes in.
       def metadata_graph_uri(slug)
         "#{data_graph_uri(slug)}/metadata"
@@ -69,6 +73,10 @@ module PublishMyData
       # this is the dataset that the actual data will go in
       def data_graph_uri(slug)
         "http://#{PublishMyData.local_domain}/graph/#{slug}"
+      end
+
+      def uri_from_data_graph_uri(data_graph_uri)
+        data_graph_uri.to_s.sub("/graph/", "/data/")
       end
 
       def find_by_slug(slug)
@@ -80,11 +88,8 @@ module PublishMyData
       end
 
       def slug_from_uri(uri)
-        uri.to_s.split('/').last
-      end
-
-      def slug_from_data_graph_uri(data_graph_uri)
-        data_graph_uri.to_s.split("/").last
+        root_uri = uri_from_slug('')
+        uri.to_s.gsub(root_uri, '')
       end
 
       def ordered_datasets_criteria

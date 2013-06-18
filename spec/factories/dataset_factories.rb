@@ -5,8 +5,8 @@ FactoryGirl.define do
     description 'A test dataset'
     modified DateTime.parse('2010-07-01 12:00')
     ignore do
-      uri { PublishMyData::Dataset.uri_from_slug("my-dataset")  }
-      graph_uri { PublishMyData::Dataset.metadata_graph_uri("my-dataset") }
+      uri { PublishMyData::Dataset.uri_from_slug("my/dataset")  }
+      graph_uri { PublishMyData::Dataset.metadata_graph_uri("my/dataset") }
     end
   end
 
@@ -16,8 +16,8 @@ FactoryGirl.define do
     description 'Another test dataset'
     modified DateTime.parse('2010-07-01 12:00')
     ignore do
-      uri { PublishMyData::Dataset.uri_from_slug("another-dataset")  }
-      graph_uri { PublishMyData::Dataset.metadata_graph_uri("another-dataset") }
+      uri { PublishMyData::Dataset.uri_from_slug("my/other-dataset")  }
+      graph_uri { PublishMyData::Dataset.metadata_graph_uri("my/other-dataset") }
     end
   end
 end

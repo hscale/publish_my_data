@@ -7,7 +7,7 @@ module PublishMyData
     end
 
     # e.g. opts[:pagination_params] => ResourcePaginationParams.new
-    def render_params(opts)
+    def render_params(opts={})
       datasets = Paginator.new(@theme.datasets_criteria, opts[:pagination_params]).paginate
       {
          template: 'publish_my_data/themes/show',

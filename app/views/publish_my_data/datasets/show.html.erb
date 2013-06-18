@@ -1,12 +1,12 @@
-<h1>Dataset: <%= @dataset.title %></h1>
+<h1>Dataset: <%= dataset.title %></h1>
 
-<%= @dataset.description %>
+<%= dataset.description %>
 
 <h2> Types in this ds</h2>
 
-<% @types.each do |t| %>
+<% types.each do |t| %>
   <%= link_to t.label || t.uri, resource_path_from_uri(t.uri) %>
-  (<%= link_to "#{@type_resource_counts[t.uri.to_s]} resources", list_resources_path(dataset: @dataset.slug, type_uri: t.uri)%>)
+  (<%= link_to "#{type_resource_counts[t.uri.to_s]} resources", list_resources_path(dataset: dataset.slug, type_uri: t.uri)%>)
   <br/>
 <% end %>
 

@@ -6,7 +6,7 @@
 <% end %>
 
 <% @datasets.each do |d| %>
-  <%= link_to d.title, d.uri.to_s %> <br/>
+  <%= link_to d.title, d %> <br/>
 <% end %>
 
 <%= paginate @datasets %>

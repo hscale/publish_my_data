@@ -3,6 +3,8 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ResourcesController < ApplicationController
 
+    include PublishMyData::Concerns::Controllers::Resource
+
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
     # /resources
@@ -65,24 +67,6 @@ module PublishMyData
     end
 
     private
-
-    def render_resource_with_uri(uri)
-      resource = Resource.find(uri)
-
-      if is_request_html_format?
-        resource.eager_load_predicate_triples!(:labels_only => true)
-        resource.eager_load_object_triples!(:labels_only => true)
-      end
-
-      # result = RubyProf.stop
-      # File.open "#{Rails.root}/tmp/profile-graph.html", 'w' do |file|
-      #   RubyProf::CallStackPrinter.new(result).print(file)
-      # end
-
-      respond_with(resource) do |format|
-        format.html { render resource.render_params(request) }
-      end
-    end
 
     # TODO: move the filter management into an object
     def add_type_filter(criteria)

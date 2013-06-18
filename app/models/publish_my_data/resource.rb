@@ -16,14 +16,18 @@ module PublishMyData
     end
 
     def dataset
-      slug = Dataset.slug_from_data_graph_uri(self.graph_uri)
-      Dataset.find_by_slug(slug) rescue nil
+      Dataset.find(Dataset.uri_from_data_graph_uri(self.graph_uri)) rescue nil
     end
 
     # this calls render_params on the right type of RenderParams object.
     # (strategy pattern-ish).
     def render_params(request)
-      render_params_class.new(self).render_params(pagination_params: ResourcePaginationParams.from_request(request))
+      is_html = (request.format.to_sym || :html) == :html
+      render_params_class.new(self).
+        render_params(
+          pagination_params: ResourcePaginationParams.from_request(request),
+          is_html: is_html
+        )
     end
 
     # Don't worry that these as_xxx methods look like they'll do an extra lookup.
@@ -34,6 +38,10 @@ module PublishMyData
       r = klass.new(self.uri)
       r.hydrate!(graph: self.repository_as_graph)
       r
+    end
+
+    def as_dataset
+      as_resource_of_class(Dataset)
     end
 
     def as_ontology
@@ -54,6 +62,10 @@ module PublishMyData
 
     def as_ontology_class
       as_resource_of_class(OntologyClass)
+    end
+
+    def is_dataset?
+      read_type_predicate.include?(RDF::PMD_DS.Dataset)
     end
 
     def is_ontology?
@@ -83,7 +95,9 @@ module PublishMyData
     end
 
     def render_params_class
-      if self.is_ontology?
+      if self.is_dataset?
+        DatasetRenderParams
+      elsif self.is_ontology?
         OntologyRenderParams
       elsif self.is_class?
         OntologyClassRenderParams
