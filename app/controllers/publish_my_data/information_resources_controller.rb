@@ -9,7 +9,6 @@ module PublishMyData
 
     def show
       the_uri = "http://#{PublishMyData.local_domain}/data/#{params[:id]}"
-      puts the_uri
       render_resource_with_uri(the_uri)
     end
 

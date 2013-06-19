@@ -23,14 +23,14 @@ module PublishMyData
         end
       end
 
-      shared_examples_for "html format" do
+      shared_examples_for "resource html format" do
         it "should render the resource show template" do
           get :show, id: "information/resource", use_route: :publish_my_data, :format => format
           response.should render_template("publish_my_data/resources/show")
         end
       end
 
-      shared_examples_for "a non html format" do
+      shared_examples_for "resource non html format" do
 
         context "for an existing resource" do
           it "should return the resource in that format" do
@@ -49,14 +49,14 @@ module PublishMyData
 
       context "for html format" do
         let(:format){ 'html' }
-        it_should_behave_like "html format"
+        it_should_behave_like "resource html format"
         it_should_behave_like "resource show"
       end
 
       # try another format.
       context "for rdf format" do
         let(:format){ 'rdf' }
-        it_should_behave_like "a non html format"
+        it_should_behave_like "resource non html format"
         it_should_behave_like "resource show"
       end
 
@@ -83,14 +83,14 @@ module PublishMyData
         end
       end
 
-      shared_examples_for "html format" do
+      shared_examples_for "dataset html format" do
         it "should render the dataset show template" do
           get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
           response.should render_template("publish_my_data/datasets/show")
         end
       end
 
-      shared_examples_for "a non html format" do
+      shared_examples_for "dataset non html format" do
 
         context "for an existing dataset" do
           it "should return the dataset dtls in that format" do
@@ -109,13 +109,13 @@ module PublishMyData
 
       context "for html format" do
         let(:format){ 'html' }
-        it_should_behave_like "html format"
+        it_should_behave_like "dataset html format"
         it_should_behave_like "dataset show"
       end
 
       context "for rdf format" do
         let(:format){ 'rdf' }
-        it_should_behave_like "a non html format"
+        it_should_behave_like "dataset non html format"
         it_should_behave_like "dataset show"
       end
 
@@ -143,13 +143,13 @@ module PublishMyData
 
       context "for ttl format" do
         let(:format){ 'ttl' }
-        it_should_behave_like "a non html format"
+        it_should_behave_like "dataset non html format"
         it_should_behave_like "dataset show"
       end
 
       context "for ntriples format" do
         let(:format){ 'nt' }
-        it_should_behave_like "a non html format"
+        it_should_behave_like "dataset non html format"
         it_should_behave_like "dataset show"
       end
 

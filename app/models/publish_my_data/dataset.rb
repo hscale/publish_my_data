@@ -62,7 +62,7 @@ module PublishMyData
     class << self
 
       def uri_from_data_graph_uri(data_graph_uri)
-        data_graph_uri.to_s.gsub("graph/", "data/")
+        data_graph_uri.to_s.gsub("/graph/", "/data/")
       end
 
       # this is the graph that dataset metadata goes in.

@@ -133,7 +133,6 @@ module PublishMyData
 
           it "should redirect to the latest download that exists for that dataset" do
             get :dump, :id => dataset.slug, :use_route => :publish_my_data
-            puts assigns[:dataset].inspect
             response.should be_redirect
             response.should redirect_to(@obj3.public_url.to_s)
           end
