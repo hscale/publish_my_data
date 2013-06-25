@@ -32,8 +32,12 @@ module PublishMyData
     # field :temporal_granularity, RDF::DC.temporal # value is class of objects of refPeriod
 
     field :size, RDF::VOID.triples # value is integer.
+    field :replaced_by, RDF::DC.isReplacedBy, is_uri: true
 
     rdf_type RDF::PMD_DS.Dataset
+
+    cattr_accessor :DEPRECATED_DATASET_TYPE
+    self.DEPRECATED_DATASET_TYPE = RDF::PMD_DS.DeprecatedDataset
 
     def slug
       Dataset.slug_from_uri(self.uri)
@@ -57,6 +61,10 @@ module PublishMyData
 
     def theme_obj
       Theme.find(self.theme.to_s) rescue nil
+    end
+
+    def deprecated?
+      self.rdf_type.include?(Dataset.DEPRECATED_DATASET_TYPE)
     end
 
     class << self

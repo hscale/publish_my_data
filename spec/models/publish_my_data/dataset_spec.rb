@@ -2,6 +2,20 @@ require 'spec_helper'
 
 module PublishMyData
   describe Dataset do
+    describe '#deprecated?' do
+      let(:dataset) { FactoryGirl.build(:my_dataset) }
+      it 'should be false' do
+        dataset.deprecated?.should be_false
+      end
+
+      context 'when the dataset has been given the DeprecatedDataset type' do
+        before { dataset.rdf_type = [dataset.rdf_type, Dataset.DEPRECATED_DATASET_TYPE] }
+
+        it 'should be true' do
+          dataset.deprecated?.should be_true
+        end
+      end
+    end
 
     describe ".uri_from_slug" do
       it "returns a uri given a slug" do
