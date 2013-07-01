@@ -8,10 +8,8 @@ module PublishMyData
 
     def render_params(opts={})
 
-      if opts[:is_html]
-        @property.eager_load_predicate_triples!(:labels_only => true)
-        @property.eager_load_object_triples!(:labels_only => true)
-      end
+      @property.eager_load_predicate_triples!(:labels_only => true)
+      @property.eager_load_object_triples!(:labels_only => true)
 
       {template: 'publish_my_data/properties/show', locals: {property: @property}}
     end

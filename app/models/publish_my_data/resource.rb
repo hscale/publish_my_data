@@ -22,11 +22,9 @@ module PublishMyData
     # this calls render_params on the right type of RenderParams object.
     # (strategy pattern-ish).
     def render_params(request)
-      is_html = (request.format.to_sym || :html) == :html
       render_params_class.new(self).
         render_params(
-          pagination_params: ResourcePaginationParams.from_request(request),
-          is_html: is_html
+          pagination_params: ResourcePaginationParams.from_request(request)
         )
     end
 
