@@ -3,7 +3,7 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class QueriesController < ApplicationController
 
-    include PublishMyData::Concerns::Controllers::Sparql
+    include PublishMyData::SparqlProcessing
 
     before_filter :check_format, :only => [:show]
 

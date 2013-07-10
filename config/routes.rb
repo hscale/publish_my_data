@@ -10,8 +10,8 @@ PublishMyData::Engine.routes.draw do
 
   # note that the separate .:format and no-format verisons allow extensions like .json on the end of the uri not to be globbed as the *id
   match "/data/*id/dump" => "datasets#dump", :as => 'dataset_dump'
-  match "/data/*id.:format" => "information_resources#show"
-  match "/data/*id" => "information_resources#show", :as => 'dataset'
+  match "/data/*id.:format" => "information_resources#data"
+  match "/data/*id" => "information_resources#data", :as => 'dataset'
   match "/data(.:format)" => "datasets#index",  :as => 'datasets'
 
   # themes
@@ -22,9 +22,14 @@ PublishMyData::Engine.routes.draw do
   match "/doc/*path.:format" => "resources#doc"
   match "/doc/*path" => "resources#doc"
 
+  # download paths
+  match "/def/ontology/*id/dump" => "ontologies#dump"
+  match "/def/concept-scheme/*id/dump" => "concept_schemes#dump"
+  match "/vocabularies/:id/dump" => "vocabularies#dump"
+
   # def pages
-  match "/def/*path.:format" => "resources#definition"
-  match "/def/*path" => "resources#definition"
+  match "/def/*id.:format" => "information_resources#def"
+  match "/def/*id" => "information_resources#def"
 
   # queries
   resources :queries, :only => [:show] # add index later

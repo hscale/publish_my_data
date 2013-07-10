@@ -2,6 +2,9 @@ require 'spec_helper'
 
 module PublishMyData
   describe DatasetsController do
+    it_should_behave_like 'a controller with a dump action' do
+      let(:resource) { FactoryGirl.create(:my_dataset) }
+    end
 
     describe "#index" do
 
@@ -20,7 +23,7 @@ module PublishMyData
       shared_examples_for "a dataset collection in non-html" do
         it "should render the collection in the right format" do
           get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
-          response.body.should == Dataset.ordered_datasets_criteria.limit(per_page).offset(offset).resources.send("to_#{format}")
+          response.body.should == Dataset.ordered_by_title.limit(per_page).offset(offset).resources.send("to_#{format}")
         end
 
         it "shouldn't call Kaminari" do
@@ -36,7 +39,7 @@ module PublishMyData
 
       shared_examples_for "dataset kaminari pagination" do
         it "should call kaminari to paginate the results" do
-          datasets_array = Dataset.ordered_datasets_criteria.limit(per_page).offset(offset).resources.to_a
+          datasets_array = Dataset.ordered_by_title.limit(per_page).offset(offset).resources.to_a
           count = Dataset.count
 
           kam = Kaminari.paginate_array(datasets_array, total_count: count)
@@ -50,7 +53,7 @@ module PublishMyData
         it "should set @datasets with the right page of datasets" do
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
           assigns['datasets'].map{ |d| d.uri.to_s }.should ==
-            Dataset.ordered_datasets_criteria.resources[offset...offset+per_page].map{ |d| d.uri.to_s }
+            Dataset.ordered_by_title.resources[offset...offset+per_page].map{ |d| d.uri.to_s }
           assigns['datasets'].length.should == per_page
         end
 
@@ -62,8 +65,8 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the first page of results" do
-          crit = Dataset.ordered_datasets_criteria
-          Dataset.should_receive(:ordered_datasets_criteria).at_least(:once).and_return(crit)
+          crit = Dataset.ordered_by_title
+          Dataset.should_receive(:ordered_by_title).at_least(:once).and_return(crit)
           crit.should_receive(:limit).with(per_page).and_call_original
           crit.should_receive(:offset).with(offset).and_call_original
           get :index, use_route: :publish_my_data
@@ -85,8 +88,8 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the right page of results" do
-          crit = Dataset.ordered_datasets_criteria
-          Dataset.should_receive(:ordered_datasets_criteria).at_least(:once).and_return(crit)
+          crit = Dataset.ordered_by_title
+          Dataset.should_receive(:ordered_by_title).at_least(:once).and_return(crit)
           crit.should_receive(:limit).with(per_page).and_call_original
           crit.should_receive(:offset).with(offset).and_call_original
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
@@ -99,82 +102,6 @@ module PublishMyData
           it_should_behave_like "a dataset collection in non-html"
         end
       end
-
-    end
-
-    describe "#dump" do
-
-      before do
-        s3 = AWS::S3.new
-        bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
-        bucket.clear! # wipe the bucket
-      end
-
-      context "and a dataset with the slug exists" do
-
-        let(:dataset) { FactoryGirl.create(:my_dataset) }
-
-        context "when a download exists on s3 for today" do
-
-          before do
-            # make some downloads.
-            s3 = AWS::S3.new
-            bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
-
-            @obj1 = bucket.objects.create("dataset_data_my|dataset_201007011200.nt.zip", 'data')
-            @obj2 = bucket.objects.create("dataset_data_my|dataset_201007011201.nt.zip", 'data')
-            @obj3 = bucket.objects.create("dataset_data_my|dataset_201007011202.nt.zip", 'data')
-            # this one's on another day:
-            @obj4 = bucket.objects.create("dataset_data_my|dataset_201007021202.nt.zip", 'data')
-
-            # make them public readable
-            [@obj1, @obj2, @obj3].each { |o| o.acl = :public_read }
-          end
-
-          it "should redirect to the latest download that exists for that dataset" do
-            get :dump, :id => dataset.slug, :use_route => :publish_my_data
-            response.should be_redirect
-            response.should redirect_to(@obj3.public_url.to_s)
-          end
-
-        end
-
-        context "when a download exists on s3 for today, but before the modified date" do
-
-          before do
-            # make some downloads.
-            s3 = AWS::S3.new
-            bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
-
-            @obj1 = bucket.objects.create("dataset_data_#{dataset.slug}_201007011159.nt.zip", 'data')
-
-            # make them public readable
-            [@obj1].each { |o| o.acl = :public_read }
-          end
-
-          it "should 404" do
-            get :dump, :id => dataset.slug, :use_route => :publish_my_data
-            response.should be_not_found
-          end
-
-        end
-
-        context "when a download doesn't exist on s3" do
-          it "should 404" do
-            get :dump, :id => dataset.slug, :use_route => :publish_my_data
-            response.should be_not_found
-          end
-        end
-
-      end
-
-      context "when a dataset with that slug doesn't exist" do
-        it "should 404" do
-          get :dump, :id => "i-dont-exist", :use_route => :publish_my_data
-          response.should be_not_found
-        end
-      end
-
 
     end
   end

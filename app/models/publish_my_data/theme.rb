@@ -3,7 +3,7 @@ module PublishMyData
   class Theme
 
     include Tripod::Resource
-    include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
+    include BasicFeatures
 
     class << self
       def theme_graph
@@ -18,13 +18,11 @@ module PublishMyData
     rdf_type RDF::SITE.Theme
     graph_uri Theme.theme_graph
 
-    field :label, RDF::RDFS.label
     field :slug, RDF::SKOS.notation
-    field :comment, RDF::RDFS.comment
 
     def datasets_criteria
       Dataset
-        .ordered_datasets_criteria
+        .ordered_by_title
         .where("?uri <#{RDF::DCAT.theme}> <#{self.uri.to_s}>")
     end
 

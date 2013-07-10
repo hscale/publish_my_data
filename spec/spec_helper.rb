@@ -9,7 +9,8 @@ require 'active_support/core_ext/numeric/bytes'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+# NB: Relative to the dummy app!
+Dir[Rails.root.join("../support/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
 
