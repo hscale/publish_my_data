@@ -493,25 +493,47 @@ module PublishMyData
             q = PublishMyData::SparqlQuery.new('SELECT ?s WHERE { ?s ?p ?o }')
             q.as_pagination_query(1, 20, 0).class.should == SparqlQuery
             # try a couple of different combos of pagination params
-            q.as_pagination_query(1, 20, 0).query.should == 'SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 20 OFFSET 0'
-            q.as_pagination_query(1, 20, 1).query.should == 'SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 21 OFFSET 0'
-            q.as_pagination_query(2, 10, 0).query.should == 'SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 10 OFFSET 10'
-            q.as_pagination_query(3, 10, 1).query.should == 'SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 11 OFFSET 20'
+            q.as_pagination_query(1, 20, 0).query.should == 'SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}
+LIMIT 20 OFFSET 0'
+            q.as_pagination_query(1, 20, 1).query.should == 'SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}
+LIMIT 21 OFFSET 0'
+            q.as_pagination_query(2, 10, 0).query.should == 'SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}
+LIMIT 10 OFFSET 10'
+            q.as_pagination_query(3, 10, 1).query.should == 'SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}
+LIMIT 11 OFFSET 20'
           end
         end
 
         context "with prefixes" do
           it "should move the prefixes to the start" do
             q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT ?s WHERE { ?s ?p ?o }')
-            q.as_pagination_query(1, 20, 0).query.should == 'PREFIX e: <http://example.com> SELECT * { SELECT ?s WHERE { ?s ?p ?o } } LIMIT 20 OFFSET 0'
+            q.as_pagination_query(1, 20, 0).query.should == 'PREFIX e: <http://example.com> SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}
+LIMIT 20 OFFSET 0'
           end
         end
 
         context "with an existing subselect" do
           it "should wrap the select as for a normal select" do
-            q = PublishMyData::SparqlQuery.new('SELECT * { SELECT ?s WHERE { ?s ?p ?o } }')
+            q = PublishMyData::SparqlQuery.new('SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}')
             # try a couple of different combos of pagination params
-            q.as_pagination_query(1, 20, 0).query.should == 'SELECT * { SELECT * { SELECT ?s WHERE { ?s ?p ?o } } } LIMIT 20 OFFSET 0'
+            q.as_pagination_query(1, 20, 0).query.should == 'SELECT * {
+  SELECT * {
+  SELECT ?s WHERE { ?s ?p ?o }
+}
+}
+LIMIT 20 OFFSET 0'
           end
         end
       end

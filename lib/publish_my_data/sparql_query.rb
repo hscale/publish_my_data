@@ -103,7 +103,10 @@ module PublishMyData
       limit = per_page + look_ahead
       offset = per_page * (page-1)
       # wrap it in a subselect with limit and offset
-      paginated_query = "SELECT * { #{self.body} } LIMIT #{limit} OFFSET #{offset}"
+      paginated_query = "SELECT * {
+  #{self.body}
+}
+LIMIT #{limit} OFFSET #{offset}"
       # put the prefixes back on the start
       paginated_query = "#{self.prefixes} #{paginated_query}" if self.prefixes
 
