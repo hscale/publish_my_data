@@ -49,38 +49,55 @@ module PublishMyData
   class Paginator
 
     attr_accessor :pagination_params
-    attr_accessor :criteria
+    attr_accessor :resource_class
+    attr_accessor :sparql_query # PublishMyData::SparqlQuery
 
-    def initialize(criteria, pagination_params)
-      self.criteria = criteria
+    # criteria can be a Tripod::Criteria or a sparql string.
+    # pagination_params should be an instance pagination params.
+    # if criteria is a sparql string, optionally pass options[:resource_class] to dictate what type of objects to return (else it will return Resources)
+    def initialize(criteria, pagination_params, opts={})
+
+      if criteria.class == String
+        self.sparql_query = PublishMyData::SparqlQuery.new(criteria)
+        self.resource_class = opts[:resource_class] || PublishMyData::Resource
+      elsif criteria.class == Tripod::Criteria
+        # Note that this uses the :return_graph => false option for criteria execution to avoid duplicate graphs in the results
+        self.sparql_query = PublishMyData::SparqlQuery.new(criteria.as_query(:return_graph => false))
+        self.resource_class = criteria.resource_class
+      end
+
       self.pagination_params = pagination_params
     end
 
-    # returns a Kaminari paginatable array, or a plain old array
-    # Note that this uses the :return_graph => false option for criteria execution to avoid duplicate graphs in the results
-    # (which could mess with the pagination counts)
-    # optionally pass an integer to use for the total count.
-    def paginate(total_count=nil)
-      if self.pagination_params.format == :html && pagination_params.per_page && pagination_params.page
-        count = total_count || criteria.count #this has to happen first, before we modify the criteria with limit/offset
-        add_limit_and_offset_criteria(criteria)
-        paginatable = Kaminari.paginate_array(criteria.resources(:return_graph => false).to_a, total_count: count).page(self.pagination_params.page).per(self.pagination_params.per_page)
+    # returns a Kaminari paginatable array (for html), or a plain old array (for data formats)
+    def paginate(force_total_count=nil)
+
+      page = self.pagination_params.page
+      per_page = self.pagination_params.per_page
+      pagination_query_str = self.sparql_query.as_pagination_query(page, per_page).query
+
+      if self.pagination_params.format == :html
+        total_count = force_total_count || self.sparql_query.count
+        page_of_results = resource_class.find_by_sparql(pagination_query_str)
+        Kaminari.paginate_array(page_of_results, total_count: total_count).page(page).per(per_page)
       else
-        add_limit_and_offset_criteria(criteria)
-        criteria.resources(:return_graph => false) # non html versions just need the raw array
+        page_of_results = resource_class.find_by_sparql(pagination_query_str)
+
+        Tripod::ResourceCollection.new(
+          page_of_results,
+          :return_graph => false,
+          :sparql_query_str => pagination_query_str,
+          :resource_class => self.resource_class
+        )
+
       end
+
     end
 
     def ==(other)
       self.pagination_params == other.pagination_params &&
-        self.criteria == other.criteria
-    end
-
-    private
-
-    def add_limit_and_offset_criteria(criteria)
-      criteria.limit(self.pagination_params.per_page) if self.pagination_params.per_page
-      criteria.offset(self.pagination_params.offset) if self.pagination_params.offset
+        self.sparql_query == other.sparql_query  &&
+        self.resource_class == self.resource_class
     end
 
   end

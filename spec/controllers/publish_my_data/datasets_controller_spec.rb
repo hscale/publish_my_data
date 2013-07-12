@@ -20,7 +20,18 @@ module PublishMyData
       shared_examples_for "a dataset collection in non-html" do
         it "should render the collection in the right format" do
           get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
-          response.body.should == Dataset.ordered_datasets_criteria.limit(per_page).offset(offset).resources.send("to_#{format}")
+
+          q = SparqlQuery.new(Dataset.deprecation_last_query_str).as_pagination_query(page, per_page).query
+          datasets_array = Dataset.find_by_sparql(q).to_a
+
+          collection = Tripod::ResourceCollection.new(
+            datasets_array,
+            :return_graph => false,
+            :sparql_query_str => q,
+            :resource_class => Dataset
+          )
+
+          response.body.should == collection.send("to_#{format}")
         end
 
         it "shouldn't call Kaminari" do
@@ -36,21 +47,26 @@ module PublishMyData
 
       shared_examples_for "dataset kaminari pagination" do
         it "should call kaminari to paginate the results" do
-          datasets_array = Dataset.ordered_datasets_criteria.limit(per_page).offset(offset).resources.to_a
+          q = SparqlQuery.new(Dataset.deprecation_last_query_str).as_pagination_query(page, per_page).query
+          datasets_array = Dataset.find_by_sparql(q).to_a
           count = Dataset.count
 
           kam = Kaminari.paginate_array(datasets_array, total_count: count)
-
           Kaminari.should_receive(:paginate_array).with(datasets_array, total_count: count).and_return(kam)
           kam.should_receive(:page).with(page).and_return(kam)
           kam.should_receive(:per).with(per_page).and_return(kam)
+
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 
         it "should set @datasets with the right page of datasets" do
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
+
+          datasets = Dataset.find_by_sparql(Dataset.deprecation_last_query_str)
+
           assigns['datasets'].map{ |d| d.uri.to_s }.should ==
-            Dataset.ordered_datasets_criteria.resources[offset...offset+per_page].map{ |d| d.uri.to_s }
+            datasets[offset...offset+per_page].map{ |d| d.uri.to_s }
+
           assigns['datasets'].length.should == per_page
         end
 
@@ -62,10 +78,7 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the first page of results" do
-          crit = Dataset.ordered_datasets_criteria
-          Dataset.should_receive(:ordered_datasets_criteria).at_least(:once).and_return(crit)
-          crit.should_receive(:limit).with(per_page).and_call_original
-          crit.should_receive(:offset).with(offset).and_call_original
+          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page)
           get :index, use_route: :publish_my_data
         end
 
@@ -85,10 +98,7 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the right page of results" do
-          crit = Dataset.ordered_datasets_criteria
-          Dataset.should_receive(:ordered_datasets_criteria).at_least(:once).and_return(crit)
-          crit.should_receive(:limit).with(per_page).and_call_original
-          crit.should_receive(:offset).with(offset).and_call_original
+          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page)
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 

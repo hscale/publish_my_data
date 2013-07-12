@@ -36,9 +36,8 @@ module PublishMyData
 
     # /data?page=2&per_page=10
     def index
-      dataset_criteria = Dataset.ordered_datasets_criteria
       @pagination_params = ResourcePaginationParams.from_request(request)
-      @datasets = Paginator.new(dataset_criteria, @pagination_params).paginate
+      @datasets = Paginator.new(Dataset.deprecation_last_query_str, @pagination_params, resource_class: PublishMyData::Dataset).paginate
       respond_with(@datasets)
     end
 

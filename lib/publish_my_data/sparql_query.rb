@@ -91,7 +91,6 @@ module PublishMyData
     end
 
     def as_count_query(format = :json)
-      # return the paginated version
       PublishMyData::SparqlQuery.new(as_count_query_str, {:request_format => format, :parent_query => self}) # pass in the original query
     end
 
@@ -103,7 +102,10 @@ module PublishMyData
       limit = per_page + look_ahead
       offset = per_page * (page-1)
       # wrap it in a subselect with limit and offset
-      paginated_query = "SELECT * { #{self.body} } LIMIT #{limit} OFFSET #{offset}"
+      paginated_query = "SELECT * {
+  #{self.body}
+}
+LIMIT #{limit} OFFSET #{offset}"
       # put the prefixes back on the start
       paginated_query = "#{self.prefixes} #{paginated_query}" if self.prefixes
 

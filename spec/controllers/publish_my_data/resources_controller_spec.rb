@@ -286,6 +286,7 @@ module PublishMyData
       shared_examples_for "a resource collection in non-html" do
         it "should render the collection in the right format" do
           get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
+          puts format
           response.body.should == Resource.all.limit(per_page).offset(offset).resources.send("to_#{format}")
         end
 
@@ -350,10 +351,7 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the right page of results" do
-          crit = Resource.all
-          Resource.should_receive(:all).at_least(:once).and_return(crit)
-          crit.should_receive(:limit).with(per_page).and_call_original
-          crit.should_receive(:offset).with(offset).and_call_original
+          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page)
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 

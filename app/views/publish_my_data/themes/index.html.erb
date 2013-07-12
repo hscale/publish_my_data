@@ -1,7 +1,7 @@
 <h1>Themes</h1>
 
 <% @themes.each do |t| %>
-  <%= link_to (t.label || t.uri), theme_path(t) %> (<%= pluralize( t.datasets_criteria.count, "dataset" )%>)
+  <%= link_to (t.label || t.uri), theme_path(t) %> (<%= pluralize( t.datasets_count, "dataset" )%>)
   <%= t.comment %>
 <% end %>
 
