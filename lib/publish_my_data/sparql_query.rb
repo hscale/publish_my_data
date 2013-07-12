@@ -91,7 +91,6 @@ module PublishMyData
     end
 
     def as_count_query(format = :json)
-      # return the paginated version
       PublishMyData::SparqlQuery.new(as_count_query_str, {:request_format => format, :parent_query => self}) # pass in the original query
     end
 

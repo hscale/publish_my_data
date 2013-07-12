@@ -16,7 +16,7 @@ module PublishMyData
 
       if @theme
         @pagination_params = ResourcePaginationParams.from_request(request)
-        @datasets = Paginator.new(@theme.datasets_criteria, @pagination_params).paginate
+        @datasets = Paginator.new(@theme.datasets_query_str, @pagination_params, resource_class: PublishMyData::Dataset).paginate
         respond_with(@datasets)
       else
         raise Tripod::Errors::ResourceNotFound

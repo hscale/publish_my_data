@@ -103,6 +103,23 @@ module PublishMyData
       def ordered_datasets_criteria
         Dataset.all.where("?uri <#{RDF::DC.title}> ?title").order("?title")
       end
+
+      def deprecation_last_query_str
+        '
+        SELECT ?uri where {
+          {
+            ?uri a <http://publishmydata.com/def/dataset#Dataset> .
+            MINUS {
+            ?uri a <http://publishmydata.com/def/dataset#DeprecatedDataset>
+            }
+          }
+          UNION
+          {
+            ?uri a <http://publishmydata.com/def/dataset#DeprecatedDataset>
+          }
+        }
+        '
+      end
     end
   end
 end

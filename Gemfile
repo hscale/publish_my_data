@@ -14,7 +14,7 @@ gemspec
 # gem 'debugger'
 
 # uncomment this to use local verison of tripod.
-# gem 'tripod', path: '../tripod'
+#gem 'tripod', path: '../tripod'
 
 group :test, :development do
   gem "rspec-rails", "~> 2.0"

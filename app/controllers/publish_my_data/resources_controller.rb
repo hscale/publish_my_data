@@ -18,6 +18,7 @@ module PublishMyData
 
       @pagination_params = ResourcePaginationParams.from_request(request)
       @resources = Paginator.new(resource_criteria, @pagination_params).paginate
+
       respond_with(@resources)
     end
 

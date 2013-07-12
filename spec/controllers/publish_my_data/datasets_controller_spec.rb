@@ -62,10 +62,7 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the first page of results" do
-          crit = Dataset.ordered_datasets_criteria
-          Dataset.should_receive(:ordered_datasets_criteria).at_least(:once).and_return(crit)
-          crit.should_receive(:limit).with(per_page).and_call_original
-          crit.should_receive(:offset).with(offset).and_call_original
+          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page)
           get :index, use_route: :publish_my_data
         end
 
@@ -85,10 +82,7 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the right page of results" do
-          crit = Dataset.ordered_datasets_criteria
-          Dataset.should_receive(:ordered_datasets_criteria).at_least(:once).and_return(crit)
-          crit.should_receive(:limit).with(per_page).and_call_original
-          crit.should_receive(:offset).with(offset).and_call_original
+          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page)
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 
