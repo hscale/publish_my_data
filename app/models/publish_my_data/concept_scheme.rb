@@ -7,7 +7,7 @@ module PublishMyData
     deprecated_rdf_type 'http://publishmydata.com/def/concept-scheme#DeprecatedConceptScheme'
 
     def self.uri_from_slug(slug)
-      "http://#{PublishMyData.local_domain}/def/concept-scheme/#{slug}"
+      "http://#{PublishMyData.local_domain}/def/#{slug}"
     end
 
     def concepts

@@ -7,7 +7,7 @@ module PublishMyData
     deprecated_rdf_type 'http://publishmydata.com/def/ontology#DeprecatedOntology'
 
     def self.uri_from_slug(slug)
-      "http://#{PublishMyData.local_domain}/def/ontology/#{slug}"
+      "http://#{PublishMyData.local_domain}/def/#{slug}"
     end
 
     def ontology_classes

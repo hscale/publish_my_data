@@ -6,7 +6,7 @@ FactoryGirl.define do
     modified DateTime.parse('2010-07-01 12:00')
     ignore do
       uri { PublishMyData::Ontology.uri_from_slug("my-topic") }
-      graph_uri {  "http://#{PublishMyData.local_domain}/def/ontology/my-topic/metadata" }
+      graph_uri {  "http://#{PublishMyData.local_domain}/def/my-topic/metadata" }
     end
     after(:create) do |o, evaluator|
       # set up some classes and props

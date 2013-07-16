@@ -23,8 +23,7 @@ PublishMyData::Engine.routes.draw do
   match "/doc/*path" => "resources#doc"
 
   # download paths
-  match "/def/ontology/*id/dump" => "ontologies#dump"
-  match "/def/concept-scheme/*id/dump" => "concept_schemes#dump"
+  match "/def/*id/dump" => "information_resources#dump"
   match "/vocabularies/:id/dump" => "vocabularies#dump"
 
   # def pages

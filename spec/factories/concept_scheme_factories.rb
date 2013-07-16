@@ -5,7 +5,7 @@ FactoryGirl.define do
     modified DateTime.parse('2010-07-01 12:00')
     ignore do
       uri { PublishMyData::ConceptScheme.uri_from_slug("my-topic") }
-      graph_uri {  "http://#{PublishMyData.local_domain}/def/concept-scheme/my-topic/metadata" }
+      graph_uri {  "http://#{PublishMyData.local_domain}/def/my-topic/metadata" }
     end
     after(:create) do |cs, evaluator|
       # set up some concepts

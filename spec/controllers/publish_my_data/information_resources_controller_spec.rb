@@ -2,6 +2,16 @@ require 'spec_helper'
 
 module PublishMyData
   describe InformationResourcesController do
+    # dump an ontology
+    it_should_behave_like 'a controller with a dump action' do
+      let(:resource) { FactoryGirl.create(:ontology) }
+    end
+
+    # dump a concept scheme
+    it_should_behave_like 'a controller with a dump action' do
+      let(:resource) { FactoryGirl.create(:concept_scheme) }
+    end
+
     describe '#data' do
       describe "given a dataset" do
 
@@ -185,12 +195,12 @@ module PublishMyData
         let!(:ontology) { FactoryGirl.create(:ontology) }
 
         it "should respond successfully" do
-          get :def, :id => "ontology/my-topic", use_route: :publish_my_data
+          get :def, :id => "my-topic", use_route: :publish_my_data
           response.should be_success
         end
 
         it "should render the ontologies#show template" do
-          get :def, :id => "ontology/my-topic", use_route: :publish_my_data
+          get :def, :id => "my-topic", use_route: :publish_my_data
           response.should render_template("publish_my_data/ontologies/show")
         end
       end
@@ -199,12 +209,12 @@ module PublishMyData
         let!(:concept_scheme) { FactoryGirl.create(:concept_scheme) }
 
         it "should respond successfully" do
-          get :def, :id => "concept-scheme/my-topic", use_route: :publish_my_data
+          get :def, :id => "my-topic", use_route: :publish_my_data
           response.should be_success
         end
 
         it "should render the concept_schemes#show template" do
-          get :def, :id => "concept-scheme/my-topic", use_route: :publish_my_data
+          get :def, :id => "my-topic", use_route: :publish_my_data
           response.should render_template("publish_my_data/concept_schemes/show")
         end
       end

@@ -10,6 +10,12 @@ module PublishMyData
       'http://' + host + '/id/' + doc_path.split('?')[0].sub(/\.#{format}$/,'')
     end
 
+    def self.find_type(uri)
+      resource = self.find(uri)
+      return resource.as_concept_scheme if resource.is_concept_scheme?
+      return resource.as_ontology if resource.is_ontology?
+    end
+
     def theme
       dataset.theme_obj if dataset
     end

@@ -19,5 +19,22 @@ module PublishMyData
 
     end
 
+    describe '.find_type' do
+      context 'given an ontology URI' do
+        let(:ontology) { FactoryGirl.create(:ontology) }
+
+        it 'should return an Ontology' do
+          Resource.find_type(ontology.uri).should be_a(PublishMyData::Ontology)
+        end
+      end
+
+      context 'given an ontology URI' do
+        let(:concept_scheme) { FactoryGirl.create(:concept_scheme) }
+
+        it 'should return an Ontology' do
+          Resource.find_type(concept_scheme.uri).should be_a(PublishMyData::ConceptScheme)
+        end
+      end
+    end
   end
 end
