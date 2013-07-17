@@ -1,9 +1,9 @@
 module PublishMyData
   module DatasetPowers
     extend ActiveSupport::Concern
-    include PublishMyData::AllFeatures
 
     included do
+      include PublishMyData::AllFeatures
       field :theme, RDF::DCAT.theme, :is_uri => true
     end
 
