@@ -7,7 +7,14 @@ require "publish_my_data/render_params"
 
 # A bit nasty, but these paths are included by default in Rails 4 so
 # this is only a temporary measure
-Dir[File.expand_path('../../app/models/concerns/**/*.rb', __FILE__)].each {|f| require f}
+#Dir[File.expand_path('../../app/models/concerns/**/*.rb', __FILE__)].each {|f| require f}
+
+# load them in the right order so that dataset powers can access all features.
+require File.expand_path('../../app/models/concerns/publish_my_data/all_features.rb', __FILE__)
+require File.expand_path('../../app/models/concerns/publish_my_data/basic_features.rb', __FILE__)
+require File.expand_path('../../app/models/concerns/publish_my_data/dataset_powers.rb', __FILE__)
+require File.expand_path('../../app/models/concerns/publish_my_data/defined_by_ontology.rb', __FILE__)
+
 Dir[File.expand_path('../../app/controllers/concerns/**/*.rb', __FILE__)].each {|f| require f}
 
 
