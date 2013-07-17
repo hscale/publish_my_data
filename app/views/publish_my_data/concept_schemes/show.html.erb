@@ -1,5 +1,7 @@
 <h1>Concept Scheme: <%= concept_scheme.label || concept_scheme.uri %></h1>
 
+<%= concept_scheme.description %>
+
 <h2>Overview</h2>
 <%= render 'publish_my_data/resources/predicates_table', resource: concept_scheme %>
 

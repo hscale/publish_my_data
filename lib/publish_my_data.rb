@@ -1,11 +1,14 @@
 require "publish_my_data/engine"
-require "publish_my_data/concerns"
 require "publish_my_data/renderers"
 require "publish_my_data/sparql_query"
 require "publish_my_data/sparql_query_result"
-require "publish_my_data/defined_by_ontology"
 require "publish_my_data/paginator"
 require "publish_my_data/render_params"
+
+# A bit nasty, but these paths are included by default in Rails 4 so
+# this is only a temporary measure
+Dir[File.expand_path('../../app/models/concerns/**/*.rb', __FILE__)].each {|f| require f}
+Dir[File.expand_path('../../app/controllers/concerns/**/*.rb', __FILE__)].each {|f| require f}
 
 
 module PublishMyData
@@ -47,7 +50,7 @@ module PublishMyData
 
   mattr_accessor :aws_access_key_id
   mattr_accessor :aws_secret_access_key
-  mattr_accessor :dataset_downloads_s3_bucket
+  mattr_accessor :downloads_s3_bucket
 
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
@@ -62,7 +65,7 @@ module PublishMyData
   #     config.default_html_sparql_per_page = 20
   #     config.max_resources_per_page = 1000
   #     config.aws_default_host = 's3-eu-west-1.amazonaws.com'
-  #     config.dataset_downloads_s3_bucket = nil # the s3 bucket for dataset dumps. Used for redirecting to the right location for dataset downloads.
+  #     config.downloads_s3_bucket = nil # the s3 bucket for dataset dumps. Used for redirecting to the right location for dataset downloads.
   #     config.aws_access_key_id = nil # the access key for the s3 bucket
   #     config.aws_secret_access_key = nil # the secret key for the s3 bucket
   #     config.tripod_cache_store = nil #e.g Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')

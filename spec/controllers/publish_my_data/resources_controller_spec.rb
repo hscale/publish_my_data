@@ -116,76 +116,6 @@ module PublishMyData
       end
     end
 
-    describe "#definition" do
-
-      let!(:resource) { FactoryGirl.create(:mean_result) }
-      let!(:theme) { FactoryGirl.create(:my_theme) }
-      let!(:onotology) { FactoryGirl.create(:ontology) }
-      let!(:concept_scheme) { FactoryGirl.create(:concept_scheme) }
-
-      before do
-        # make some datasets
-        (1..30).each do |i|
-          slug = i
-          uri = PublishMyData::Dataset.uri_from_slug(slug)
-          graph = PublishMyData::Dataset.metadata_graph_uri(slug)
-          d = PublishMyData::Dataset.new(uri, graph)
-          d.theme = theme.uri if i.even?
-          d.title = "Dataset #{i.to_s}"
-          d.save!
-        end
-      end
-
-      context "for resource in our database" do
-
-        it "should respond successfully" do
-          get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
-          response.should be_success
-        end
-
-        context "for an html request" do
-
-          context "for an abitrary resource" do
-            it "should render the show template" do
-              get :definition, :path => "statistics/meanResult", use_route: :publish_my_data
-              response.should render_template("publish_my_data/resources/show")
-            end
-          end
-
-          context "when resource is an ontology" do
-            it "should render the ontologies#show template" do
-              get :definition, :path => "my-topic/ontology", use_route: :publish_my_data
-              response.should render_template("publish_my_data/ontologies/show")
-            end
-          end
-
-          context "when resource is a concept scheme" do
-            it "should render the concept_schemes#show template" do
-              get :definition, :path => "my-topic/concept-scheme/my-concept-scheme", use_route: :publish_my_data
-              response.should render_template("publish_my_data/concept_schemes/show")
-            end
-          end
-
-        end
-
-
-        context "with an alternative mime type" do
-          it "should with the right mime type and content" do
-            get :definition, :path => "statistics/meanResult", :format => 'nt', use_route: :publish_my_data
-            response.content_type.should == Mime::NT
-            response.body.should == resource.to_nt
-          end
-        end
-      end
-
-      context "when resource doesn't exist" do
-        it "should 404" do
-          get :definition, :path => "statistics/nonExistent", use_route: :publish_my_data
-          response.should be_not_found
-        end
-      end
-    end
-
     describe "#show" do
 
       context "with no uri parameter" do
@@ -311,7 +241,6 @@ module PublishMyData
       end
 
       before do
-
         # make some resources (in and out of our dataset and type)
         (1..5).each do |i|
           r = Resource.new("http://example.com/resource-in-ds/#{i}", dataset.data_graph_uri)

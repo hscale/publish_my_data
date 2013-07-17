@@ -3,7 +3,7 @@ require_dependency "publish_my_data/application_controller"
 module PublishMyData
   class ResourcesController < ApplicationController
 
-    include PublishMyData::Concerns::Controllers::Resource
+    include ResourceRendering
 
     respond_to :html, :ttl, :rdf, :nt, :json, :text
 
@@ -58,12 +58,6 @@ module PublishMyData
     # http://example.com/doc/blah
     def doc
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
-      render_resource_with_uri(uri)
-    end
-
-    # http://example.com/def/blah
-    def definition
-      uri = 'http://' + request.host + '/def/' + params[:path]
       render_resource_with_uri(uri)
     end
 

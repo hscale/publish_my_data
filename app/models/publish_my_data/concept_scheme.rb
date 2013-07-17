@@ -1,10 +1,14 @@
 module PublishMyData
   class ConceptScheme
     include Tripod::Resource
-    include PublishMyData::Concerns::Models::Resource  #some common methods for resources.
+    include AllFeatures
 
     rdf_type RDF::SKOS.ConceptScheme
-    field :label, RDF::RDFS.label
+    deprecated_rdf_type 'http://publishmydata.com/def/concept-scheme#DeprecatedConceptScheme'
+
+    def self.uri_from_slug(slug)
+      "http://#{PublishMyData.local_domain}/def/#{slug}"
+    end
 
     def concepts
       Resource.find_by_sparql(

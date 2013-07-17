@@ -1,10 +1,14 @@
 module PublishMyData
   class Ontology
     include Tripod::Resource
-    include PublishMyData::Concerns::Models::Resource
+    include AllFeatures
 
     rdf_type RDF::OWL.Ontology
-    field :label, RDF::RDFS.label
+    deprecated_rdf_type 'http://publishmydata.com/def/ontology#DeprecatedOntology'
+
+    def self.uri_from_slug(slug)
+      "http://#{PublishMyData.local_domain}/def/#{slug}"
+    end
 
     def ontology_classes
       Resource.find_by_sparql("

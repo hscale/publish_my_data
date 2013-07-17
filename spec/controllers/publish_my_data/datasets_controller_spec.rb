@@ -116,7 +116,7 @@ module PublishMyData
 
       before do
         s3 = AWS::S3.new
-        bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
+        bucket = s3.buckets[PublishMyData.downloads_s3_bucket]
         bucket.clear! # wipe the bucket
       end
 
@@ -129,7 +129,7 @@ module PublishMyData
           before do
             # make some downloads.
             s3 = AWS::S3.new
-            bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
+            bucket = s3.buckets[PublishMyData.downloads_s3_bucket]
 
             @obj1 = bucket.objects.create("dataset_data_my|dataset_201007011200.nt.zip", 'data')
             @obj2 = bucket.objects.create("dataset_data_my|dataset_201007011201.nt.zip", 'data')
@@ -154,7 +154,7 @@ module PublishMyData
           before do
             # make some downloads.
             s3 = AWS::S3.new
-            bucket = s3.buckets[PublishMyData.dataset_downloads_s3_bucket]
+            bucket = s3.buckets[PublishMyData.downloads_s3_bucket]
 
             @obj1 = bucket.objects.create("dataset_data_#{dataset.slug}_201007011159.nt.zip", 'data')
 

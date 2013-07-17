@@ -3,9 +3,10 @@ FactoryGirl.define do
   factory :ontology, class: PublishMyData::Ontology do
     initialize_with { new(uri,graph_uri) }
     label 'My Ontology'
+    modified DateTime.parse('2010-07-01 12:00')
     ignore do
-      uri { "http://#{PublishMyData.local_domain}/def/my-topic/ontology"}
-      graph_uri {  "http://#{PublishMyData.local_domain}/def/my-topic/ontology/graph" }
+      uri { PublishMyData::Ontology.uri_from_slug("my-topic") }
+      graph_uri {  "http://#{PublishMyData.local_domain}/def/my-topic/metadata" }
     end
     after(:create) do |o, evaluator|
       # set up some classes and props
@@ -33,9 +34,10 @@ FactoryGirl.define do
 
   factory :external_ontology, class: PublishMyData::Ontology do
     initialize_with { new(uri,graph_uri) }
-    label 'My Ontology'
+    label 'My External Ontology'
+    modified DateTime.parse('2010-07-01 12:00')
     ignore do
-      uri { "http://example.com/def/my-topic/ontology"}
+      uri { "http://example.com/def/ontology/my-topic/"}
       graph_uri {  "http://#{PublishMyData.local_domain}/def/example-com-my-topic/ontology/graph" }
     end
     after(:create) do |o, evaluator|

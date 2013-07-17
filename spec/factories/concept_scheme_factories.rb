@@ -2,9 +2,10 @@ FactoryGirl.define do
   factory :concept_scheme, class: PublishMyData::ConceptScheme do
     initialize_with { new(uri,graph_uri) }
     label 'My Concept Scheme'
+    modified DateTime.parse('2010-07-01 12:00')
     ignore do
-      uri { "http://#{PublishMyData.local_domain}/def/my-topic/concept-scheme/my-concept-scheme"}
-      graph_uri {  "http://#{PublishMyData.local_domain}/def/my-topic/concept-scheme/graph" }
+      uri { PublishMyData::ConceptScheme.uri_from_slug("my-topic") }
+      graph_uri {  "http://#{PublishMyData.local_domain}/def/my-topic/metadata" }
     end
     after(:create) do |cs, evaluator|
       # set up some concepts
