@@ -19,6 +19,55 @@ module PublishMyData
       Resource.all.graph(self.data_graph_uri)
     end
 
+    def types
+      @types ||= RdfType.where('?s a ?uri').graph(self.data_graph_uri).resources
+    end
+
+    def type_count(type_uri)
+      count_query = "SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri.to_s}> { ?uri a <#{type_uri.to_s}> } }"
+      SparqlQuery.new(count_query).count  
+    end
+
+    def resource_count
+      self.types.map{|t| type_count(t.uri)}.sum
+    end
+
+    def example_resources
+      return @example_resources if @example_resources
+
+      resource_queries = self.types.map do |t|
+        "{ SELECT ?uri WHERE { ?uri a <#{t.uri.to_s}> } LIMIT 1 }"
+      end
+      query =  "SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri.to_s}> {"
+      query << resource_queries.join(" UNION ")
+      query << "}}"
+      @example_resources = ExampleResource.find_by_sparql(query)
+      @example_resources.each {|r| r.eager_load!}
+      @example_resources
+    end
+
+    def ontologies
+      return @ontologies if @ontologies
+
+      query =  "SELECT DISTINCT ?uri WHERE {"
+      query << "  GRAPH <#{self.data_graph_uri.to_s}> {?s ?p ?o}"
+      query << "  { ?p <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> ?uri } UNION { ?o <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> ?uri }"
+      query << "  ?uri a <http://www.w3.org/2002/07/owl#Ontology>."
+      query << "}"
+      @ontologies = Ontology.find_by_sparql(query)
+    end
+
+    def concept_schemes
+      return @concept_schemes if @concept_schemes
+      
+      query =  "SELECT DISTINCT ?uri WHERE {"
+      query << "  GRAPH <#{self.data_graph_uri.to_s}> {?s ?p ?o}"
+      query << "  { ?p <http://www.w3.org/2004/02/skos/core#inScheme> ?uri } UNION { ?o <http://www.w3.org/2004/02/skos/core#inScheme> ?uri }"
+      query << "  ?uri a <http://www.w3.org/2004/02/skos/core#ConceptScheme>"
+      query << "}"
+      @concept_schemes = ConceptScheme.find_by_sparql(query)
+    end
+
     def theme_obj
       Theme.find(self.theme.to_s) rescue nil
     end
