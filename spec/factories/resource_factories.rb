@@ -45,4 +45,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :rdf_type, class: PublishMyData::Resource do
+    initialize_with { new(uri, graph_uri) }
+    ignore do
+      uri { "http://#{PublishMyData.local_domain}/id/types/observation" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/types" }
+    end
+    after(:build) do |res|
+      res.write_predicate(RDF::RDFS.label, 'Observation')
+    end
+  end
 end
