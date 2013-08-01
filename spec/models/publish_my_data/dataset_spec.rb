@@ -92,7 +92,7 @@ module PublishMyData
 
     describe '#ontologies' do
       let(:ontology) { FactoryGirl.create(:ontology) }
-      let(:property) { ontology.ontology_properties.first }
+      let(:property) { ontology.properties.first }
 
       before do
         r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)

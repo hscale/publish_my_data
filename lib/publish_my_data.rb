@@ -3,7 +3,6 @@ require "publish_my_data/renderers"
 require "publish_my_data/sparql_query"
 require "publish_my_data/sparql_query_result"
 require "publish_my_data/paginator"
-require "publish_my_data/render_params"
 
 # A bit nasty, but these paths are included by default in Rails 4 so
 # this is only a temporary measure
