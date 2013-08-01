@@ -11,7 +11,7 @@ module PublishMyData
     end
 
     def concepts
-      Resource.find_by_sparql(
+      @concepts ||= Concept.find_by_sparql(
         "SELECT DISTINCT ?uri ?graph
           WHERE {
             GRAPH ?graph {
@@ -20,6 +20,30 @@ module PublishMyData
           }
         }"
       )
+    end
+
+    def local?
+      true
+    end
+
+    def eager_load!
+      super
+      self.concepts.each{|c| c.eager_load!}
+    end
+
+    # Overrides
+    ['to_rdf', 'to_ttl', 'to_nt', 'to_json'].each do |method_name|
+      define_method method_name do
+        resources = Resource.find_by_sparql("
+          SELECT DISTINCT ?uri
+          WHERE {
+            { SELECT ?uri WHERE { GRAPH <#{self.graph_uri}> {?uri ?p ?o} } }
+            UNION
+            { SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri}> {?uri ?p ?o} } }
+          }
+        ")
+        Tripod::ResourceCollection.new(resources).send(method_name)
+      end
     end
   end
 end

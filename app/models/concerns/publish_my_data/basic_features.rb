@@ -12,5 +12,10 @@ module PublishMyData
     def in_domain?(domain)
       uri.starts_with?("http://" + domain)
     end
+
+    def eager_load!
+      eager_load_object_triples!(labels_only: true)
+      eager_load_predicate_triples!(labels_only: true)
+    end
   end
 end

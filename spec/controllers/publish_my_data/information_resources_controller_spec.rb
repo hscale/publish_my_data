@@ -165,32 +165,6 @@ module PublishMyData
     end
 
     describe "#def" do
-      context "for an abitrary resource" do
-        let!(:resource) { FactoryGirl.create(:mean_result) }
-
-        it "should respond successfully" do
-          get :def, :id => "statistics/meanResult", use_route: :publish_my_data
-          response.should be_success
-        end
-
-        it "should render the show template" do
-          get :def, :id => "statistics/meanResult", use_route: :publish_my_data
-          response.should render_template("publish_my_data/resources/show")
-        end
-
-        context "given an alternative format" do
-          it "should respond with the right content" do
-            get :def, :id => "statistics/meanResult", :format => 'nt', use_route: :publish_my_data
-            response.body.should == resource.to_nt
-          end
-
-          it "should respond with the appropriate mime type" do
-            get :def, :id => "statistics/meanResult", :format => 'nt', use_route: :publish_my_data
-            response.content_type.should == Mime::NT
-          end
-        end
-      end
-
       context "when resource is an ontology" do
         let!(:ontology) { FactoryGirl.create(:ontology) }
 
