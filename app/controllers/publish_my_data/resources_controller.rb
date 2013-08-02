@@ -30,7 +30,7 @@ module PublishMyData
 
       if uri.present?
         begin
-          resource = PublishMyData::Resource.find(uri)
+          resource = PublishMyData::Resource.find(uri, local: uri.starts_with?('http://' + PublishMyData.local_domain))
           render_resource(resource)
         rescue Tripod::Errors::ResourceNotFound
           # if it's not there
