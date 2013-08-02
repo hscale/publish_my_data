@@ -3,7 +3,7 @@ module PublishMyData
     extend ActiveSupport::Concern
 
     included do
-      
+
       private
 
       def render_resource(resource)
@@ -22,7 +22,7 @@ module PublishMyData
           Dataset       => 'publish_my_data/datasets/show',
           Ontology      => 'publish_my_data/ontologies/show',
           ConceptScheme => 'publish_my_data/concept_schemes/show',
-          OntologyClass => 'publish_my_data/ontology_classes/show',
+          OntologyClass => 'publish_my_data/classes/show',
           Property      => 'publish_my_data/properties/show',
           Concept       => 'publish_my_data/concepts/show',
           Resource      => 'publish_my_data/resources/show',
