@@ -33,7 +33,7 @@ module PublishMyData
 
     # Overrides
     ['to_rdf', 'to_ttl', 'to_nt', 'to_json'].each do |method_name|
-      define_method method_name do
+      define_method method_name do |opts={}|
         resources = Resource.find_by_sparql("
           SELECT DISTINCT ?uri
           WHERE {
