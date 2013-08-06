@@ -74,6 +74,77 @@ module PublishMyData
 
         end
 
+        context "where the query expects parameters" do
+          let(:query) {"select * where {?s ?%{p} ?%{o}}"}
+
+          it "should assign the expected_variables" do
+            get :endpoint, query: query, use_route: :publish_my_data
+            assigns['expected_variables'].should == [:p, :o]
+          end
+
+          context "when a reserved parameter is used" do
+
+            # page is reserved.
+            let(:query) {"select * where {?s ?%{page} ?%{o}}"}
+            let (:parameters) { {:query => query, :o => 'oh', :page => 1, use_route: :publish_my_data} }
+
+            it "should be ignored" do
+              get :endpoint, parameters
+              assigns['missing_variables'].should == [:page]
+            end
+
+          end
+
+          context "when all parameters supplied" do
+            let (:parameters) { {:query => query, :o => 'oh', :p => 'pee', use_route: :publish_my_data} }
+
+            it "should set the interpolations" do
+              get :endpoint, parameters
+              assigns['interpolations'].should == {"o" => 'oh', "p" => 'pee'}
+            end
+
+            it "should respond successfully" do
+              get :endpoint, parameters
+              response.should be_success
+            end
+          end
+
+          context "when some parameters missing" do
+            let (:parameters) { {:query => query, :o => 'oh', use_route: :publish_my_data} }
+
+            it "should set the missing_variables" do
+              get :endpoint, parameters
+              assigns['missing_variables'].should == [:p]
+            end
+
+            it "should set the interpolations" do
+              get :endpoint, parameters
+              assigns['interpolations'].should == {"o" => 'oh'}
+            end
+
+            context "for html format" do
+              before { get :endpoint, parameters }
+              it 'should respond with success' do
+                response.should be_success
+              end
+            end
+
+            context "for non-html format" do
+              before { get :endpoint, parameters.merge(format:'json') }
+
+              it 'should respond with a 400' do
+                response.code.should == "400"
+              end
+
+              it 'should include a message in the body' do
+                response.body.should == "Missing parameters: p"
+              end
+            end
+
+          end
+
+        end
+
         context "non-html queries" do
           context 'for SELECTs' do
 
