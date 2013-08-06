@@ -17,7 +17,24 @@ module PublishMyData
     end
   end
 
+  class SparqlQueryReservedVariablesException < StandardError
+    attr_reader :reserved_variables, :expected_variables, :interpolations
+
+    def initialize(reserved_variables, expected_variables, interpolations)
+      @reserved_variables = reserved_variables
+      @expected_variables = expected_variables
+      @interpolations = interpolations
+    end
+
+    def to_s
+      "Reserved tokens used: #{@reserved_variables.map(&:to_s).join(', ')}"
+    end
+  end
+
   class SparqlQuery < Tripod::SparqlQuery
+
+    @@reserved_variables = [:controller, :action, :page, :per_page, :id, :commit ,:utf8, :query]
+    cattr_reader :reserved_variables
 
     attr_reader :request_format # symbol representing the format of the original request
     attr_reader :parent_query # set if this query originated from another (e.g. pagination or count)
@@ -32,7 +49,7 @@ module PublishMyData
     def initialize(query_string, opts={})
       @opts = opts # save off the original opts
 
-      @interpolations = opts[:interpolations] || {}
+      @interpolations = (opts[:interpolations] || {}).delete_if{ |k,v| self.class.reserved_variables.include?(k.to_sym) }
 
       # modify the query string, before constructing
       query_string = interpolate_query(query_string, self.interpolations)
@@ -115,7 +132,7 @@ LIMIT #{limit} OFFSET #{offset}"
     end
 
     def self.get_expected_variables(query_string)
-      query_string.scan(/[.]?\%\{(\w+)\}[.]?/).flatten.uniq.map &:to_sym
+      expected = query_string.scan(/[.]?\%\{(\w+)\}[.]?/).flatten.uniq.map &:to_sym
     end
 
     private
@@ -125,9 +142,17 @@ LIMIT #{limit} OFFSET #{offset}"
       # regular expression finds words inside %{variable} tokens
       @expected_variables = self.class.get_expected_variables(query_string)
       missing_variables = @expected_variables - i.keys
-      if missing_variables.length > 0
+
+      reserved_variables_used = (missing_variables & SparqlQuery.reserved_variables)
+
+      if reserved_variables_used.any?
+        raise SparqlQueryReservedVariablesException.new(reserved_variables_used, @expected_variables, interpolations)
+      end
+
+      if missing_variables.any?
         raise SparqlQueryMissingVariablesException.new(missing_variables, @expected_variables, interpolations)
       end
+
       query_string % i # do the interpolating
     end
 

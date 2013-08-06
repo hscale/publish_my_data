@@ -88,9 +88,33 @@ module PublishMyData
             let(:query) {"select * where {?s ?%{page} ?%{o}}"}
             let (:parameters) { {:query => query, :o => 'oh', :page => 1, use_route: :publish_my_data} }
 
-            it "should be ignored" do
+            it "should assign the reserved_variables_used" do
               get :endpoint, parameters
-              assigns['missing_variables'].should == [:page]
+              assigns['reserved_variables_used'].should == [:page]
+            end
+
+            context "for html format" do
+              before { get :endpoint, parameters }
+
+              it 'should respond with success' do
+                response.should be_success
+              end
+
+              it 'should assign the error message' do
+                assigns['error_message'].should == "Reserved tokens used: page"
+              end
+            end
+
+            context "for non-html format" do
+              before { get :endpoint, parameters.merge(format:'json') }
+
+              it 'should respond with a 400' do
+                response.code.should == "400"
+              end
+
+              it 'should include a message in the body' do
+                response.body.should == "Reserved tokens used: page"
+              end
             end
 
           end
@@ -126,6 +150,10 @@ module PublishMyData
               before { get :endpoint, parameters }
               it 'should respond with success' do
                 response.should be_success
+              end
+
+              it 'should assign the error message' do
+                assigns['error_message'] = "Missing parameters: p"
               end
             end
 
