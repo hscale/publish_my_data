@@ -3,16 +3,17 @@ module PublishMyData
   class SparqlQueryExecutionException < StandardError; end
 
   class SparqlQueryMissingVariablesException < StandardError
-    attr_reader :missing_variables, :expected_variables
+    attr_reader :missing_variables, :expected_variables, :interpolations
 
-    def initialize(missing_variables, expected_variables)
+    def initialize(missing_variables, expected_variables, interpolations)
       raise ArgumentError.new("Missing parameters should be an array") unless missing_variables.is_a?(Array)
       @missing_variables = missing_variables
       @expected_variables = expected_variables
+      @interpolations = interpolations
     end
 
     def to_s
-      "Missing parameters for interpolation: #{@missing_variables.map(&:to_s).join(', ')}"
+      "Missing parameters: #{@missing_variables.map(&:to_s).join(', ')}"
     end
   end
 
@@ -125,7 +126,7 @@ LIMIT #{limit} OFFSET #{offset}"
       @expected_variables = self.class.get_expected_variables(query_string)
       missing_variables = @expected_variables - i.keys
       if missing_variables.length > 0
-        raise SparqlQueryMissingVariablesException.new(missing_variables, @expected_variables)
+        raise SparqlQueryMissingVariablesException.new(missing_variables, @expected_variables, interpolations)
       end
       query_string % i # do the interpolating
     end

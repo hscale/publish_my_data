@@ -5,9 +5,7 @@ module PublishMyData
     included do
 
       rescue_from PublishMyData::SparqlQueryExecutionException, :with => :show_sparql_execution_message
-
       rescue_from PublishMyData::SparqlQueryMissingVariablesException, :with => :missing_variables
-
       respond_to :html, :csv, :text, :nt, :ttl, :xml, :rdf, :json
 
       private
@@ -20,11 +18,15 @@ module PublishMyData
       end
 
       def build_sparql_query(query_text)
-        interpolations = request.params.reject{ |p| ['controller', 'action', 'page', 'per_page', 'id', 'commit' ,'utf8', 'query'].include?(p) }
-        PublishMyData::SparqlQuery.new(query_text, {
+        @reserved_params = ['controller', 'action', 'page', 'per_page', 'id', 'commit' ,'utf8', 'query']
+        interpolations = request.params.reject{ |p| @reserved_params.include?(p) }
+        @sparql_query = PublishMyData::SparqlQuery.new(query_text, {
           :request_format => request.format.to_sym,
           :interpolations => interpolations
         })
+        @expected_variables = @sparql_query.expected_variables
+        @interpolations = @sparql_query.interpolations
+        # note: if there are missing variables, then this will be caught by them missing_variables error handler
       end
 
       # process the sparql query, paginating if appropriate
@@ -60,6 +62,9 @@ module PublishMyData
       end
 
       def missing_variables(e)
+        @missing_variables = e.missing_variables
+        @expected_variables = e.expected_variables
+        @interpolations = e.interpolations
         @error_message = e.message
         respond_with_error
       end
