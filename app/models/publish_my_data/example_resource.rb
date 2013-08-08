@@ -3,7 +3,7 @@ module PublishMyData
     include Tripod::Resource
     include BasicFeatures
 
-    field :rdf_type, RDF.type, :is_uri => true
+    field :rdf_types, RDF.type, is_uri: true, multivalued: true
 
     def eager_load!
       eager_load_predicate_triples!
