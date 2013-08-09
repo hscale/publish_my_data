@@ -36,7 +36,7 @@ module PublishMyData
       return @example_resources if @example_resources
 
       resource_queries = self.types.map do |t|
-        "{ SELECT ?uri WHERE { ?uri a <#{t.uri.to_s}> } LIMIT 1 }"
+        "{ SELECT DISTINCT ?uri WHERE { ?uri a <#{t.uri.to_s}> } LIMIT 1 }"
       end
       query =  "SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri.to_s}> {"
       query << resource_queries.join(" UNION ")
