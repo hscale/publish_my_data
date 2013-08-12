@@ -1,159 +1,213 @@
 require 'spec_helper'
 
+shared_examples 'as json' do
+  it "should return its json" do
+    JSON.parse(response.body).should == JSON.parse(resource.to_json)
+  end
+
+  it "should respond successfully" do
+    response.should be_success
+  end
+end
+
+shared_examples 'as rdf' do
+  it "should return its rdf" do
+    response.body.should == resource.to_rdf
+  end
+
+  it "should respond successfully" do
+    response.should be_success
+  end
+end
+
+shared_examples 'as ttl' do
+  it "should return its ttl" do
+    response.body.should == resource.to_ttl
+  end
+
+  it "should respond successfully" do
+    response.should be_success
+  end
+end
+
+shared_examples "as n-triples" do
+  it "should return the its n-triples" do
+    response.body.should == resource.to_nt
+  end
+
+  it "should respond successfully" do
+    response.should be_success
+  end
+end
+
 module PublishMyData
   describe InformationResourcesController do
+    # dump an ontology
+    it_should_behave_like 'a controller with a dump action' do
+      let(:resource) { FactoryGirl.create(:ontology) }
+    end
 
-    describe "showing an information resource" do
-      let!(:resource) { FactoryGirl.create(:information_resource) }
+    # dump a concept scheme
+    it_should_behave_like 'a controller with a dump action' do
+      let(:resource) { FactoryGirl.create(:concept_scheme) }
+    end
 
-      shared_examples_for "resource show" do
+    describe '#data' do
+      context "given a dataset" do
+        let(:resource) { FactoryGirl.create(:my_dataset) }
 
-        context "for an existing resource" do
-          it  "should respond successfully" do
-            get :show, id: "information/resource", use_route: :publish_my_data, :format => format
+        context 'as html' do
+          before { get :data, id: resource.slug, use_route: :publish_my_data } 
+            
+          it "should render the dataset show template" do
+            response.should render_template("publish_my_data/datasets/show")
+          end
+
+          it "should respond successfully" do
             response.should be_success
           end
         end
 
-        context "with a non-existent dataset slug" do
-          it "should respond with not found" do
-            get :show, id: "non-existent/resource", use_route: :publish_my_data, :format => format
-            response.should be_not_found
+        context "as rdf" do
+          before { get :data, id: resource.slug, use_route: :publish_my_data, :format => 'rdf' }
+          include_examples 'as rdf'
+        end
+
+        context "as json" do
+          before { get :data, id: resource.slug, use_route: :publish_my_data, :format => 'json' }
+          include_examples 'as json'
+        end
+
+        context "as ttl" do
+          before { get :data, id: resource.slug, use_route: :publish_my_data, :format => 'ttl' }
+          include_examples 'as ttl'
+        end
+
+        context "as n-triples" do
+          before { get :data, id: resource.slug, use_route: :publish_my_data, :format => 'nt' }
+          include_examples 'as n-triples'
+        end
+      end
+
+      context "given an arbitrary information resource which is not a dataset" do
+        let!(:resource) { FactoryGirl.create(:information_resource) }
+
+        context 'as html' do
+          before { get :data, id: "information/resource", use_route: :publish_my_data }
+
+          it "should render the resource show template" do
+            response.should render_template("publish_my_data/resources/show")
           end
-        end
-      end
 
-      shared_examples_for "resource html format" do
-        it "should render the resource show template" do
-          get :show, id: "information/resource", use_route: :publish_my_data, :format => format
-          response.should render_template("publish_my_data/resources/show")
-        end
-      end
-
-      shared_examples_for "resource non html format" do
-
-        context "for an existing resource" do
-          it "should return the resource in that format" do
-            get :show, id: "information/resource", use_route: :publish_my_data, :format => format
-            response.body.should == resource.send("to_#{format}")
-          end
-        end
-
-        context "for a non-existent resource" do
-          it "should return a blank body" do
-            get :show, id: "non-existent/resource", use_route: :publish_my_data, :format => format
-            response.body.should == "Not Found"
-          end
-        end
-      end
-
-      context "for html format" do
-        let(:format){ 'html' }
-        it_should_behave_like "resource html format"
-        it_should_behave_like "resource show"
-      end
-
-      # try another format.
-      context "for rdf format" do
-        let(:format){ 'rdf' }
-        it_should_behave_like "resource non html format"
-        it_should_behave_like "resource show"
-      end
-
-    end
-
-    describe "showing a dataset" do
-
-      let(:dataset) { FactoryGirl.create(:my_dataset) }
-
-      shared_examples_for "dataset show" do
-
-        context "for an existing dataset" do
-          it  "should respond successfully" do
-            get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
+          it "should respond successfully" do
             response.should be_success
           end
         end
 
-        context "with a non-existent dataset slug" do
-          it "should respond with not found" do
-            get :show, id: "slug-that-doesnt-exist", use_route: :publish_my_data, :format => format
-            response.should be_not_found
-          end
+        context "as rdf" do
+          before { get :data, id: "information/resource", use_route: :publish_my_data, :format => 'rdf' }
+          include_examples 'as rdf'
+        end
+
+        context "as json" do
+          before { get :data, id: "information/resource", use_route: :publish_my_data, :format => 'json' }
+          include_examples 'as json'
+        end
+
+        context "as ttl" do
+          before { get :data, id: "information/resource", use_route: :publish_my_data, :format => 'ttl' }
+          include_examples 'as ttl'
+        end
+
+        context "as n-triples" do
+          before { get :data, id: "information/resource", use_route: :publish_my_data, :format => 'nt' }
+          include_examples 'as n-triples'
         end
       end
 
-      shared_examples_for "dataset html format" do
-        it "should render the dataset show template" do
-          get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
-          response.should render_template("publish_my_data/datasets/show")
+      describe 'given a non-existent identifier' do
+        it "should respond with not found" do
+          get :data, id: "non-existent/resource", use_route: :publish_my_data
+          response.should be_not_found
         end
       end
-
-      shared_examples_for "dataset non html format" do
-
-        context "for an existing dataset" do
-          it "should return the dataset dtls in that format" do
-            get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
-            response.body.should == dataset.send("to_#{format}")
-          end
-        end
-
-        context "for a non-existent dataset slug" do
-          it "should return a blank body" do
-            get :show, id: "slug-that-doesnt-exist", use_route: :publish_my_data, :format => format
-            response.body.should == "Not Found"
-          end
-        end
-      end
-
-      context "for html format" do
-        let(:format){ 'html' }
-        it_should_behave_like "dataset html format"
-        it_should_behave_like "dataset show"
-      end
-
-      context "for rdf format" do
-        let(:format){ 'rdf' }
-        it_should_behave_like "dataset non html format"
-        it_should_behave_like "dataset show"
-      end
-
-      context "for json format" do
-        let(:format){ 'json' }
-
-        # note: we don't use the shared example group here because the JSON format sometimes brings stuff back in different orders!
-
-        context "for an existing dataset" do
-          it "should return the dataset dtls in that format" do
-            get :show, id: dataset.slug, use_route: :publish_my_data, :format => format
-            JSON.parse(response.body).should == JSON.parse(dataset.send("to_#{format}"))
-          end
-        end
-
-        context "for a non-existent dataset slug" do
-          it "should return a blank body" do
-            get :show, id: "slug-that-doesnt-exist", use_route: :publish_my_data, :format => format
-            response.body.should == "Not Found"
-          end
-        end
-
-        it_should_behave_like "dataset show"
-      end
-
-      context "for ttl format" do
-        let(:format){ 'ttl' }
-        it_should_behave_like "dataset non html format"
-        it_should_behave_like "dataset show"
-      end
-
-      context "for ntriples format" do
-        let(:format){ 'nt' }
-        it_should_behave_like "dataset non html format"
-        it_should_behave_like "dataset show"
-      end
-
     end
 
+    describe "#def" do
+      context "when resource is an ontology" do
+        let!(:resource) { FactoryGirl.create(:ontology) }
+
+        it "should respond successfully" do
+          get :def, :id => "my-topic", use_route: :publish_my_data
+          response.should be_success
+        end
+
+        it "should render the ontologies#show template" do
+          get :def, :id => "my-topic", use_route: :publish_my_data
+          response.should render_template("publish_my_data/ontologies/show")
+        end
+
+        context "as rdf" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'rdf' }
+          include_examples 'as rdf'
+        end
+
+        context "as json" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'json' }
+          include_examples 'as json'
+        end
+
+        context "as ttl" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'ttl' }
+          include_examples 'as ttl'
+        end
+
+        context "as n-triples" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'nt' }
+          include_examples 'as n-triples'
+        end
+      end
+
+      context "when resource is a concept scheme" do
+        let!(:resource) { FactoryGirl.create(:concept_scheme) }
+
+        it "should respond successfully" do
+          get :def, :id => "my-topic", use_route: :publish_my_data
+          response.should be_success
+        end
+
+        it "should render the concept_schemes#show template" do
+          get :def, :id => "my-topic", use_route: :publish_my_data
+          response.should render_template("publish_my_data/concept_schemes/show")
+        end
+
+        context "as rdf" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'rdf' }
+          include_examples 'as rdf'
+        end
+
+        context "as json" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'json' }
+          include_examples 'as json'
+        end
+
+        context "as ttl" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'ttl' }
+          include_examples 'as ttl'
+        end
+
+        context "as n-triples" do
+          before { get :def, :id => "my-topic", use_route: :publish_my_data, :format => 'nt' }
+          include_examples 'as n-triples'
+        end
+      end
+
+      context "when resource doesn't exist" do
+        it "should 404" do
+          get :def, :id => "statistics/nonExistent", use_route: :publish_my_data
+          response.should be_not_found
+        end
+      end
+    end
   end
 end

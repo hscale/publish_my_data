@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :mean_result, class: PublishMyData::Resource do
+  factory :mean_result, class: PublishMyData::Property do
     initialize_with { new(uri, graph_uri) }
     ignore do
       uri { "http://#{PublishMyData.local_domain}/def/statistics/meanResult" }

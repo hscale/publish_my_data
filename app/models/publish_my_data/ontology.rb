@@ -1,13 +1,17 @@
 module PublishMyData
   class Ontology
     include Tripod::Resource
-    include PublishMyData::Concerns::Models::Resource
+    include AllFeatures
 
     rdf_type RDF::OWL.Ontology
-    field :label, RDF::RDFS.label
+    deprecated_rdf_type 'http://publishmydata.com/def/ontology#DeprecatedOntology'
 
-    def ontology_classes
-      Resource.find_by_sparql("
+    def self.uri_from_slug(slug)
+      "http://#{PublishMyData.local_domain}/def/#{slug}"
+    end
+
+    def classes
+      @classes ||= OntologyClass.find_by_sparql("
         SELECT DISTINCT ?uri ?graph
         WHERE {
           GRAPH ?graph {
@@ -25,8 +29,8 @@ module PublishMyData
       )
     end
 
-    def ontology_properties
-      Resource.find_by_sparql("
+    def properties
+      @properties ||= Property.find_by_sparql("
         SELECT DISTINCT ?uri ?graph
          WHERE {
           GRAPH ?graph {
@@ -35,6 +39,31 @@ module PublishMyData
           }
         }"
       )
+    end
+
+    def local?
+      true
+    end
+
+    def eager_load!
+      super
+      classes.each{|c| c.eager_load!}
+      properties.each{|p| p.eager_load!}
+    end
+
+    # Overrides
+    ['to_rdf', 'to_ttl', 'to_nt', 'to_json'].each do |method_name|
+      define_method method_name do |opts={}|
+        resources = Resource.find_by_sparql("
+          SELECT DISTINCT ?uri
+          WHERE {
+            { SELECT ?uri WHERE { GRAPH <#{self.graph_uri}> {?uri ?p ?o} } }
+            UNION
+            { SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri}> {?uri ?p ?o} } }
+          }
+        ")
+        Tripod::ResourceCollection.new(resources).send(method_name)
+      end
     end
   end
 end

@@ -1,15 +1,15 @@
 <h1>Ontology <%= ontology.label || ontology.uri %></h1>
 
+<%= ontology.description %>
+
 <h2>Overview</h2>
 <%= render 'publish_my_data/resources/predicates_table', resource: ontology %>
 
-<h2>Classes</h2>
-<%= render 'publish_my_data/ontologies/classes', :ontology_classes => ontology_classes %>
+<h3>Classes</h3>
+<%= render 'publish_my_data/resources/summaries', :resources => ontology.classes %>
 
-<br/>
-
-<h2>Properties</h2>
-<%= render 'publish_my_data/ontologies/properties', :ontology_properties => ontology_properties %>
+<h3>Properties</h3>
+<%= render 'publish_my_data/resources/summaries', :resources => ontology.properties %>
 
 <br/><br/>
 

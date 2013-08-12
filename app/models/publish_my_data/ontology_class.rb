@@ -1,11 +1,9 @@
 module PublishMyData
   class OntologyClass
     include Tripod::Resource
-    include PublishMyData::Concerns::Models::Resource
-    include PublishMyData::DefinedByOntology
+    include BasicFeatures
+    include DefinedByOntology
 
-    field :label, RDF::RDFS.label
-    field :defined_by, RDF::RDFS.isDefinedBy, :is_uri => true
-
+    rdf_type RDF::OWL.Class
   end
 end
