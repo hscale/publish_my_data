@@ -182,8 +182,8 @@ describe 'visiting the sparql endpoint' do
 
         # make some stuff (more results than the page size.
         (1..30).each do |t|
-          uri = "http://resource#{t.to_s}"
-          r = PublishMyData::Resource.new(uri, "http://graph")
+          uri = "http://example.com/resource#{t.to_s}"
+          r = PublishMyData::Resource.new(uri, "http://example.com/graph")
           r.label = t.to_s
           r.save
         end
