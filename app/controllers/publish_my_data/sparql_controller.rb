@@ -16,7 +16,7 @@ module PublishMyData
           render :text => "no query supplied", :status => 400
         end
       else
-        @sparql_query = build_sparql_query(@query_text)
+        build_sparql_query(@query_text)
         @sparql_query_result = process_sparql_query(@sparql_query)
         respond_with(@sparql_query_result)
       end

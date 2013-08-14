@@ -46,7 +46,7 @@ module PublishMyData
         it 'shoud throw an exception if interpolation variables are missing' do
           expect { PublishMyData::SparqlQuery.new(
             "SELECT %{foo} WHERE %{bar} %{baz}", :interpolations => {:foo => 'baz'}
-            ) }.to raise_error(PublishMyData::SparqlQueryMissingVariablesException, "Missing parameters for interpolation: bar, baz")
+            ) }.to raise_error(Tripod::SparqlQueryMissingVariables, "Missing parameters: bar, baz")
         end
       end
     end
@@ -108,7 +108,7 @@ module PublishMyData
       end
 
       context "interpolations don't appear in query" do
-        it 'should be empty array' do
+        it 'should be empty' do
           q = PublishMyData::SparqlQuery.new('PREFIX e: <http://example.com> SELECT x')
           q.expected_variables.should == []
         end
