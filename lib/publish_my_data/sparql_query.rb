@@ -2,21 +2,6 @@ module PublishMyData
 
   class SparqlQueryExecutionException < StandardError; end
 
-  class SparqlQueryMissingVariablesException < StandardError
-    attr_reader :missing_variables, :expected_variables, :interpolations
-
-    def initialize(missing_variables, expected_variables, interpolations)
-      raise ArgumentError.new("Missing parameters should be an array") unless missing_variables.is_a?(Array)
-      @missing_variables = missing_variables
-      @expected_variables = expected_variables
-      @interpolations = interpolations
-    end
-
-    def to_s
-      "Missing parameters: #{@missing_variables.map(&:to_s).join(', ')}"
-    end
-  end
-
   class SparqlQueryReservedVariablesException < StandardError
     attr_reader :reserved_variables, :expected_variables, :interpolations
 
@@ -38,9 +23,8 @@ module PublishMyData
 
     attr_reader :request_format # symbol representing the format of the original request
     attr_reader :parent_query # set if this query originated from another (e.g. pagination or count)
-
-    attr_reader :interpolations # interpolations supplied at construct-time
-    attr_reader :expected_variables # list of variables used in the query,
+    attr_reader :expected_variables # tokens that appear in the query
+    attr_reader :interpolations # interpolations supplied at construct time
 
     # options
     #  :request_format (symbol, e.g. :html, :json )
@@ -50,11 +34,10 @@ module PublishMyData
       @opts = opts # save off the original opts
 
       @interpolations = (opts[:interpolations] || {}).delete_if{ |k,v| self.class.reserved_variables.include?(k.to_sym) }
+      @expected_variables = self.class.get_expected_variables(query_string)
+      check_reserved_variables!
 
-      # modify the query string, before constructing
-      query_string = interpolate_query(query_string, self.interpolations)
-
-      super(query_string)
+      super(query_string, @interpolations)
 
       @parent_query = opts[:parent_query]
       @request_format = opts[:request_format] || :html
@@ -131,29 +114,16 @@ LIMIT #{limit} OFFSET #{offset}"
       PublishMyData::SparqlQuery.new(paginated_query, {:request_format => self.request_format, :parent_query => self}) # pass in the original query
     end
 
-    def self.get_expected_variables(query_string)
-      expected = query_string.scan(/[.]?\%\{(\w+)\}[.]?/).flatten.uniq.map &:to_sym
-    end
-
     private
 
-    def interpolate_query(query_string, interpolations)
-      i = interpolations.symbolize_keys.select{ |k,v| v && v.length > 0 }
-      # regular expression finds words inside %{variable} tokens
-      @expected_variables = self.class.get_expected_variables(query_string)
-      missing_variables = @expected_variables - i.keys
+    def check_reserved_variables!
+      if @expected_variables && @expected_variables.any? # this will be set by the base class
 
-      reserved_variables_used = (missing_variables & SparqlQuery.reserved_variables)
-
-      if reserved_variables_used.any?
-        raise SparqlQueryReservedVariablesException.new(reserved_variables_used, @expected_variables, interpolations)
+        reserved_variables_used = (@expected_variables & SparqlQuery.reserved_variables)
+        if reserved_variables_used.any?
+          raise SparqlQueryReservedVariablesException.new(reserved_variables_used, @expected_variables, @interpolations)
+        end
       end
-
-      if missing_variables.any?
-        raise SparqlQueryMissingVariablesException.new(missing_variables, @expected_variables, interpolations)
-      end
-
-      query_string % i # do the interpolating
     end
 
     def process_sparql_parse_failed_exception_message(bad_sparql_request)

@@ -5,8 +5,9 @@ module PublishMyData
     included do
 
       rescue_from PublishMyData::SparqlQueryExecutionException, :with => :show_sparql_execution_message
-      rescue_from PublishMyData::SparqlQueryMissingVariablesException, :with => :missing_variables
       rescue_from PublishMyData::SparqlQueryReservedVariablesException, :with => :reserved_variables
+      rescue_from Tripod::SparqlQueryMissingVariables, :with => :missing_variables
+
       respond_to :html, :csv, :text, :nt, :ttl, :xml, :rdf, :json
 
       private
@@ -23,6 +24,7 @@ module PublishMyData
           :request_format => request.format.to_sym,
           :interpolations => request.params.clone
         })
+
         @expected_variables = @sparql_query.expected_variables
         @interpolations = @sparql_query.interpolations
         # note: if there are missing variables, then this will be caught by them missing_variables error handler
@@ -63,7 +65,7 @@ module PublishMyData
       def missing_variables(e)
         @missing_variables = e.missing_variables
         @expected_variables = e.expected_variables
-        @interpolations = e.interpolations
+        @interpolations = e.received_variables
         @error_message = e.message
         respond_with_error
       end
