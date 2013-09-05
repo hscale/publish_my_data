@@ -1,0 +1,11 @@
+= render "publish_my_data/sparql/formats_dropdowns/#{@sparql_query.query_type.to_s}"
+
+:javascript
+  $(function() {
+    var formatSelect = $('.api select.formats');
+    formatSelect.change(function() {
+      var newVal = formatSelect.val();
+      $('.api code').text(newVal);
+    });
+    formatSelect.change(); // trigger the change.
+  });

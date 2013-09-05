@@ -1,3 +1,21 @@
-<%= render 'publish_my_data/resources/uri_and_label', resource: ontology_class %>
-<%= render 'publish_my_data/resources/predicates_table', resource: ontology_class %>
-<%= render 'publish_my_data/resources/resource_formats', resource: ontology_class %>
+<% page_title "Class: #{ontology_class.label || ontology_class.uri}" %>
+
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= ontology_crumb(ontology_class.defined_by_ontology) if ontology_class.defined_by_ontology %>
+    <%= resource_crumb("Class") %>
+  </ol>
+<% end %>
+
+<article class="resource">
+  <%= top_section(ontology_class.label || ontology_class.uri, ontology_class.uri, "Class", "URI") %>
+
+  <section>
+    <div class="row container">
+      <%= render 'publish_my_data/resources/predicates_table', :resource => ontology_class %>
+    </div>
+  </section>
+
+  <%= render 'publish_my_data/resources/resource_formats', :resource => ontology_class, :resource_descriptor => "class" %>
+</article>

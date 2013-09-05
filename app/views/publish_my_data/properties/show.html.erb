@@ -1,3 +1,21 @@
-<%= render 'publish_my_data/resources/uri_and_label', resource: property %>
-<%= render 'publish_my_data/resources/predicates_table', resource: property %>
-<%= render 'publish_my_data/resources/resource_formats', resource: property %>
+<% page_title "Property: #{property.label || property.uri}" %>
+
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= ontology_crumb(property.defined_by_ontology) if property.defined_by_ontology %>
+    <%= resource_crumb("Property") %>
+  </ol>
+<% end %>
+
+<article class="resource">
+  <%= top_section(property.label || property.uri, property.uri, "Property", "URI") %>
+
+  <section>
+    <div class="row container">
+      <%= render 'publish_my_data/resources/predicates_table', :resource => property %>
+    </div>
+  </section>
+
+  <%= render 'publish_my_data/resources/resource_formats', :resource => property, :resource_descriptor => "property" %>
+</article>

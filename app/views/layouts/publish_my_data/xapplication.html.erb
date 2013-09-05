@@ -1,0 +1,26 @@
+<%# This overrides the PMD application layout,
+which, in turn is used by the apps to render the data pages. %>
+
+<!DOCTYPE html>
+  <%= render 'publish_my_data/shared/open_html' %>
+  <%= render 'publish_my_data/shared/head' %>
+
+  <%= content_tag :body, :class=>body_tag_class do %>
+
+    <%= render 'publish_my_data/shared/browser_warning' %>
+    <%= render 'publish_my_data/shared/alerts' %>
+
+    <header class="container">
+      <nav>
+        <%= render 'publish_my_data/shared/logo' %>
+        <%= yield :data_crumb %>
+      </nav>
+    </header>
+
+    <%= yield %>
+
+    <%= render 'publish_my_data/shared/footer', :show_logo => true %>
+    <%= render 'publish_my_data/shared/google_analytics' %>
+
+  <% end %>
+</html>

@@ -1,0 +1,47 @@
+- unless @sparql_query.query_type == :select
+  .row
+    .sixteen.columns
+      %h3.results Results
+      #results.ascii
+        %code~ @sparql_query_result.to_s
+      = render "publish_my_data/sparql/pagination" if @sparql_query.allow_pagination?
+
+- else
+  -# no script fallback is just the ascii art version
+  %noscript
+    :scss
+      #js-grid-results-wrapper {
+        display:none;
+      }
+    .row
+      .sixteen.columns
+        %h3.results Results
+        #results.ascii.select
+          %code~ @sparql_query_result.to_s
+        = render "publish_my_data/sparql/pagination" if @sparql_query.allow_pagination?
+
+  #js-grid-results-wrapper
+    .row.grid-header
+      .twelve.columns
+        .grid-title
+          %h3.results
+            Results data
+      .four.columns
+        .grid-status
+          .status-value
+          = image_tag("publish_my_data_enterprise/small-spinner.gif", alt: "busy", style: "display:none", class: "busy")
+    .row
+      .sixteen.columns
+        #results-grid.data-grid
+        .grid-footer
+          .footer-content
+            %a.download-csv{href: sparql_endpoint_url(:format => 'csv', :query => @sparql_query.query) }
+              %i.icon-download
+              Download Results as CSV
+
+  :javascript
+    // use this instead of $(function(){}) to fix slick grid stylesheet load issues.
+    $(window).load(function() {
+      var encodedQuery = "#{CGI.escape(@sparql_query.query)}"; // note that we encode on the server so we don't hit the multiline JS prob
+      new Swirrl.SparqlResultsGrid(encodedQuery);
+    });

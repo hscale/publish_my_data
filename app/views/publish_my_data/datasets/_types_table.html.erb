@@ -1,0 +1,33 @@
+<table>
+  <thead>
+    <tr>
+      <td colspan="2"><h3>Types of resource in this dataset</h3></td>
+    </tr>
+    <tr>
+      <th class="important_value">Type (click for details of type)</th>
+      <th>Resources (click to browse data)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% types.each do |t| %>
+      <tr>
+        <td class="details constrain">
+          <h3><%= link_to t.label || t.uri, resource_path_from_uri(t.uri) %></h3>
+          <p><%= t.comment %></p>
+        </td>
+        <td>
+          <%= link_to pluralize(type_resource_counts[t.uri.to_s], "resource"),
+            list_resources_path(dataset: dataset.slug, type_uri: t.uri) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">
+        Dataset: <strong><%= dataset.title %></strong>.<br/>
+        <strong><%= pluralize(resources_count, 'resource')%></strong>, of <strong><%= pluralize(types.length, 'type')%></strong>.
+      </td>
+    </tr>
+  </tfoot>
+</table>

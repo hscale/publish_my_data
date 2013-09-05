@@ -1,0 +1,144 @@
+main, body > header, body > footer {
+  @include container-fixed();
+}
+
+body > header {
+  margin-top: 10px;
+
+  ol.breadcrumb {
+    margin-bottom: 0;
+  }
+}
+
+footer.alternative-formats {
+  margin-top: 10px;
+
+  ul {
+    @extend .list-inline;
+  }
+}
+
+section#datasets {
+  & > ul {
+    @extend .list-unstyled;
+  }
+
+  .discontinued {
+    @extend .label;
+    @extend .label-warning;
+  }
+}
+
+article#dataset {
+  @include make-row();
+  @include make-md-column(12);
+
+  & > header {
+    h1, h2 {
+      margin-top: 0;
+    }
+  }
+
+  & > footer {
+    ul {
+
+    }
+  }
+
+  & > section.metadata {
+    @include make-row();
+
+    .primary {
+      @include make-md-column(8);
+    }
+
+    .secondary {
+      @include make-md-column(4);
+    }
+  }
+
+  ul.tab-links {
+    @extend .nav;
+    @extend .nav-tabs;
+  }
+}
+
+.tab-content > section {
+  @extend .tab-pane;
+  @include make-row();
+
+  .primary {
+    @include make-md-column(8);
+  }
+  .secondary {
+    @include make-md-column(4);
+  }
+}
+
+section#example-data {
+  table {
+    @extend .table;
+    // @extend .table-bordered;
+
+    thead tr th {
+      border: 0;
+    }
+
+    h3, h5 {
+      margin: 2px 0;
+    }
+
+    ul {
+      @extend .list-unstyled;
+      margin-bottom: 0;
+    }
+
+    a, h3, h4, icon {
+      transition: color 0.3s;
+    }
+
+    &.lowlight tbody {
+      h3, h4, a, icon {
+        color: $gray-lighter;
+      }
+      .highlight, .highlight a {
+        color: $link-color;
+      }
+      h4.highlight {
+        color: $gray-dark;
+      }
+    }
+  }
+}
+
+section#vocabularies {
+  ul {
+    @extend .list-unstyled;
+
+    li {
+      margin-bottom: 3px;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    .ontology-label {
+      @extend .label;
+      @extend .label-primary;
+    }
+    .concept-scheme-label {
+      @extend .label;
+      @extend .label-info;
+    }
+  }
+}
+
+section#linked-data {
+  a.button {
+    @extend .btn;
+    @extend .btn-primary;
+
+    margin-top: 20px;
+  }
+}

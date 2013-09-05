@@ -1,0 +1,28 @@
+<table>
+  <thead>
+    <tr>
+      <td colspan=2>
+        <h3>
+          <%= resources_list_table_title %>
+        </h3>
+      </td>
+    </tr>
+    <tr>
+      <th>Resource (Click for more details)</th>
+      <th>URI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @resources.each do |r| %>
+      <tr>
+        <td class="details constrain"><h3><%= link_to((r.label || r.uri.to_s), resource_path_from_uri(r.uri)) %></h3></td>
+        <td class="hardwrap"><%= r.uri.to_s %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  <% if @resources.total_count > @pagination_params.per_page %>
+    <tfoot>
+      <tr><td colspan=2><%= paginate @resources %></td></tr>
+    </tfoot>
+  <% end %>
+</table>

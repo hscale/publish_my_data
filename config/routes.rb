@@ -9,6 +9,8 @@ PublishMyData::Engine.routes.draw do
   # datasets
 
   # note that the separate .:format and no-format verisons allow extensions like .json on the end of the uri not to be globbed as the *id
+  # example resources
+  match "/data/*id/example-data" => "example_resources#index", as: :example_resources
   match "/data/*id/dump" => "datasets#dump", :as => 'dataset_dump'
   match "/data/*id.:format" => "information_resources#data"
   match "/data/*id" => "information_resources#data", :as => 'dataset'
@@ -35,6 +37,11 @@ PublishMyData::Engine.routes.draw do
 
   # SPARQL
   match "sparql(.:format)" => "sparql#endpoint", :as => 'sparql_endpoint' # the main sparql endpoint
+
+  # Documentation
+  match "/docs" => "docs#developer_docs", :as => 'developer_docs'
+  match "/privacy-cookies" => "docs#privacy", :as => 'privacy'
+  match "/accessibility" => "docs#accessibility", :as => 'accessibility'
 
   #http://techoctave.com/c7/posts/36-rails-3-0-rescue-from-routing-error-solution
   match '*a', :to => 'errors#routing'

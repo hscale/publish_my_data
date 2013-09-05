@@ -1,13 +1,29 @@
-<h1>Themes</h1>
+<% page_title "Themes" %>
 
-<% @themes.each do |t| %>
-  <%= link_to (t.label || t.uri), theme_path(t) %> (<%= pluralize( t.datasets_count, "dataset" )%>)
-  <%= t.comment %>
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= themes_crumb %>
+  </ol>
 <% end %>
 
-<br/><br/>
-Get this list as:
-<%= link_to 'N-triples', :format => 'nt' %>
-<%= link_to 'Turtle', :format => 'ttl'  %>
-<%= link_to 'RDF/XML', :format => 'rdf' %>
-<%= link_to 'JSON', :format => 'json' %>
+<article>
+
+  <%= top_section("Themes")%>
+
+  <%= render 'themes_intro' %>
+
+  <section>
+    <div class="row container">
+      <%= render 'themes_table', :themes => @themes %>
+    </div>
+  </section>
+
+  <%# note no pagination for themes %>
+  <%= bottom_formats_section "list of themes",
+      link_to('N-triples', :format => 'nt'),
+      link_to("Turtle", :format => 'ttl'),
+      link_to("RDF/XML", :format => 'rdf'),
+      link_to("JSON", :format => 'json')
+  %>
+</article>

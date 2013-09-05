@@ -1,0 +1,7 @@
+%select.formats{style:'display:inline;'}
+  %option{value: sparql_endpoint_url(:format => 'ttl', :query => @sparql_query.query)}
+    Turtle
+  %option{value: sparql_endpoint_url(:format => 'nt', :query => @sparql_query.query)}
+    N-triples
+  %option{value: sparql_endpoint_url(:format => 'rdf', :query => @sparql_query.query)}
+    RDF/XML

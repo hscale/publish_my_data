@@ -1,0 +1,6 @@
+- if @error_message
+  .row
+    .sixteen.columns
+      = render 'publish_my_data/sparql/error_message', :error_message => @error_message
+- else
+  = render 'publish_my_data/sparql/results_data'

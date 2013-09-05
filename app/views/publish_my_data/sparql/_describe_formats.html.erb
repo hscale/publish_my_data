@@ -1,1 +1,5 @@
-<%= render 'construct_formats' %>
+<%= bottom_formats_section "set of SPARQL DESCRIBE results",
+  link_to_sparql_results_format( "N-triples", "nt", @sparql_query.query ),
+  link_to_sparql_results_format( "Turtle", "ttl", @sparql_query.query ),
+  link_to_sparql_results_format( "RDF/XML", "rdf", @sparql_query.query )
+%>

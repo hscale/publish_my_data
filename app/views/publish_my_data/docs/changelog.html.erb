@@ -1,0 +1,21 @@
+<% page_title "Change Log" %>
+
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= crumb_list_item("Change Log", publish_my_data_enterprise.changelog_path, "docs") %>
+  </ol>
+<% end %>
+
+
+<article>
+  <%= top_section("Change Log", "What's new?") %>
+  <section class="docs">
+    <div class="row container">
+      <div class="sixteen columns">
+        <%= render 'changelog_copy' %>
+      </div>
+    </div>
+  </section>
+  <%= bottom_formats_section "page" %>
+</article>

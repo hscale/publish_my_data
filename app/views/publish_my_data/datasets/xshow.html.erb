@@ -1,0 +1,213 @@
+<% page_title "Dataset: " + dataset.title.to_s %>
+<% content_for :meta_description do %>
+  <meta name="description" content="<%= dataset.description %>" >
+<% end %>
+
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= theme_crumb(dataset.theme_obj) if dataset.theme_obj %>
+    <%= dataset_crumb(dataset, true) if dataset %>
+  </ol>
+<% end %>
+
+<% if dataset.deprecated? %>
+  <%= render partial: 'publish_my_data/shared/deprecation_notice', locals: {resource: dataset} %>
+<% end %>
+
+<article class="dataset">
+  <%= top_section(dataset.title, dataset.uri, "Dataset", "URI") %>
+
+  <section class='neverhide'>
+    <div class="row container">
+
+      <div class="ten columns">
+        <% if dataset.comment.present? %>
+          <h3>Description</h3>
+          <p><%= auto_link dataset.comment.to_s %></p>
+        <% end %>
+
+        <% if dataset.publisher.present? %>
+          <h3>Publisher</h3>
+          <p><%= resource_uri_or_label(dataset, dataset.publisher) %></p>
+        <% end %>
+
+        <% if dataset.license.present? %>
+          <h3>Licence</h3>
+          <p><%= resource_uri_or_label(dataset, dataset.license) %></p>
+        <% end %>
+
+        <% if dataset.contact_email.present? %>
+          <h3>Contact</h3>
+          <p><%= auto_link dataset.contact_email.to_s.gsub("mailto:","") %></p>
+        <% end %>
+
+        <% if dataset.description.present? %>
+          <h3>Further Information</h3>
+          <noscript>
+            <%= RDiscount.new(dataset.description.to_s).to_html.html_safe %>
+            <style> .js-only { display: none } </style>
+          </noscript>
+          <div class="js-only truncated" id="further-info-wrapper" >
+            <%= RDiscount.new(dataset.description.to_s).to_html.html_safe %>
+            <div class="fade-out"></div>
+          </div>
+          <p class="js-only"><a href="#" id="read-more">Read more...</a></p>
+          <script>
+            $("a#read-more").click(function(e) {
+              e.preventDefault();
+              $("#further-info-wrapper").removeClass("truncated");
+              $("#further-info-wrapper .fade-out").hide();
+              $("a#read-more").closest('p').hide();
+            });
+          </script>
+        <% end %>
+      </div>
+      <div class="five columns offset-by-one">
+        <% if dataset.issued.present? %>
+          <h3>Issued</h3>
+          <p><%= DateTime.parse(dataset.issued.to_s).to_s(:long) %></p>
+        <% end %>
+
+        <% if dataset.modified.present? %>
+          <h3>Modified</h3>
+          <p><%= DateTime.parse(dataset.modified.to_s).to_s(:long) %></p>
+        <% end %>
+
+        <% if dataset.tags && dataset.tags.any? %>
+          <h3>Tags</h3>
+          <p><%= dataset.tags.join(", ") %></p>
+        <% end %>
+      </div>
+    </div>
+
+    <nav class="container">
+      <ul class="tabs" style="display:none;">
+        <% if dataset.is_cube? %>
+          <li><a id="default_tab" href="#browse">Grid view</a></li>
+          <li><a href="#example-data">Example Data</a></li>
+        <% else %>
+          <li><a id="default_tab" href="#example-data">Example Data</a></li>
+        <% end %>
+        <li><a href="#rdf-api">Linked Data &amp; SPARQL</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <%if dataset.is_cube? %>
+    <section id="browse">
+      <div class="container">
+        <%= render 'publish_my_data/data_cube/grid', dataset: dataset %>
+      </div>
+    </section>
+  <% end %>
+
+  <section id="example-data">
+    <div class="row container">
+      <div class="ten columns">
+        <header>
+          <h3>Example resources from this dataset</h3>
+        </header>
+        <div id="example-data-container">
+          <p><%= image_tag("publish_my_data_enterprise/small-spinner.gif", alt: "busy") %>
+          <em>Loading&hellip;</em></p>
+        </div>
+        <script>
+          $.get('<%= publish_my_data.example_resources_path(dataset) %>');
+        </script>
+      </div>
+
+      <div class="five columns offset-by-one">
+        <div id="vocabularies" class="sticky">
+          <header>
+            <h3>Supporting Data</h3>
+            <p>
+              <strong>Mouse-over the boxes below</strong> to reveal which terms in the example are from these Ontologies and Concept Schemes.
+            </p>
+          </header>
+          <ul>
+            <% dataset.ontologies.each_with_index do |ontology, index| %>
+              <li id="ontology_<%= index %>"><%= link_to resource_path_from_uri(ontology.uri) do %>
+                <span class="label">Ontology</span>
+                <span class="name hardwrap"><%= (ontology.label || ontology.uri) %></span>
+              <% end %></li>
+            <% end %>
+            <% dataset.concept_schemes.each_with_index do |concept_scheme, index| %>
+              <li id="concept_scheme_<%= index %>"><%= link_to resource_path_from_uri(concept_scheme.uri) do %>
+                <span class="label">Concept Scheme</span>
+                <span class="name hardwrap"><%= (concept_scheme.label || concept_scheme.uri) %></span>
+              <% end %></li>
+            <% end %>
+          </ul>
+
+          <p><i class="icon-circled-help"></i>An <strong>ontology</strong> is a set of <strong>classes</strong> and <strong>properties</strong> about a certain topic area. These are used for resources' types and predicates respectively.</p>
+          <p><i class="icon-circled-help"></i>A <strong>concept scheme</strong> is a collection of <strong>concepts</strong> about a topic. Concepts act as list of possible values for a certain property (predicate) of a resource.
+        </div>
+      </div>
+    </div>
+    <script>
+      $('#vocabularies ul li').mouseover(function(el) {
+        var ontology_id = el.currentTarget.id;
+        $('.'+ontology_id).addClass('highlight');
+        $('#example-data table').addClass('lowlight');
+      }).mouseout(function(el) {
+        var ontology_id = el.currentTarget.id;
+        $('.'+ontology_id).removeClass('highlight');
+        $('#example-data table').removeClass('lowlight');
+      });
+    </script>
+  </section>
+
+  <section id="rdf-api">
+    <div class="row container">
+      <div class="ten columns">
+        <h3>SPARQL</h3>
+        <p>The data contained in this dataset is stored in a named graph, which can be used in <a href="/docs#sparql-introduction">SPARQL</a> queries to restrict results to this dataset.</p>
+        <%= content_tag :code, dataset.data_graph_uri, class: 'namedgraph click-to-select' %>
+
+        <% if dataset.data_dump.present? %>
+          <h3>Download</h3>
+          <p>
+            <%= link_to dataset.data_dump.to_s do %>
+              <i class="icon-download"></i> Complete dump of all <%= dataset.size if dataset.size.present? %> triples in this dataset
+            <% end %>
+            (zipped n-triples file)
+          </p>
+        <% end %>
+      </div>
+      <div class="five columns offset-by-one sticky-offset">
+        <p>
+          <a href="/sparql" class="btn primary">Run a SPARQL Query</a>
+        </p>
+        <h3>API Docs</h3>
+        <p>Full details of how to programatically access the data in this site can be found in the <a href="/docs">Developer Documentation</a>.</p>
+      </div>
+      <div class="sixteen columns">
+        <h3>Linked Data Resources</h3>
+        <p>Browse the resources in this dataset by type:</p>
+        <table>
+          <thead>
+            <tr><th><%= pluralize dataset.types.length, 'type' %></th></tr>
+          </thead>
+          <tbody>
+            <% dataset.types.each do |type| %>
+              <tr>
+                <td class="details hardwrap">
+                   <hgroup>
+                    <h3><%= resource_uri_or_label(type, type.uri) %></h3>
+                    <h4 class="click-to-select"><%= type.uri %></h4>
+                  </hgroup>
+                  <section><%= type.comment %></section>
+                  <section><%= link_to "View all #{pluralize(dataset.type_count(type.uri), 'resource')} of this type", list_resources_path(dataset: dataset.slug, type_uri: type.uri) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </section>
+</article>
+<%= render 'publish_my_data/resources/resource_formats', :resource => dataset, :resource_descriptor => "dataset metadata" %>
+

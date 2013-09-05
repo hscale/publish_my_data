@@ -1,0 +1,11 @@
+<h1>Concept Scheme: <%= concept_scheme.label || concept_scheme.uri %></h1>
+
+<%= concept_scheme.description %>
+
+<h2>Overview</h2>
+<%= render 'publish_my_data/resources/predicates_table', resource: concept_scheme %>
+
+<h2>Concepts</h2>
+<%= render 'publish_my_data/concept_schemes/concepts', concepts: concept_scheme.concepts %>
+
+<%= render 'publish_my_data/resources/resource_formats', :resource => concept_scheme, :resource_descriptor => 'concept scheme' %>

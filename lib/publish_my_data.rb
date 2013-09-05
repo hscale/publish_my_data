@@ -87,6 +87,11 @@ end
 require 'kaminari'
 require 'rdiscount'
 require 'aws-sdk'
+require 'rails_autolink'
+require 'haml-rails'
+require 'sass-rails'
+require 'jquery-rails'
+require 'entypo-rails'
 
 Kaminari.configure do |config|
   config.default_per_page = 20

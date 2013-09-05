@@ -3,25 +3,29 @@
     <% if defined?(show_title) && show_title %>
       <tr>
         <td colspan="2">
-          <%= resource.label %><br/>
-          <%= resource.uri %>
+          <% if resource.label %>
+            <h3 class="bold"><%= link_to resource.label, resource_path_from_uri(resource.uri) %></h3>
+            <h3><%= resource.uri %></h3>
+          <% else %>
+            <h3><%= link_to resource.uri, resource_path_from_uri(resource.uri) %></h3>
+          <% end %>
         </td>
       </tr>
     <% end %>
     <tr>
-      <th>Predicate</th>
+      <th class="range-right">Predicate</th>
       <th>Object</th>
     </tr>
   </thead>
   <tbody>
     <% resource.predicates.each do |pred| %>
       <tr>
-        <td>
+        <td class="range-right hardwrap">
           <%= resource_uri_or_label(resource, pred) %>
         </td>
-        <td>
+        <td class="details constrain hardwrap">
           <% resource.read_predicate(pred).each do |obj| %>
-            <%= resource_uri_or_label(resource, obj) %>
+            <h3><%= resource_uri_or_label(resource, obj) %></h3>
           <% end %>
         </td>
       </tr>

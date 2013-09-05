@@ -1,0 +1,30 @@
+<table>
+  <thead>
+    <% if defined?(show_title) && show_title %>
+      <tr>
+        <td colspan="2">
+          <%= resource.label %><br/>
+          <%= resource.uri %>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+      <th>Predicate</th>
+      <th>Object</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% resource.predicates.each do |pred| %>
+      <tr>
+        <td>
+          <%= resource_uri_or_label(resource, pred) %>
+        </td>
+        <td>
+          <% resource.read_predicate(pred).each do |obj| %>
+            <%= resource_uri_or_label(resource, obj) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

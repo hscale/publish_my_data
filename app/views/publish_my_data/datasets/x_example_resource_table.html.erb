@@ -1,0 +1,55 @@
+<table id="<%= dom_id(resource) %>">
+  <thead>
+    <tr>
+      <td colspan="2">
+        <h5>Subject</h5>
+        <h3>
+          <%= link_to (resource.label || resource.uri), resource_path_from_uri(resource.uri) %>
+        </h3>
+        <h5>
+          Type<%= "s" if resource.read_predicate(RDF.type).many? %>:
+          <%= resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe %>
+        </h5>
+      </td>
+    </tr>
+
+    <tr>
+      <th class="range-right">Predicate</th>
+      <th>Object</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% resource.predicates.each do |pred| %>
+      <tr>
+        <td class="range-right hardwrap">
+          <span class="<%= vocabulary_class(dataset, pred) %>"><%= link_to_resource_uri_or_label(resource, pred) %></span>
+        </td>
+        <td class="details constrain hardwrap">
+          <ul><% resource.read_predicate(pred).each do |obj| %>
+            <li class="<%= vocabulary_class(dataset, obj) %>"><%= link_to_resource_uri_or_label(resource, obj) %></li>
+          <% end %></ul>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">
+        <ul>
+          <li><%= link_to show_resource_path(uri: resource.uri, format: 'ttl'), target: 'blank' do %>
+            Raw data for this resource (.ttl) <i class="icon-popup"></i>
+          <% end %></li>
+          <% types_for_example_resource(dataset, resource).each do |type| %>
+            <li><%= link_to list_resources_path(dataset: dataset, type_uri: type) do %>
+              <% if type.label %>
+                View all <%= pluralize dataset.type_count(type.uri), type.label %>
+              <% else %>
+                View all <%= dataset.type_count(type.uri) %> resources of type '<%= type.uri %>'
+              <% end %>
+            <% end %></li>
+          <% end %>
+        </ul>
+      </td>
+    </tr>
+  </tfoot>
+</table>

@@ -1,3 +1,5 @@
-<% Hash[*%w( N-triples nt Turtle ttl RDF/XML rdf )].each_pair do |text, format| %>
-  <%= link_to_sparql_results_format( text, format, @sparql_query.query ) %>
-<% end %>
+<%= bottom_formats_section "set of SPARQL CONSTRUCT results",
+  link_to_sparql_results_format( "N-triples", "nt", @sparql_query.query ),
+  link_to_sparql_results_format( "Turtle", "ttl", @sparql_query.query ),
+  link_to_sparql_results_format( "RDF/XML", "rdf", @sparql_query.query )
+%>

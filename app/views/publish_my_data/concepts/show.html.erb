@@ -1,3 +1,21 @@
-<%= render 'publish_my_data/resources/uri_and_label', resource: concept %>
-<%= render 'publish_my_data/resources/predicates_table', resource: concept %>
-<%= render 'publish_my_data/resources/resource_formats', resource: concept %>
+<% page_title "Concept: #{concept.label || concept.uri}" %>
+
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= concept_scheme_crumb(concept.concept_scheme) if concept.concept_scheme %>
+    <%= resource_crumb("Concept") %>
+  </ol>
+<% end %>
+
+<article class="resource">
+  <%= top_section(concept.label || concept.uri, concept.uri, "Concept", "URI") %>
+
+  <section>
+    <div class="row container">
+      <%= render 'publish_my_data/resources/predicates_table', :resource => concept %>
+    </div>
+  </section>
+
+  <%= render 'publish_my_data/resources/resource_formats', :resource => concept, :resource_descriptor => "concept" %>
+</article>

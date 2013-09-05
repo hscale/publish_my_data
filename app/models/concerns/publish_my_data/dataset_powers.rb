@@ -72,6 +72,19 @@ module PublishMyData
       Theme.find(self.theme.to_s) rescue nil
     end
 
+    def is_cube?
+     # return false # return false for now!!
+      !!(Resource.where("?uri <http://purl.org/linked-data/cube#dataSet> <#{self.uri}>").graph(self.data_graph_uri).count > 0)
+    end
+
+    def cube
+      if is_cube?
+        PublishMyData::DataCube::Cube.new(self)
+      else
+        nil
+      end
+    end
+
     module ClassMethods
       include PublishMyData::AllFeatures::ClassMethods
 

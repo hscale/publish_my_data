@@ -25,5 +25,10 @@ Gem::Specification.new do |s|
   s.add_dependency "aws-sdk"
   s.add_dependency "kaminari"
   s.add_dependency "rdiscount"
-
+  s.add_dependency "rails_autolink"
+  s.add_dependency "haml-rails"
+  s.add_dependency "jquery-rails"
+  s.add_dependency "sass-rails"
+  # s.add_dependency "compass-rails"
+  s.add_dependency "entypo-rails"
 end

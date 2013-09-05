@@ -1,0 +1,11 @@
+<tr>
+  <td class="details">
+    <h3>
+      <%= link_to dataset.title, dataset %>
+      <% if dataset.deprecated? %>
+        <div class="deprecated"><i class="icon-warning"></i>Discontinued</div>
+      <% end %>
+    </h3>
+    <p style="margin-bottom:10px"><%= dataset.comment %></p>
+  </td>
+</tr>

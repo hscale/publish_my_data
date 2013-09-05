@@ -1,3 +1,32 @@
-<%= render 'publish_my_data/resources/uri_and_label', resource: resource %>
-<%= render 'publish_my_data/resources/predicates_table', resource: resource %>
-<%= render 'publish_my_data/resources/resource_formats', resource: resource %>
+<% page_title "Resource: #{resource.label || resource.uri}" %>
+
+<% content_for :data_crumb do %>
+  <ol class="breadcrumb">
+    <%= data_home_crumb %>
+    <%= theme_crumb(resource.theme) if resource.theme %>
+    <%= dataset_crumb(resource.dataset) if resource.dataset %>
+    <%= type_crumb(resource.rdf_type.first, resource.dataset) if resource.rdf_type.length == 1  %>
+    <%= resource_crumb %>
+  </ol>
+<% end %>
+
+<article class="resource">
+  <%= top_section(resource.label || resource.uri, resource.uri, "Resource", "URI") do %>
+    <% if resource.rdf_type.present? %>
+      <div class="row container">
+        <div class="sixteen columns">
+          <h3>type<%= "s" if resource.rdf_type.many? %></h3>
+          <h3><%= resource.rdf_type.map { |t| resource_uri_or_label(resource, t) }.join("<br/>").html_safe %></h3>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <section>
+    <div class="row container">
+      <%= render 'publish_my_data/resources/predicates_table', :resource => resource %>
+    </div>
+  </section>
+
+  <%= render 'publish_my_data/resources/resource_formats', :resource => resource, :resource_descriptor => "resource" %>
+</article>
