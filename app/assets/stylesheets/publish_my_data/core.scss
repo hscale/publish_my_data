@@ -29,7 +29,7 @@ section#datasets {
   }
 }
 
-article#dataset {
+article#dataset, article#ontology, article#concept-scheme {
   @include make-row();
   @include make-md-column(12);
 
@@ -63,6 +63,13 @@ article#dataset {
   }
 }
 
+section#classes, section#properties, section#concepts {
+  ul {
+    @extend .list-unstyled;
+  }
+
+}
+
 .tab-content > section {
   @extend .tab-pane;
   @include make-row();
@@ -72,6 +79,9 @@ article#dataset {
   }
   .secondary {
     @include make-md-column(4);
+  }
+  .content {
+    @include make-md-column(12);
   }
 }
 

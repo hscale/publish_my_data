@@ -7,12 +7,15 @@
     %li= link_to 'Datasets', datasets_path
     %li.active Dataset
 
+- if dataset.deprecated?
+  = render partial: 'publish_my_data/shared/deprecation_notice', locals: {resource: dataset}
+
 %article#dataset
   %header
     %h3 Dataset
     %h1= dataset.title
     %h3 URI
-    %h2= dataset.uri
+    %h2.click-to-select= dataset.uri
 
   %section.metadata
     .primary
@@ -58,7 +61,8 @@
         %p= formatted_date(dataset.modified.to_s)
       - if dataset.tags.try(:any?)
         %h3 Tags
-        %p= dataset.tags.join(', ')    
+        %p= dataset.tags.join(', ')
+
   %ul.tab-links
     - if dataset.is_cube?
       %li.active
@@ -104,18 +108,18 @@
         %aside
           %p
             %i.icon-circled-help
-            An 
-            %em ontology 
-            is a set of 
+            An
+            %em ontology
+            is a set of
             %em classes
-            and 
+            and
             %em properties
             about a certain topic area. These are used for a resource's types and predicates respectively.
           %p
             %i.icon-circled-help
             A
             %em concept scheme
-            is a collection of 
+            is a collection of
             %em concepts
             about a topic. Concepts act as a list of possible values for a certain property (i.e. predicate) of a resource.
         :javascript
@@ -129,24 +133,7 @@
             $('#example-data table').removeClass('lowlight');
           });
 
-    %section#linked-data
-      .primary
-        %h3 SPARQL
-        :markdown
-          The data contained in this dataset is stored in a named graph, which can be used in SPARQL queries to restrict results to this dataset.
-        = content_tag :code, dataset.data_graph_uri, class: 'namedgraph click-to-select'
-
-        - if dataset.data_dump.present?
-          %h3 Download
-          %p
-            = link_to dataset.data_dump.to_s do
-              %i.icon-download
-              Complete dump of all #{dataset.size if dataset.size.present?} triples in this dataset.
-            (zipped n-triples file)
-      .secondary
-        %a.button(href="/sparql") Run a SPARQL Query
-        %h3 API Docs
-        %p Full details of how to programatically access the data in this site can be found in the #{ link_to 'Developer Documentation', publish_my_data.developer_docs_path }.
+    = render 'publish_my_data/resources/sparql_section', resource: dataset
 
   %footer.alternative-formats
     :markdown

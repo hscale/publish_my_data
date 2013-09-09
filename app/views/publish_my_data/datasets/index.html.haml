@@ -11,11 +11,13 @@
   %ul
     - @datasets.each do |dataset|
       %li
-        = link_to dataset.title, dataset
-        - if dataset.deprecated?
-          %span.discontinued
-            %i.icon.-warning
-            Discontinued
+        %h3= link_to dataset.title, dataset
+        %p
+          =dataset.comment
+          - if dataset.deprecated?
+            %span.discontinued
+              %i.icon.-warning
+              Discontinued
   - if pagination_required?(@datasets, @pagination_params)
     = paginate @datasets
   %footer.alternative-formats
