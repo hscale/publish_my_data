@@ -33,6 +33,11 @@ PublishMyData::Engine.routes.draw do
   # queries
   resources :queries, :only => [:show] # add index later
 
+  # Download Builder
+  resources :selectors, except: [:index] do
+    resources :fragments, except: [:show, :index]
+  end
+
   # SPARQL
   match "sparql(.:format)" => "sparql#endpoint", :as => 'sparql_endpoint' # the main sparql endpoint
 

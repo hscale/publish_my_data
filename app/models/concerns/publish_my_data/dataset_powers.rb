@@ -25,7 +25,7 @@ module PublishMyData
 
     def type_count(type_uri)
       count_query = "SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri.to_s}> { ?uri a <#{type_uri.to_s}> } }"
-      SparqlQuery.new(count_query).count  
+      SparqlQuery.new(count_query).count
     end
 
     def resource_count
@@ -59,7 +59,7 @@ module PublishMyData
 
     def concept_schemes
       return @concept_schemes if @concept_schemes
-      
+
       query =  "SELECT DISTINCT ?uri WHERE {"
       query << "  GRAPH <#{self.data_graph_uri.to_s}> {?s ?p ?o}"
       query << "  { ?p <http://www.w3.org/2004/02/skos/core#inScheme> ?uri } UNION { ?o <http://www.w3.org/2004/02/skos/core#inScheme> ?uri }"
@@ -97,6 +97,10 @@ module PublishMyData
 
       def ordered_by_title
         all.where("?uri <#{RDF::DC.title}> ?title").order("?title")
+      end
+
+      def data_cubes
+        all.where("?s <http://purl.org/linked-data/cube#dataSet> ?uri")
       end
 
       def deprecation_last_query_str

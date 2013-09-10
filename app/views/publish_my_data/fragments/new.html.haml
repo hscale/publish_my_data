@@ -1,0 +1,4 @@
+%h1 Add data from dataset
+
+= label_tag :dataset
+= select_tag :dataset, options_from_collection_for_select(@datasets, :title, :uri)

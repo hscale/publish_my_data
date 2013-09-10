@@ -1,0 +1,10 @@
+%table
+  %thead
+    %tr
+      %td
+      %td= link_to 'Add data', new_selector_fragment_path(@selector)
+  %tbody
+    - @selector.rows.each do |row|
+      %tr
+        %td= row.label
+
