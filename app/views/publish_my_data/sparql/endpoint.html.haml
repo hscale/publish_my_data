@@ -1,57 +1,68 @@
 - page_title "SPARQL Endpoint"
 
-- content_for :data_crumb do
+- content_for :crumbs do
   %ol.breadcrumb
     = data_home_crumb
     = crumb_list_item "SPARQL", "/sparql", "sparqlpage"
 
-%article.sparql-page
+%article#sparql
+  %header
+    - if @sparql_query
+      %h1 SPARQL Query Results
+    - else
+      %h1 Run a SPARQL Query
+
   - if @sparql_query
-    = top_section "SPARQL Query Results"
-  - else
-    = top_section "Run a SPARQL Query"
+    %section#results
+      - if @error_message
+        #error-message
+          %h3 Sorry, your query failed to run.</h3>
+          %p= error_message
 
-  %section
-    .container
-      - if @sparql_query
-        = render 'publish_my_data/sparql/results'
-        .row
-          .sixteen.columns
-            %h3.edit-query Edit the Query
-            = render 'publish_my_data/sparql/form'
-
-            %h3 Permalink
-            %code.click-to-select.permalink
-              = sparql_endpoint_url(:query => @sparql_query.query)
-
-            - unless @error_message || @sparql_query.query_type == :unknown
-              .api
-                %h3 API
-                %div
-                  %span
-                    Request this <strong>complete set</strong> of results as
-                  = render 'publish_my_data/sparql/formats_dropdown'
-                  %span
-                    by issuing an HTTP GET request to the following URL (or use the links in the footer).
-
-                %code.click-to-select
-                  = sparql_endpoint_url(:format => 'format', :query => @sparql_query.query)
       - else
-        .row
-          .sixteen.columns
-            %h3.edit-query Enter a query
-            = render 'publish_my_data/sparql/form'
-            :javascript
-              // focus the text area when the page loads (only when there's no results)
-              $(function() {
-                $('#console-query').focus();
-              });
-      .sixteen.columns
-        %h3 Developer Docs
-        :markdown
-          Read [full documentation](/docs#sparql-introduction) on getting SPARQL results programmatically.
+        - if @sparql_query.query_type == :select
 
-- if @sparql_query
-  = render 'publish_my_data/sparql/formats'
-- else
-  = bottom_formats_section "page"
+          .grid-status
+            .status-value
+            = image_tag("publish_my_data/small-spinner.gif", alt: "busy", style: "display:none", class: "busy")
+
+          #results-grid.data-grid
+
+          .grid-footer
+            .footer-content
+              %a.download-csv{href: sparql_endpoint_url(format: 'csv', query: @sparql_query.query)}
+                %i.icon-download
+                Download Results as CSV
+
+          :javascript
+            // use this instead of $(function(){}) to fix slick grid stylesheet load issues.
+            $(window).load(function() {
+              var encodedQuery = "#{CGI.escape(@sparql_query.query)}"; // note that we encode on the server so we don't hit the multiline JS prob
+              new Swirrl.SparqlResultsGrid(encodedQuery);
+            });
+
+        - else
+          - # TODO
+
+  %section#Query
+    - if @sparql_query
+      %h3 Edit the query
+    - else
+      %h3 Enter a query
+
+    = form_tag sparql_endpoint_path, method: :get do
+      = text_area_tag :query, @query_text
+      = submit_tag "Run Query"
+
+  %footer.alternative-formats
+    - if @error_message || (!@sparql_query) || @sparql_query.query_type == :unknown
+      :markdown
+        This **page** is available as:
+
+      %ul
+        %li HTML
+
+    - else
+      %ul
+        %li
+          - #TODO: formats

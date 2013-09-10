@@ -11,5 +11,6 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require_tree ./slick_grid
 //= require_tree ./publish_my_data
 //= require bootstrap/tab

@@ -1,0 +1,103 @@
+// this is to undo some bootstrap stuff.
+.data-grid *, .slick-header-column {
+   -webkit-box-sizing: content-box;
+   -moz-box-sizing: content-box;
+   box-sizing: content-box;
+}
+
+.data-grid {
+  clear:both;
+  background: white;
+  outline: 0;
+  border: 1px solid $gray-lighter;
+  width:100%;
+  height:250px;
+  margin-top:0px;
+
+  .slick-cell.row-num {
+    background: $gray-even-lighter;
+    border-right: 1px solid $gray-lighter;
+  }
+
+  .slick-cell {
+    border-right: 1px dotted $gray-lighter;
+    border-bottom: 1px solid $gray-lighter;
+    background: white;
+  }
+
+  .slick-header-columns {
+    background: none;
+    border:none !important;
+  }
+
+  .slick-header-column, .slick-header-column:hover, .slick-header-column-active {
+    border-right: 1px solid $gray-lighter !important;
+    background: $gray-even-lighter;
+    border-bottom: 1px solid $gray-lighter !important;
+  }
+}
+
+#options-toggler {
+  padding-right: 10px;
+  float:left;
+}
+
+.row.controls-wrapper {
+  min-height: 21px;
+
+  #dimensions-controls {
+    fieldset {
+      margin: 10px 0;
+    }
+    select {
+      color: #000;
+    }
+    select:disabled {
+      color: #bbb;
+    }
+  }
+
+  .dimensions-status {
+    float:left;
+    img.busy {
+      float:left;
+      margin-right: 5px;
+    }
+    div.status-value {
+      float:left;
+    }
+  }
+}
+
+.row.grid-header {
+  margin-bottom:0;
+
+  #cube-grid-title {
+    display:inline;
+  }
+
+  .grid-status {
+    padding-top:2px;
+    img.busy {
+      float:right;
+    }
+    div.status-value {
+      float:right;
+      margin-left: 5px;
+    }
+  }
+}
+
+.grid-footer {
+  background: $gray-even-lighter;
+  width: 100%;
+  height:31px;
+  border: 1px solid $gray-lighter;
+  outline: 0px;
+  border-top: 0px;
+  .footer-content {
+    float:right;
+    padding-top:5px;
+    padding-right:10px;
+  }
+}
