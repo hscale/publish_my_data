@@ -7,7 +7,8 @@
 
 %section#datasets
   %header
-    %h1 Datasets
+    %h1 All Datasets
+    %h3= pluralize(@datasets.length, "dataset")
   %ul
     - @datasets.each do |dataset|
       %li
@@ -22,7 +23,7 @@
     = paginate @datasets
   %footer.alternative-formats
     :markdown
-      This **page** is available as
+      This **page of datasets** is available as
     %ul
       %li HTML
       %li= link_to 'N-triples', format: 'nt', page: @pagination_params.page, per_page: @pagination_params.per_page

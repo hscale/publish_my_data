@@ -1,0 +1,28 @@
+- page_title "Property #{property.label || property.uri}"
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    - if property.defined_by_ontology
+      %li= link_to "Ontology: #{property.defined_by_ontology.label || property.defined_by_ontology.uri}", resource_path_from_uri(property.defined_by_ontology.uri)
+    %li Property
+
+%article#resource
+  %header
+    %h3 Property
+    %h1= property.label || property.uri
+    %h3 URI
+    %h2.click-to-select= property.uri
+
+  = render 'resource_data', resource: property
+
+  %footer.alternative-formats
+    :markdown
+      This **property** is available as:
+    %ul
+      %li HTML
+      %li= link_to("JSON", show_resource_path(:uri => property.uri, :format => 'json'))
+      %li= link_to("RDF/XML", show_resource_path(:uri => property.uri, :format => 'rdf'))
+      %li= link_to("Turtle", show_resource_path(:uri => property.uri, :format => 'ttl'))
+      %li= link_to("N-triples", show_resource_path(:uri => property.uri, :format => 'nt'))
+

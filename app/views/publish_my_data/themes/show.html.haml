@@ -1,0 +1,43 @@
+- page_title "Theme: #{@theme.label || @theme.uri}"
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    %li= link_to "Themes", themes_path
+    %li Theme
+
+%article#theme
+  %header
+    %h3 Theme
+    %h1= @theme.label || @theme.uri
+    %h3 Comment
+    %p
+      = @theme.comment
+      = link_to "Metadata for this theme", resource_path_from_uri(@theme.uri)
+
+  %section#datasets
+    %h3= pluralize(@datasets.length, "dataset")
+
+    %ul
+      - @datasets.each do |dataset|
+        %li
+          %h3= link_to dataset.title, dataset
+          %p
+            =dataset.comment
+            - if dataset.deprecated?
+              %span.discontinued
+                %i.icon.-warning
+                Discontinued
+    - if pagination_required?(@datasets, @pagination_params)
+      = paginate @datasets
+
+  %footer.alternative-formats
+    :markdown
+      This **page of datasets** is available as:
+
+    %ul
+      %li HTML
+      %li= link_to('N-triples', :format => 'nt', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+      %li= link_to("Turtle", :format => 'ttl', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+      %li= link_to("RDF/XML", :format => 'rdf', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+      %li= link_to("JSON", :format => 'json', :page => @pagination_params.page, :per_page => @pagination_params.per_page)

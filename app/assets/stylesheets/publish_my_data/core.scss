@@ -18,11 +18,14 @@ footer.alternative-formats {
   }
 }
 
-section#datasets {
-  & > ul {
+section#classes, section#properties, section#concepts, section#themes, section#datasets {
+  ul {
     @extend .list-unstyled;
   }
 
+}
+
+section#datasets {
   .discontinued {
     @extend .label;
     @extend .label-warning;
@@ -63,12 +66,7 @@ article#dataset, article#ontology, article#concept-scheme {
   }
 }
 
-section#classes, section#properties, section#concepts {
-  ul {
-    @extend .list-unstyled;
-  }
 
-}
 
 .tab-content > section {
   @extend .tab-pane;
@@ -85,7 +83,8 @@ section#classes, section#properties, section#concepts {
   }
 }
 
-section#example-data {
+section#example-data, section#resource-data
+ {
   table {
     @extend .table;
     // @extend .table-bordered;
