@@ -23,7 +23,7 @@
       = resource.read_predicate(RDF.type).many? ? 'Types:' : 'Type:'
       = resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe
 
-  = render 'resource_data', resource: resource
+  = render  'publish_my_data/resources/resource_data', resource: resource
 
   %footer.alternative-formats
     :markdown

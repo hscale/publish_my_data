@@ -1,3 +1,0 @@
-<% Hash[*%w( XML xml JSON json CSV csv Text text )].each_pair do |text, format| %>
-  <%= link_to_sparql_results_format( text, format, @sparql_query.query ) %>
-<% end %>

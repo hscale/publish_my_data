@@ -2,10 +2,10 @@
 
 :javascript
   $(function() {
-    var formatSelect = $('.api select.formats');
+    var formatSelect = $('.api-links select.formats');
     formatSelect.change(function() {
       var newVal = formatSelect.val();
-      $('.api code').text(newVal);
+      $('.api-links code').text(newVal);
     });
     formatSelect.change(); // trigger the change.
   });

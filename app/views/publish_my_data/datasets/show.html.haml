@@ -77,7 +77,8 @@
 
   .tab-content
     - if dataset.is_cube?
-      %section#grid-view.active= render 'publish_my_data/data_cube/grid', dataset: dataset
+      %section#grid-view.active
+        = render 'publish_my_data/data_cube/grid', dataset: dataset
 
     %section#example-data(class="#{ 'active' unless dataset.is_cube? }")
       .primary
@@ -133,7 +134,46 @@
             $('#example-data table').removeClass('lowlight');
           });
 
-    = render 'publish_my_data/resources/sparql_section', resource: dataset
+    - #TODO: partialize the sparql section up a bit? (it's also used by ConceptSchemes and Ontols)
+    - resource_class_name = "dataset"
+    - resource = dataset
+    %section#linked-data
+      .primary
+        %h3 SPARQL
+
+        :markdown
+          The data contained in this #{resource_class_name} is stored in a named graph, which can be used in SPARQL queries to restrict results to this #{resource_class_name}.
+        = content_tag :code, resource.data_graph_uri, class: 'namedgraph click-to-select'
+
+        - if resource.data_dump.present?
+          %h3 Download
+          %p
+            = link_to resource.data_dump.to_s do
+              %i.icon-download
+              Complete dump of all #{resource.size if resource.size.present?} triples in this #{resource_class_name}.
+            (zipped n-triples file)
+
+        %h3 Linked Data Resources
+        %p Browse the resources in this dataset by type:
+        %table.resources-summary
+          %thead
+            %tr
+              %th= pluralize dataset.types.length, 'type'
+          %tbody
+            - dataset.types.each do |type|
+              %tr
+                %td
+                  %h3= resource_uri_or_label(type, type.uri)
+                  %h4.click-to-select= type.uri
+                  %section= type.comment
+                  %section
+                    = link_to "View all #{pluralize(dataset.type_count(type.uri), 'resource')} of this type", list_resources_path(dataset: dataset.slug, type_uri: type.uri)
+
+      .secondary
+        %a.button(href="/sparql") Run a SPARQL Query
+        %h3 API Docs
+        %p Full details of how to programatically access the data in this site can be found in the #{ link_to 'Developer Documentation', publish_my_data.developer_docs_path }.
+
 
   %footer.alternative-formats
     :markdown

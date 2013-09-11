@@ -2,23 +2,17 @@
 %html
   %head
     %title
-      Publish My Data
-      = yield :page_title
+      = render 'publish_my_data/shared/meta_title'
     = yield :page_description
     = javascript_include_tag :publish_my_data
     = stylesheet_link_tag :publish_my_data
-
   %body
+    /[if lt IE 8]
+      = render 'publish_my_data/shared/browser_warning'
     %header
       %nav
-        / = render 'publish_my_data/shared/logo'
+        = render 'publish_my_data/shared/logo'
         = yield :crumbs
-
     %main= yield
-
-    %footer
-      = link_to "Privacy & Cookies", publish_my_data.privacy_path
-      |
-      = link_to "Accessibility", publish_my_data.accessibility_path
-      |
-      = link_to "Developer Docs", publish_my_data.developer_docs_path
+    = render 'publish_my_data/shared/footer'
+    = render 'publish_my_data/shared/google_analytics'

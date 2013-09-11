@@ -1,6 +1,0 @@
-<div class="container row deprecation-notice">
-  <div class="sixteen columns">
-    <i class="icon-warning"></i>
-    This <%= resource.class.name.demodulize.humanize.downcase %> has been discontinued<% if resource.replaced_by %> in favour of <%= link_to resource.replaced_by.to_s %>, please use this instead<%end%>. <span class='help'><%= link_to "What does this mean?", "/docs#discontinued-datasets" %></span>
-  </div>
-</div>

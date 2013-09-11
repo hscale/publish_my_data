@@ -12,7 +12,7 @@
     - else
       %h1 Run a SPARQL Query
 
-  - if @sparql_query
+  - if @sparql_query || @error_message
     %section#results
       - if @error_message
         #error-message
@@ -68,10 +68,31 @@
     - else
       %h3 Enter a query
 
-    = form_tag sparql_endpoint_path, method: :get do
-      .form-group
-        = text_area_tag :query, @query_text
-      = submit_tag "Run Query", id: 'run-sparql-query'
+    = render 'publish_my_data/sparql/form'
+
+  %footer.api
+    - query_params = {:query => params[:query] }.merge(@interpolations)
+    %h3 Permalink
+    %code.click-to-select.permalink
+      = sparql_endpoint_url(query_params)
+
+    - if @sparql_query && !@error_message
+
+      %h3 API
+      %div.api-links
+        %p
+          %span
+            Request this
+            %strong complete set
+            of results as
+          = render 'publish_my_data/sparql/formats_dropdown', :query_params => query_params
+          %span
+            by issuing an HTTP GET request to the following URL:
+
+        %code.click-to-select
+          = sparql_endpoint_url(query_params.merge(:format => 'format'))
+        %p
+          Don't forget you can also use the links at the foot of the page.
 
   %footer.alternative-formats
 
@@ -91,7 +112,7 @@
           %li= link_to_sparql_results_format("CSV", "csv", @sparql_query.query)
           %li= link_to_sparql_results_format("Text", "text", @sparql_query.query)
 
-      -elsif @sparql_query.query_type == :construct || :describe
+      -elsif @sparql_query.query_type == :construct || @sparql_query.query_type == :describe
         %ul
           %li= link_to_sparql_results_format( "N-triples", "nt", @sparql_query.query )
           %li= link_to_sparql_results_format( "Turtle", "ttl", @sparql_query.query )

@@ -1,20 +1,6 @@
-/ .sixteen.columns
-/   #options-toggler(style="display:none")
-/     %a#show-rows-and-columns-settings(href="#")
-/       Choose row &amp; column options
-/       %i.icon-cog
-
-/     %a#hide-rows-and-columns-settings(href="#" style="display:none")
-/       Hide options
-/       %i.icon-chevron-small-up
-
-/   .dimensions-status(style="display:none")
-/     = image_tag("publish_my_data_enterprise/small-spinner.gif", alt: "busy", style: "display:none", class: "busy")
-/     .status-value
-
 #dimensions-controls
   %form(style="margin:0; display:none")
-    .eight.columns
+    .rows-and-columns
       %fieldset.rows-and-columns
         %legend Row and Column Headings
 
@@ -26,19 +12,8 @@
           %label Rows (values in first column)
           %div#rows-dimension-container.picker
 
-    .eight.columns
-      %fieldset.other-options
+    .other-options
+      %fieldset
         %legend Other Options
         .locked-dimensions
           No other options for this dataset
-
-/ :javascript
-/   var links = $("a#show-rows-and-columns-settings, a#hide-rows-and-columns-settings");
-/   links.click(function(e) {
-/     e.preventDefault();
-/     $("#dimensions-controls").slideToggle(300, function(){
-/       //complete handler
-/       links.toggle();
-/     });
-
-/   });

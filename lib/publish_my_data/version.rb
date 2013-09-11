@@ -1,3 +1,3 @@
 module PublishMyData
-  VERSION = "0.0.30"
+  VERSION = "1.0.0"
 end

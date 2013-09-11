@@ -6,7 +6,8 @@ require "publish_my_data/paginator"
 
 # A bit nasty, but these paths are included by default in Rails 4 so
 # this is only a temporary measure
-#Dir[File.expand_path('../../app/models/concerns/**/*.rb', __FILE__)].each {|f| require f}
+
+require File.expand_path('../../app/models/concerns/publish_my_data/cube_results.rb', __FILE__)
 
 # load them in the right order so that dataset powers can access all features.
 require File.expand_path('../../app/models/concerns/publish_my_data/all_features.rb', __FILE__)
