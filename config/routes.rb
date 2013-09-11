@@ -35,7 +35,9 @@ PublishMyData::Engine.routes.draw do
 
   # Download Builder
   resources :selectors, except: [:index] do
-    resources :fragments, except: [:show, :index]
+    resources :fragments, except: [:show, :index] do
+      get :datasets, on: :member
+    end
   end
 
   # SPARQL

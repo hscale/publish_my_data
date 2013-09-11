@@ -24,6 +24,10 @@ module PublishMyData
           LIMIT 20
         ")
       end
+
+      def fragments
+        []
+      end
     end
   end
 end

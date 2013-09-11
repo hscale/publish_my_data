@@ -100,7 +100,12 @@ module PublishMyData
       end
 
       def data_cubes
-        all.where("?s <http://purl.org/linked-data/cube#dataSet> ?uri")
+        find_by_sparql("
+          SELECT DISTINCT ?uri WHERE {
+            ?uri a <#{RDF::PMD_DS.Dataset}> .
+            ?s <http://purl.org/linked-data/cube#dataSet> ?uri .
+          }
+        ")
       end
 
       def deprecation_last_query_str

@@ -1,4 +1,10 @@
-%h1 Add data from dataset
+= form_for @fragment do |f|
+  = f.hidden_field :dataset_uri, @dataset.uri
 
-= label_tag :dataset
-= select_tag :dataset, options_from_collection_for_select(@datasets, :title, :uri)
+  - @dataset.dimensions.each do |dimension|
+    = dimension.label
+    - dimension.values.each do |value|
+      = "*checkbox*"
+      = value.label
+
+  = f.submit

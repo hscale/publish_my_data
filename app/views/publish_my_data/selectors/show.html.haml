@@ -1,10 +1,14 @@
 %table
   %thead
-    %tr
-      %td
-      %td= link_to 'Add data', new_selector_fragment_path(@selector)
+    - header_depth(@selector).times do |i|
+      %tr
+      - @selector.fragments.each do |fragment|
+        - fragment_headings_at_depth(@selector, fragment, i).each do |heading|
+          %td(colspan="#{ heading_span(@selector, fragment, i) }")= heading
   %tbody
     - @selector.rows.each do |row|
       %tr
         %td= row.label
-
+        - @selector.fragments.each do |fragment|
+          - column_values(fragment, row).each do |value|
+            %td= value
