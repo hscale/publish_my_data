@@ -5,6 +5,9 @@ guard :rspec,
   all_on_start:   false,
   all_after_pass: false,
   notification:   true,
+  spring:         true,
+  # We don't want bundle *and* spring:
+  bundler:        false,
   cli:            "--colour --format Fuubar" do
 
   watch(%r{^spec/.+_spec\.rb$})

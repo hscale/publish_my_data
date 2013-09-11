@@ -30,4 +30,6 @@ group :install_only do
   gem "rb-fsevent"
   gem "growl"
   gem "terminal-notifier-guard"
+
+  gem "spring"
 end
