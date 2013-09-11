@@ -37,6 +37,17 @@ This is the same core code that powers the enterprise, hosted version of Publish
 - The views currently supplied by this Rails engine are very rudimentary. Some nicer default views coming soon, but for now you'll probably just want to override them all in your app.
 - Warning: This gem is usable now, but the API is under constant development and flux at the moment, and tbh it's not very well documented! :)
 
+## Development
+
+PublishMyData is specified in and tested with an RSpec example suite. As PublishMyData is a Rails Engine, the `spec/` folder contains a dummy app which serves as a test harness for the engine.
+
+To run the tests for PublishMyData you need to configure a local SPARQL database. This can be configured with the following environment variables:
+
+* `PMD_SPARQL_QUERY_ENDPOINT` (default: _http://localhost:3030/pmd-test/sparql_)
+* `PMD_SPARQL_UPDATE_ENDPOINT` (default: _http://localhost:3030/pmd-test/update_)
+
+These are currently managed in `spec_helper.rb` and `PMD_SPARQL_QUERY_ENDPOINT` is read in the dummy app to configure the `test` environment. As PublishMyData Community Edition is read-only, `PMD_SPARQL_UPDATE_ENDPOINT` is only used in the test suite, to prepare example data.
+
 ## Licence
 
 Uses MIT-LICENSE.

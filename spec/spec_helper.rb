@@ -1,4 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
+ENV["PMD_SPARQL_QUERY_ENDPOINT"] ||= "http://localhost:3030/pmd-test/sparql"
+ENV["PMD_SPARQL_UPDATE_ENDPOINT"] ||= "http://localhost:3030/pmd-test/update"
+
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
@@ -49,6 +52,6 @@ end
 
 # set up tripod for dev mode.
 Tripod.configure do |config|
-  config.update_endpoint = 'http://localhost:3030/pmdtest/update'
-  config.query_endpoint = 'http://localhost:3030/pmdtest/sparql'
+  config.update_endpoint = ENV.fetch("PMD_SPARQL_UPDATE_ENDPOINT")
+  config.query_endpoint = ENV.fetch("PMD_SPARQL_QUERY_ENDPOINT")
 end

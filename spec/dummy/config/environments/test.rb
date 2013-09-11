@@ -33,7 +33,7 @@ Dummy::Application.configure do
   config.active_support.deprecation = :stderr
 
   PublishMyData.configure do |config|
-    config.sparql_endpoint = 'http://localhost:3030/pmdtest/sparql'
+    config.sparql_endpoint = ENV.fetch("PMD_SPARQL_QUERY_ENDPOINT")
     config.local_domain = 'pmdtest.dev'
 
     config.downloads_s3_bucket = "publishmydata-dev"
