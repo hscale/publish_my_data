@@ -18,8 +18,16 @@ gemspec
 
 group :test, :development do
   gem "rspec-rails", "~> 2.0"
+  gem "fuubar" # RSpec formatter
   gem "factory_girl_rails", "~> 4.0"
   gem "capybara"
   gem "ruby-prof"
 end
 
+group :install_only do
+  gem "guard"
+  gem "guard-rspec"
+  gem "rb-fsevent"
+  gem "growl"
+  gem "terminal-notifier-guard"
+end
