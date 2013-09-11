@@ -66,6 +66,22 @@ article#dataset, article#ontology, article#concept-scheme {
   }
 }
 
+article#sparql {
+  form {
+    @extend .form;
+
+    textarea {
+      @extend .form-control;
+    }
+
+    input[type=submit] {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+
+}
+
 
 
 .tab-content > section {
@@ -142,6 +158,7 @@ section#vocabularies {
     }
   }
 }
+
 
 section#linked-data {
   a.button {
