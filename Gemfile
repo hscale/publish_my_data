@@ -22,6 +22,7 @@ group :test, :development do
   gem "factory_girl_rails", "~> 4.0"
   gem "capybara"
   gem "ruby-prof"
+  gem "awesome_print", require: "ap"
 end
 
 group :install_only do
