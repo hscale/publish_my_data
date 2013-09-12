@@ -8,6 +8,12 @@ module PublishMyData
 
         its(:dimension_value_labels) { should be == [ ] }
         its(:number_of_dimensions) { should be == 0 }
+
+        describe "#number_of_encompassed_dimension_values_at_level" do
+          specify {
+            expect(fragment.number_of_encompassed_dimension_values_at_level(0)).to be == 0
+          }
+        end
       end
 
       context "with one dimension" do
@@ -43,6 +49,16 @@ module PublishMyData
             ]
           }
         end
+
+        describe "#number_of_encompassed_dimension_values_at_level" do
+          example "level 0" do
+            expect(fragment.number_of_encompassed_dimension_values_at_level(0)).to be == 1
+          end
+
+          example "level -1" do
+            expect(fragment.number_of_encompassed_dimension_values_at_level(-1)).to be == 1
+          end
+        end
       end
 
       context "with two dimensions" do
@@ -77,6 +93,18 @@ module PublishMyData
 
         its(:number_of_dimensions) { should be == 2 }
 
+        its(:volume_of_selected_cube) { should be == 2 }
+
+        describe "#volume_at_level" do
+          example "level 0" do
+            expect(fragment.volume_at_level(0)).to be == 1
+          end
+
+          example "level 1" do
+            expect(fragment.volume_at_level(1)).to be == 2
+          end
+        end
+
         describe "#dimension_value_labels" do
           specify {
             expect(fragment.dimension_value_labels).to be == [
@@ -84,6 +112,24 @@ module PublishMyData
               [ "Dimension 2 a", "Dimension 2 b" ]
             ]
           }
+        end
+
+        describe "#number_of_encompassed_dimension_values_at_level" do
+          example "level 0" do
+            expect(fragment.number_of_encompassed_dimension_values_at_level(0)).to be == 2
+          end
+
+          example "level 1" do
+            expect(fragment.number_of_encompassed_dimension_values_at_level(1)).to be == 1
+          end
+
+          example "level -1" do
+            expect(fragment.number_of_encompassed_dimension_values_at_level(-1)).to be == 1
+          end
+
+          example "level -2" do
+            expect(fragment.number_of_encompassed_dimension_values_at_level(-2)).to be == 2
+          end
         end
       end
     end

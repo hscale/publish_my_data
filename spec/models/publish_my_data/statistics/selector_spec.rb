@@ -6,10 +6,22 @@ module PublishMyData
       describe "#header_rows" do
         subject(:selector) { Selector.new }
 
+        def labels_for(header_rows)
+          header_rows.map { |row|
+            row.map { |column| column.label }
+          }
+        end
+
+        def widths_for(header_rows)
+          header_rows.map { |row|
+            row.map { |column| column.number_of_encompassed_dimension_values }
+          }
+        end
+
         context "empty" do
           specify {
             # Not actually sure what this should do yet
-            expect(selector.header_rows).to be == [ ]
+            expect(labels_for(selector.header_rows)).to be == [ ]
           }
         end
 
@@ -21,7 +33,7 @@ module PublishMyData
           end
 
           specify {
-            expect(selector.header_rows).to be == [ ]
+            expect(labels_for(selector.header_rows)).to be == [ ]
           }
         end
 
@@ -54,8 +66,14 @@ module PublishMyData
           end
 
           specify {
-            expect(selector.header_rows).to be == [
+            expect(labels_for(selector.header_rows)).to be == [
               [ "Dimension 1 a", "Dimension 1 b" ]
+            ]
+          }
+
+          specify {
+            expect(widths_for(selector.header_rows)).to be == [
+              [ 1, 1 ]
             ]
           }
         end
@@ -104,9 +122,15 @@ module PublishMyData
           end
 
           specify {
-            expect(selector.header_rows).to be == [
+            expect(labels_for(selector.header_rows)).to be == [
               [ "Dimension 1 a" ],
               [ "Dimension 2 a", "Dimension 2 b" ]
+            ]
+          }
+
+          specify {
+            expect(widths_for(selector.header_rows)).to be == [
+              [ 2 ], [ 1, 1 ]
             ]
           }
         end
@@ -143,7 +167,7 @@ module PublishMyData
           end
 
           specify {
-            expect(selector.header_rows).to be == [
+            expect(labels_for(selector.header_rows)).to be == [
               [ "Dimension 1 a", "Dimension 1 b", "Dimension 1 a", "Dimension 1 b" ]
             ]
           }
@@ -207,7 +231,7 @@ module PublishMyData
           end
 
           specify {
-            expect(selector.header_rows).to be == [
+            expect(labels_for(selector.header_rows)).to be == [
               [ nil, "Dimension 2 a" ],
               [ "Dimension 1 a", "Dimension 3 a", "Dimension 3 b" ]
             ]

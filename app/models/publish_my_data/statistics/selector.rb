@@ -1,6 +1,16 @@
 module PublishMyData
   module Statistics
     class Selector
+      class HeaderColumn
+        attr_reader :label
+        attr_reader :number_of_encompassed_dimension_values
+
+        def initialize(attributes = { })
+          @label = attributes.fetch(:label, nil)
+          @number_of_encompassed_dimension_values = attributes.fetch(:number_of_encompassed_dimension_values, 1)
+        end
+      end
+
       class << self
         def create
           new
@@ -33,10 +43,16 @@ module PublishMyData
 
           @fragments.each do |fragment|
             if fragment.number_of_dimensions <= row_index
-              current_row << nil
+              current_row << HeaderColumn.new
             else
+              index_from_end = -(row_index + 1)
               current_row.concat(
-                fragment.dimension_value_labels[-(row_index + 1)]
+                fragment.dimension_value_labels[index_from_end].map { |label|
+                  HeaderColumn.new(
+                    label: label,
+                    number_of_encompassed_dimension_values: fragment.number_of_encompassed_dimension_values_at_level(index_from_end)
+                  )
+                }
               )
             end
           end
