@@ -24,21 +24,25 @@ module PublishMyData
       def header_rows
         # This won't handle mismatched sizes yet
         # Also hack the null case for now
-        number_of_rows = @fragments.first.number_of_dimensions rescue 0
+        number_of_rows = @fragments.map(&:number_of_dimensions).max || 0
 
-        header_rows = [ ]
+        bottom_up_header_rows = [ ]
 
         number_of_rows.times do |row_index|
-          header_rows[row_index] = [ ]
+          current_row = bottom_up_header_rows[row_index] = [ ]
 
           @fragments.each do |fragment|
-            header_rows[row_index].concat(
-              fragment.dimension_value_labels[row_index]
-            )
+            if fragment.number_of_dimensions <= row_index
+              current_row << nil
+            else
+              current_row.concat(
+                fragment.dimension_value_labels[-(row_index + 1)]
+              )
+            end
           end
         end
 
-        header_rows
+        bottom_up_header_rows.reverse
       end
 
       def build_fragment(dimensions)
