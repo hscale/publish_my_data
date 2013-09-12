@@ -11,8 +11,27 @@ module PublishMyData
         end
       end
 
+      attr_reader :fragments
+
+      def initialize
+        @fragments = [ ]
+      end
+
       def to_param
         123
+      end
+
+      def header_rows
+        [
+          @fragments.inject([ ]) { |row, fragment|
+            row.concat(fragment.dimension_value_labels)
+            row
+          }
+        ]
+      end
+
+      def build_fragment(dimensions)
+        @fragments << Fragment.new(dimensions)
       end
 
       def rows
@@ -23,10 +42,6 @@ module PublishMyData
           }
           LIMIT 20
         ")
-      end
-
-      def fragments
-        []
       end
     end
   end
