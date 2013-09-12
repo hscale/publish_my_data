@@ -26,6 +26,8 @@ group :test, :development do
 end
 
 group :install_only do
+  gem "pry"
+
   gem "guard"
   gem "guard-rspec"
   gem "rb-fsevent"
