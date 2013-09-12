@@ -17,6 +17,8 @@ require 'ap'
 Dir[Rails.root.join("../support/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
+  config.filter_run(focus: true)
+  config.run_all_when_everything_filtered = true
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
