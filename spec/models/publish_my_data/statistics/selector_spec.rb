@@ -8,8 +8,8 @@ module PublishMyData
 
         context "empty" do
           specify {
-            # One row with an empty list of values in it
-            expect(selector.header_rows).to be == [ [] ]
+            # Not actually sure what this should do yet
+            expect(selector.header_rows).to be == [ ]
           }
         end
 
@@ -21,8 +21,7 @@ module PublishMyData
           end
 
           specify {
-            # One row with an empty list of values in it
-            expect(selector.header_rows).to be == [ [] ]
+            expect(selector.header_rows).to be == [ ]
           }
         end
 
@@ -57,6 +56,57 @@ module PublishMyData
           specify {
             expect(selector.header_rows).to be == [
               [ "Dimension 1 a", "Dimension 1 b" ]
+            ]
+          }
+        end
+
+        context "one fragment, two dimensions of one and two values respectively" do
+          let(:dataset) { double("dataset") }
+
+          let(:dimension_1) {
+            {
+              dimension_uri: "http://example.com/dimension_1",
+              dimension_values: [ dimension_value_1a ]
+            }
+          }
+
+          let(:dimension_value_1a) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_1a",
+              dimension_value_label:  "Dimension 1 a"
+            }
+          }
+
+
+          let(:dimension_2) {
+            {
+              dimension_uri: "http://example.com/dimension_2",
+              dimension_values: [ dimension_value_2a, dimension_value_2b ]
+            }
+          }
+
+          let(:dimension_value_2a) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_2a",
+              dimension_value_label:  "Dimension 2 a"
+            }
+          }
+
+          let(:dimension_value_2b) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_2b",
+              dimension_value_label:  "Dimension 2 b"
+            }
+          }
+
+          before(:each) do
+            selector.build_fragment([ dimension_1, dimension_2 ])
+          end
+
+          specify {
+            expect(selector.header_rows).to be == [
+              [ "Dimension 1 a" ],
+              [ "Dimension 2 a", "Dimension 2 b" ]
             ]
           }
         end

@@ -22,12 +22,23 @@ module PublishMyData
       end
 
       def header_rows
-        [
-          @fragments.inject([ ]) { |row, fragment|
-            row.concat(fragment.dimension_value_labels)
-            row
-          }
-        ]
+        # This won't handle mismatched sizes yet
+        # Also hack the null case for now
+        number_of_rows = @fragments.first.number_of_dimensions rescue 0
+
+        header_rows = [ ]
+
+        number_of_rows.times do |row_index|
+          header_rows[row_index] = [ ]
+
+          @fragments.each do |fragment|
+            header_rows[row_index].concat(
+              fragment.dimension_value_labels[row_index]
+            )
+          end
+        end
+
+        header_rows
       end
 
       def build_fragment(dimensions)
