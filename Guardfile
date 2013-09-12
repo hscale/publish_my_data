@@ -22,6 +22,9 @@ guard :rspec,
   watch('config/routes.rb')                           { "spec/routing" }
   watch('app/controllers/application_controller.rb')  { "spec/controllers" }
 
+  # PublishMyData-specific dependencies
+  watch(%r{^app/(models/publish_my_data/statistics)/fragment\.rb$}) { |m| "spec/#{m[1]}/selector_spec.rb" }
+
   # Capybara features specs
   watch(%r{^app/views/(.+)/.*\.(erb|haml)$})          { |m| "spec/features/#{m[1]}_spec.rb" }
 
