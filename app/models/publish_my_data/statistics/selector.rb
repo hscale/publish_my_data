@@ -46,14 +46,17 @@ module PublishMyData
               current_row << HeaderColumn.new
             else
               index_from_end = -(row_index + 1)
-              current_row.concat(
-                fragment.dimension_value_labels[index_from_end].map { |label|
-                  HeaderColumn.new(
-                    label: label,
-                    number_of_encompassed_dimension_values: fragment.number_of_encompassed_dimension_values_at_level(index_from_end)
-                  )
-                }
-              )
+
+              columns_for_row = fragment.dimension_value_labels[index_from_end].map { |label|
+                HeaderColumn.new(
+                  label: label,
+                  number_of_encompassed_dimension_values: fragment.number_of_encompassed_dimension_values_at_level(index_from_end)
+                )
+              }
+
+              number_of_times_to_repeat_columns = fragment.volume_at_level_above(index_from_end)
+
+              current_row.concat(columns_for_row * number_of_times_to_repeat_columns)
             end
           end
         end

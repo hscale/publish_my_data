@@ -1,14 +1,17 @@
 %table
   %thead
-    - header_depth(@selector).times do |i|
+    - @selector.header_rows.each do |header_row|
       %tr
-      - @selector.fragments.each do |fragment|
-        - fragment_headings_at_depth(@selector, fragment, i).each do |heading|
-          %td(colspan="#{ heading_span(@selector, fragment, i) }")= heading
+        %td=# Row label-column padding
+        - header_row.each do |header_column|
+          %td{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
+
   %tbody
     - @selector.rows.each do |row|
       %tr
         %td= row.label
         - @selector.fragments.each do |fragment|
-          - column_values(fragment, row).each do |value|
-            %td= value
+          - fragment.volume_of_selected_cube.times do
+            %td x
+          / - column_values(fragment, row).each do |value|
+          /   %td= value

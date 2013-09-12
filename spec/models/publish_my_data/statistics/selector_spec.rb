@@ -95,7 +95,6 @@ module PublishMyData
             }
           }
 
-
           let(:dimension_2) {
             {
               dimension_uri: "http://example.com/dimension_2",
@@ -131,6 +130,69 @@ module PublishMyData
           specify {
             expect(widths_for(selector.header_rows)).to be == [
               [ 2 ], [ 1, 1 ]
+            ]
+          }
+        end
+
+        context "one fragment, two dimensions both of two values" do
+          let(:dataset) { double("dataset") }
+
+          let(:dimension_1) {
+            {
+              dimension_uri: "http://example.com/dimension_1",
+              dimension_values: [ dimension_value_1a, dimension_value_1b ]
+            }
+          }
+
+          let(:dimension_value_1a) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_1a",
+              dimension_value_label:  "Dimension 1 a"
+            }
+          }
+
+          let(:dimension_value_1b) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_1b",
+              dimension_value_label:  "Dimension 1 b"
+            }
+          }
+
+          let(:dimension_2) {
+            {
+              dimension_uri: "http://example.com/dimension_2",
+              dimension_values: [ dimension_value_2a, dimension_value_2b ]
+            }
+          }
+
+          let(:dimension_value_2a) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_2a",
+              dimension_value_label:  "Dimension 2 a"
+            }
+          }
+
+          let(:dimension_value_2b) {
+            {
+              dimension_value_uri:    "http://example.com/dimension_value_2b",
+              dimension_value_label:  "Dimension 2 b"
+            }
+          }
+
+          before(:each) do
+            selector.build_fragment([ dimension_1, dimension_2 ])
+          end
+
+          specify {
+            expect(labels_for(selector.header_rows)).to be == [
+              [ "Dimension 1 a", "Dimension 1 b" ],
+              [ "Dimension 2 a", "Dimension 2 b", "Dimension 2 a", "Dimension 2 b" ]
+            ]
+          }
+
+          specify {
+            expect(widths_for(selector.header_rows)).to be == [
+              [ 2, 2 ], [ 1, 1, 1, 1 ]
             ]
           }
         end

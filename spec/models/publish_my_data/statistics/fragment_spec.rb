@@ -105,6 +105,29 @@ module PublishMyData
           end
         end
 
+        # Terrible examples - we need another layer!
+        describe "#volume_at_level_above" do
+          example "above level 0" do
+            expect(fragment.volume_at_level_above(0)).to be == 1
+          end
+
+          example "above level 1" do
+            expect(fragment.volume_at_level_above(1)).to be == 1
+          end
+
+          example "above level -1" do
+            expect(fragment.volume_at_level_above(-1)).to be == 1
+          end
+
+          example "above level -2" do
+            expect(fragment.volume_at_level_above(-2)).to be == 1
+          end
+
+          example do
+            pending "need to test higher levels - there are edge case bugs lurking somewhere"
+          end
+        end
+
         describe "#dimension_value_labels" do
           specify {
             expect(fragment.dimension_value_labels).to be == [

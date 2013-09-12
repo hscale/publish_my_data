@@ -42,6 +42,15 @@ module PublishMyData
         }
       end
 
+      def volume_at_level_above(level)
+        if level == 0
+          1
+        else
+          volume_at_level(level - 1)
+        end
+
+      end
+
       def save
         true
       end
