@@ -32,10 +32,6 @@ Dummy::Application.configure do
   PublishMyData.configure do |config|
     config.sparql_endpoint = 'http://localhost:3030/pmd/sparql'
     config.local_domain = 'pmd.dev'
-
-    config.downloads_s3_bucket = "publishmydata-dev"
-    config.aws_access_key_id = "AKIAIMGJ3RKNJJ6CVGTA"
-    config.aws_secret_access_key = "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"
   end
 
 end

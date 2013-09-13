@@ -71,7 +71,7 @@
     = render 'publish_my_data/sparql/form'
 
   %footer.api
-    - query_params = {:query => params[:query] }.merge(@interpolations)
+    - query_params = { :query => params[:query] }.merge(@interpolations||{})
     %h3 Permalink
     %code.click-to-select.permalink
       = sparql_endpoint_url(query_params)

@@ -19,9 +19,6 @@ PublishMyData::Engine.routes.draw do
   # example resources for datasets
   match "/data/*id/example-data" => "example_resources#index", as: :example_resources
 
-  # dumps
-  match "/data/*id/dump" => "datasets#dump", :as => 'dataset_dump'
-
   # dataset resource
   # note that the separate .:format and no-format verisons allow extensions like .json on the end of the uri not to be globbed as the *id
   match "/data/*id.:format" => "information_resources#data"
@@ -37,10 +34,6 @@ PublishMyData::Engine.routes.draw do
   match "/id/*path" => "resources#id"
   match "/doc/*path.:format" => "resources#doc"
   match "/doc/*path" => "resources#doc"
-
-  # download paths
-  match "/def/*id/dump" => "information_resources#dump"
-  match "/vocabularies/:id/dump" => "vocabularies#dump"
 
   # def pages
   match "/def/*id.:format" => "information_resources#def"
