@@ -46,9 +46,12 @@ module PublishMyData
 
     # Now unused - the random data was making it really hard to see what was going on
     def add_some_random_fragments_to(selector)
-      datasets = Dataset.data_cubes.sample(3)
+      datasets = Dataset.local_authority_data_cubes.sample(3)
       datasets.each do |dataset|
-        @selector.build_fragment(random_dimensions_for_dataset(dataset))
+        @selector.build_fragment({
+          dataset: dataset,
+          dimensions: random_dimensions_for_dataset(dataset)
+        })
       end
     end
 
@@ -57,6 +60,7 @@ module PublishMyData
       cube = dataset.cube
       dimensions = dataset.cube.dimensions
       random_dimensions = dimensions#.sample([rand(dimensions.length) + 1, 3].min)
+      random_dimensions.reject! {|d| d[:uri] == 'http://opendatacommunities.org/def/ontology/geography/refArea'}
 
       random_dimensions.map { |dimension_data|
         dimension = DataCube::Dimension.new(dimension_data[:uri], cube)
