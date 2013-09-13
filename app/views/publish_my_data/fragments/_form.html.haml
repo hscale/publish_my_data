@@ -1,0 +1,13 @@
+= form_tag selector_fragments_path(@selector) do
+  = hidden_field_tag :dataset_uri, @dataset.uri
+
+  %ul
+    - @dimensions.each do |dimension|
+      %li
+        %h3= dimension.label
+        %ul
+          - dimension.values.each do |dimension_value|
+            %li
+              = check_box_tag "dataset_dimensions[#{dimension.uri}][#{dimension_value[:uri]}]", 1, true, id: dom_id_from_uri(dimension_value[:uri])
+              = label_tag dom_id_from_uri(dimension_value[:uri]), dimension_value[:label]
+  = submit_tag 'Go'

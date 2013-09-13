@@ -1,6 +1,8 @@
 %h1 Add data from dataset
 
-= form_tag new_selector_fragment_path(@selector) do
-  = label_tag :dataset_uri
-  = select_tag :dataset_uri, options_from_collection_for_select(@datasets, :theme_uri, :theme, :uri, :title)
+= form_tag new_selector_fragment_path(@selector), method: :get, remote: true do
+  = label_tag :dataset_uri, 'Dataset'
+  = select_tag :dataset_uri, options_from_collection_for_select(@datasets, :uri, :title)
   = submit_tag 'choose'
+
+#dimensions

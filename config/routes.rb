@@ -35,8 +35,9 @@ PublishMyData::Engine.routes.draw do
 
   # Download Builder
   resources :selectors, except: [:index] do
+    get :download, on: :member
     resources :fragments, except: [:show, :index] do
-      get :datasets, on: :member
+      get :datasets, on: :collection
     end
   end
 

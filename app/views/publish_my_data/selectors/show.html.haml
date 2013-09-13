@@ -1,17 +1,33 @@
+%h1 Statistics Selector
+:markdown
+  Build a table of statistics by adding columns of data from one or more datasets, then download it as a spreadsheet-compatible .csv file.
+%h2 Data Preview
 %table
   %thead
     - @selector.header_rows.each do |header_row|
       %tr
-        %td=# Row label-column padding
+        %th=# Row label-column padding
         - header_row.each do |header_column|
-          %td{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
-
+          %th{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
+        %th
+          = link_to datasets_selector_fragments_path(@selector) do
+            %i.icon-circled-plus
+            Add Data
   %tbody
     - @selector.rows.each do |row|
       %tr
-        %td= row.label
+        %th= row.label
         - @selector.fragments.each do |fragment|
           - fragment.volume_of_selected_cube.times do
             %td x
-          / - column_values(fragment, row).each do |value|
-          /   %td= value
+            / - column_values(fragment, row).each do |value|
+            /   %td= value
+        - if first_row?(@selector, row)
+          %td(rowspan="#{ @selector.rows.size + 1 }")
+    %tr
+      %th &hellip;
+      %td(colspan="#{ total_columns(@selector) }")
+.actions
+  = link_to download_selector_path(@selector), class: 'btn' do
+    %i.icon-download
+    Download

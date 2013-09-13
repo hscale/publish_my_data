@@ -99,11 +99,13 @@ module PublishMyData
         all.where("?uri <#{RDF::DC.title}> ?title").order("?title")
       end
 
-      def data_cubes
+      def local_authority_data_cubes
         find_by_sparql("
           SELECT DISTINCT ?uri WHERE {
             ?uri a <#{RDF::PMD_DS.Dataset}> .
-            ?s <http://purl.org/linked-data/cube#dataSet> ?uri .
+            ?s <#{ RDF::CUBE.dataSet }> ?uri .
+            ?s <http://opendatacommunities.org/def/ontology/geography/refArea> ?o .
+            ?o a <http://statistics.data.gov.uk/def/statistical-geography> .
           }
         ")
       end

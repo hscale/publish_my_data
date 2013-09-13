@@ -249,7 +249,7 @@ module PublishMyData
           WHERE {
             ?uri a <http://statistics.data.gov.uk/def/statistical-geography>.
           }
-          LIMIT 20
+          LIMIT 10
         ")
       end
     end

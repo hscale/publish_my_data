@@ -13,6 +13,7 @@ require File.expand_path('../../app/models/concerns/publish_my_data/all_features
 require File.expand_path('../../app/models/concerns/publish_my_data/basic_features.rb', __FILE__)
 require File.expand_path('../../app/models/concerns/publish_my_data/dataset_powers.rb', __FILE__)
 require File.expand_path('../../app/models/concerns/publish_my_data/defined_by_ontology.rb', __FILE__)
+require File.expand_path('../../app/models/concerns/publish_my_data/cube_results.rb', __FILE__)
 
 Dir[File.expand_path('../../app/controllers/concerns/**/*.rb', __FILE__)].each {|f| require f}
 
