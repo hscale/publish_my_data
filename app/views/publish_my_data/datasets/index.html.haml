@@ -1,0 +1,32 @@
+- page_title 'Datasets'
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    %li.datasets Datasets
+
+%section#datasets
+  %header
+    %h1 All Datasets
+    %h3= pluralize(@datasets.length, "dataset")
+  %ul
+    - @datasets.each do |dataset|
+      %li
+        %h3= link_to dataset.title, dataset
+        %p
+          =dataset.comment
+          - if dataset.deprecated?
+            %span.discontinued
+              %i.icon.-warning
+              Discontinued
+  - if pagination_required?(@datasets, @pagination_params)
+    = paginate @datasets
+  %footer.alternative-formats
+    :markdown
+      This **page of datasets** is available as
+    %ul
+      %li HTML
+      %li= link_to 'N-triples', format: 'nt', page: @pagination_params.page, per_page: @pagination_params.per_page
+      %li= link_to "Turtle", format: 'ttl', page: @pagination_params.page, per_page: @pagination_params.per_page
+      %li= link_to "RDF/XML", format: 'rdf', page: @pagination_params.page, per_page: @pagination_params.per_page
+      %li= link_to "JSON", format: 'json', page: @pagination_params.page, per_page: @pagination_params.per_page

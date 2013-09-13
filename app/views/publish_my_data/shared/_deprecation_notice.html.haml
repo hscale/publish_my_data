@@ -1,0 +1,8 @@
+#deprecation-notice
+  %i.icon-warning
+  :markdown
+    This #{resource.class.name.demodulize.humanize.downcase} has been discontinued
+    - if resource.replaced_by
+      and replaced by #{link_to resource.replaced_by.to_s, resource.replaced_by.to_s}.
+      Please use this instead.
+    #{link_to "What does this mean?", "/docs#discontinued-datasets"}

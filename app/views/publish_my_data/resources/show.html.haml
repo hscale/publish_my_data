@@ -1,0 +1,36 @@
+- page_title("Resource: #{resource.label || resource.uri}")
+
+- rdf_type_label = PublishMyData::RdfType.find(resource.rdf_type.first.to_s).label rescue nil
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    - if resource.theme
+      %li= link_to "Theme: #{resource.theme.label || resource.theme.uri}", theme_path(resource.theme)
+    - if resource.dataset
+      %li= link_to "Dataset: #{resource.dataset.label || resource.dataset.uri}", dataset_path(resource.dataset)
+    - if resource.rdf_type.one?
+      %li= link_to "Type: #{rdf_type_label || resource.rdf_type.first}", list_resources_path(:dataset => resource.dataset, :type_uri => resource.rdf_type.first)
+    %li Resource
+
+%article#resource
+  %header
+    %h3 Resource
+    %h1= resource.label || resource.uri
+    %h3 URI
+    %h2.click-to-select= resource.uri
+    %h5
+      = resource.read_predicate(RDF.type).many? ? 'Types:' : 'Type:'
+      = resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe
+
+  = render  'publish_my_data/resources/resource_data', resource: resource
+
+  %footer.alternative-formats
+    :markdown
+      This **resource** is available as:
+    %ul
+      %li HTML
+      %li= link_to("JSON", show_resource_path(:uri => resource.uri, :format => 'json'))
+      %li= link_to("RDF/XML", show_resource_path(:uri => resource.uri, :format => 'rdf'))
+      %li= link_to("Turtle", show_resource_path(:uri => resource.uri, :format => 'ttl'))
+      %li= link_to("N-triples", show_resource_path(:uri => resource.uri, :format => 'nt'))

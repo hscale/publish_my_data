@@ -1,0 +1,30 @@
+- page_title "Themes"
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    %li Themes
+
+%section#themes
+  %header
+    %h1 Themes
+    %p The datasets in this site are collected into #{pluralize @themes.length, "broad themes"}.
+
+  %ul
+    - @themes.each do |theme|
+      %li
+        %h3= link_to (theme.label || theme.uri), theme
+        %p.comment= theme.comment
+        %p.dataset-count= pluralize( theme.datasets_count, "dataset" )
+
+
+  %footer.alternative-formats
+    :markdown
+      This **list of themes** is available as
+
+    %ul
+      %li HTML
+      %li= link_to 'N-triples', format: 'nt'
+      %li= link_to "Turtle", format: 'ttl'
+      %li= link_to "RDF/XML", format: 'rdf'
+      %li= link_to "JSON", format: 'json'

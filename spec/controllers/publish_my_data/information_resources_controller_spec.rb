@@ -42,23 +42,14 @@ end
 
 module PublishMyData
   describe InformationResourcesController do
-    # dump an ontology
-    it_should_behave_like 'a controller with a dump action' do
-      let(:resource) { FactoryGirl.create(:ontology) }
-    end
-
-    # dump a concept scheme
-    it_should_behave_like 'a controller with a dump action' do
-      let(:resource) { FactoryGirl.create(:concept_scheme) }
-    end
 
     describe '#data' do
       context "given a dataset" do
         let(:resource) { FactoryGirl.create(:my_dataset) }
 
         context 'as html' do
-          before { get :data, id: resource.slug, use_route: :publish_my_data } 
-            
+          before { get :data, id: resource.slug, use_route: :publish_my_data }
+
           it "should render the dataset show template" do
             response.should render_template("publish_my_data/datasets/show")
           end

@@ -24,5 +24,29 @@ module PublishMyData
         publish_my_data.show_resource_path(:uri => uri.to_s)
       end
     end
+
+    def resources_list_table_title
+
+      str = "<strong> #{pluralize @resources.total_count, 'resource'}</strong>"
+      if @type_filter
+        str += " of type "
+        if @type
+          str += link_to @type.label || @type.uri, resource_path_from_uri(@type.uri)
+        else
+          str += link_to @type_filter, resource_path_from_uri(@type_filter)
+        end
+      end
+
+      if @dataset_filter
+        str += " in dataset "
+        if @dataset
+          str += link_to @dataset.title, @dataset
+        else
+          str += link_to @dataset_filter, resource_path_from_uri(@dataset_filter)
+        end
+      end
+
+      str.html_safe
+    end
   end
 end

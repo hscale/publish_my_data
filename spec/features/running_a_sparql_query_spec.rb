@@ -251,7 +251,7 @@ describe 'visiting the sparql endpoint' do
     end
 
     it "should show a message" do
-      page.should have_content "Response too large"
+      page.should have_content "Response Too Large"
     end
   end
 

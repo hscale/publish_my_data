@@ -67,7 +67,7 @@ describe "A visitor dereferencing a URI" do
       it "should render the 404 page with the right status" do
         visit 'http://pmdtest.dev/foo/'
         page.status_code.should == 404
-        page.should have_content 'Not found'
+        page.should have_content 'Resource Not Found'
       end
 
     end

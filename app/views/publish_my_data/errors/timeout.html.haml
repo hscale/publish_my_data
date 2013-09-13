@@ -1,0 +1,16 @@
+- page_title("503: Timeout")
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    %li Timeout
+
+%article#not-found
+  %header
+    %h3 http status code
+    %h1 503
+    %h2 Timeout
+
+  %section.message
+  %p
+    Sorry, your request timed-out. We may be experiencing unusually high load. You can try again later, or if you've submitted a custom query, consider writing a query designed to return fewer triples.

@@ -1,0 +1,28 @@
+- page_title "Concept #{concept.label || concept.uri}"
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    - if concept.concept_scheme
+      %li= link_to "Concept Scheme: #{concept.concept_scheme.label || concept.concept_scheme.uri}", resource_path_from_uri(concept.concept_scheme.uri)
+    %li Concept
+
+%article#resource
+  %header
+    %h3 Concept
+    %h1= concept.label || concept.uri
+    %h3 URI
+    %h2.click-to-select= concept.uri
+
+  = render  'publish_my_data/resources/resource_data', resource: concept
+
+  %footer.alternative-formats
+    :markdown
+      This **concept** is available as:
+    %ul
+      %li HTML
+      %li= link_to("JSON", show_resource_path(:uri => concept.uri, :format => 'json'))
+      %li= link_to("RDF/XML", show_resource_path(:uri => concept.uri, :format => 'rdf'))
+      %li= link_to("Turtle", show_resource_path(:uri => concept.uri, :format => 'ttl'))
+      %li= link_to("N-triples", show_resource_path(:uri => concept.uri, :format => 'nt'))
+

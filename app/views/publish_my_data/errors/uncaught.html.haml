@@ -1,0 +1,16 @@
+- page_title("503: Internal Server Error")
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    %li Internal Server Error
+
+%article#not-found
+  %header
+    %h3 http status code
+    %h1 500
+    %h2 Internal Server Error
+
+  %section.message
+  %p
+    Something went wrong. We've been notified of the error and we'll investigate.

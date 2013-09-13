@@ -6,7 +6,8 @@ require "publish_my_data/paginator"
 
 # A bit nasty, but these paths are included by default in Rails 4 so
 # this is only a temporary measure
-#Dir[File.expand_path('../../app/models/concerns/**/*.rb', __FILE__)].each {|f| require f}
+
+require File.expand_path('../../app/models/concerns/publish_my_data/cube_results.rb', __FILE__)
 
 # load them in the right order so that dataset powers can access all features.
 require File.expand_path('../../app/models/concerns/publish_my_data/all_features.rb', __FILE__)
@@ -51,13 +52,6 @@ module PublishMyData
   mattr_accessor :max_resources_per_page
   @@max_resources_per_page = 1000
 
-  mattr_accessor :aws_default_host
-  @@aws_default_host = 's3-eu-west-1.amazonaws.com'
-
-  mattr_accessor :aws_access_key_id
-  mattr_accessor :aws_secret_access_key
-  mattr_accessor :downloads_s3_bucket
-
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
   # (defaults shown)
@@ -70,10 +64,6 @@ module PublishMyData
   #     config.default_html_resources_per_page = 20
   #     config.default_html_sparql_per_page = 20
   #     config.max_resources_per_page = 1000
-  #     config.aws_default_host = 's3-eu-west-1.amazonaws.com'
-  #     config.downloads_s3_bucket = nil # the s3 bucket for dataset dumps. Used for redirecting to the right location for dataset downloads.
-  #     config.aws_access_key_id = nil # the access key for the s3 bucket
-  #     config.aws_secret_access_key = nil # the secret key for the s3 bucket
   #     config.tripod_cache_store = nil #e.g Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
   #       # note: if using memcached, make sure you set the -I (slab size) to big enough to store each result (i.e. to more than SparqlQueryResult.MAX_SIZE)
   #       # and set the -m (total size) to something quite big (or the cache will recycle too often).
@@ -87,6 +77,11 @@ end
 require 'kaminari'
 require 'rdiscount'
 require 'aws-sdk'
+require 'rails_autolink'
+require 'haml-rails'
+require 'sass-rails'
+require 'jquery-rails'
+require 'entypo-rails'
 
 Kaminari.configure do |config|
   config.default_per_page = 20

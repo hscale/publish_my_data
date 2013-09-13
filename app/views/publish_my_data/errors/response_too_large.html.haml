@@ -1,0 +1,16 @@
+- page_title("400: Response Too Large")
+
+- content_for :crumbs do
+  %ol.breadcrumb
+    %li= link_to_home
+    %li Response Too Large
+
+%article#not-found
+  %header
+    %h3 http status code
+    %h1 400
+    %h2 Response Too Large
+
+  %section.message
+  %p
+    Too much data was returned from the database by a query.
