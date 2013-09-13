@@ -54,9 +54,7 @@ module PublishMyData
                 )
               }
 
-              number_of_times_to_repeat_columns = fragment.volume_at_level_above(index_from_end)
-
-              current_row.concat(columns_for_row * number_of_times_to_repeat_columns)
+              current_row.concat(columns_for_row)
             end
           end
         end

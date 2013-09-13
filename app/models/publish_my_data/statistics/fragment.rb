@@ -12,10 +12,10 @@ module PublishMyData
       end
 
       def dimension_value_labels
-        @dimensions.map { |dimension|
+        @dimensions.map.with_index { |dimension, level|
           dimension.fetch(:dimension_values).map { |dimension_value|
             dimension_value.fetch(:dimension_value_label)
-          }
+          } * volume_at_level_above(level)
         }
       end
 
@@ -48,7 +48,6 @@ module PublishMyData
         else
           volume_at_level(level - 1)
         end
-
       end
 
       def save
