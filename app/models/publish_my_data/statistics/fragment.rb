@@ -25,7 +25,8 @@ module PublishMyData
 
       def number_of_encompassed_dimension_values_at_level(level)
         if number_of_dimensions == 0
-          # I couldn't figure out how to remove this special case
+          # I couldn't figure out how to remove this special case.
+          #
           0
         else
           volume_of_selected_cube / volume_at_level(level)

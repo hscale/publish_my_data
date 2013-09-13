@@ -6,17 +6,51 @@ module PublishMyData
       context "empty" do
         subject(:fragment) { Fragment.new }
 
-        its(:dimension_value_labels) { should be == [ ] }
         its(:number_of_dimensions) { should be == 0 }
+        its(:volume_of_selected_cube) { should be == 1 }
 
-        it "has all the methods" do
-          pending
-        end
+        its(:dimension_value_labels) { should be == [ ] }
 
         describe "#number_of_encompassed_dimension_values_at_level" do
-          specify {
-            expect(fragment.number_of_encompassed_dimension_values_at_level(0)).to be == 0
-          }
+          describe "positive indexing" do
+            example "level 0" do
+              expect(fragment.number_of_encompassed_dimension_values_at_level(0)).to be == 0
+            end
+          end
+
+          describe "negative indexing" do
+            example "level -1" do
+              expect(fragment.number_of_encompassed_dimension_values_at_level(-1)).to be == 0
+            end
+          end
+        end
+
+        describe "#volume_at_level" do
+          describe "positive indexing" do
+            example "level 0" do
+              expect(fragment.volume_at_level(0)).to be == 1
+            end
+          end
+
+          describe "negative indexing" do
+            example "level -1" do
+              expect(fragment.volume_at_level(-1)).to be == 1
+            end
+          end
+        end
+
+        describe "#volume_at_level_above" do
+          describe "positive indexing" do
+            example "above level 0" do
+              expect(fragment.volume_at_level_above(0)).to be == 1
+            end
+          end
+
+          describe "negative indexing" do
+            example "above level -1" do
+              expect(fragment.volume_at_level_above(-1)).to be == 1
+            end
+          end
         end
       end
 
