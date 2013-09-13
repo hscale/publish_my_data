@@ -46,7 +46,7 @@ module PublishMyData
 
     # Now unused - the random data was making it really hard to see what was going on
     def add_some_random_fragments_to(selector)
-      datasets = Dataset.local_authority_data_cubes.sample(3)
+      datasets = Dataset.geographical_data_cubes(selector.geography_type).sample(3)
       datasets.each do |dataset|
         @selector.build_fragment({
           dataset: dataset,

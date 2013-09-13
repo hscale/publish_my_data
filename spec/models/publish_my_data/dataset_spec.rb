@@ -120,6 +120,19 @@ module PublishMyData
       end
     end
 
+    describe ".geographical_data_cubes" do
+      let!(:geo_data_cube) { FactoryGirl.create(:geo_data_cube) }
+      let!(:data_cube) { FactoryGirl.create(:data_cube) }
+
+      it "should return data cubes where there is an observation with a reference area of the given type" do
+        Dataset.geographical_data_cubes("http://statistics.data.gov.uk/def/statistical-geography").map(&:uri).should include(geo_data_cube.uri)
+      end
+
+      it "should not return data cubes where the observations do not contain a relevant geographical component" do
+        Dataset.geographical_data_cubes("http://statistics.data.gov.uk/def/statistical-geography").map(&:uri).should_not include(data_cube.uri)
+      end
+    end
+
     describe ".uri_from_slug" do
       it "returns a uri given a slug" do
         slug = "sluggy/my-slug"

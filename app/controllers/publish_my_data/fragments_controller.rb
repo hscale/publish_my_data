@@ -6,7 +6,7 @@ module PublishMyData
     before_filter :get_dataset, only:  [ :new, :create ]
 
     def datasets
-      @datasets = Dataset.local_authority_data_cubes
+      @datasets = Dataset.geographical_data_cubes(@selector.geography_type)
     end
 
     def new

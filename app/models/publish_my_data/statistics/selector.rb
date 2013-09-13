@@ -87,7 +87,7 @@ module PublishMyData
         attr_reader :label
         attr_reader :number_of_encompassed_dimension_values
 
-        def initialize(attributes = { })
+        def initialize(attributes = {})
           @label = attributes.fetch(:label, nil)
           @number_of_encompassed_dimension_values = attributes.fetch(:number_of_encompassed_dimension_values, 1)
         end
@@ -147,10 +147,12 @@ module PublishMyData
       end
 
       attr_reader :fragments
+      attr_reader :geography_type
 
-      def initialize(attributes = { })
+      def initialize(attributes = {})
         @id = attributes.fetch(:id) { UUIDTools::UUID.random_create }
         @fragments = [ ]
+        @geography_type = attributes.fetch(:geography_type, nil)
       end
 
       def id
@@ -208,6 +210,10 @@ module PublishMyData
         Selector.repository.persisted?(self)
       end
 
+      def geography_type
+        'http://statistics.data.gov.uk/def/statistical-geography'
+      end
+
       def header_rows(labeller = Labeller.new)
         # This won't handle mismatched sizes yet
         # Also hack the null case for now
@@ -247,7 +253,7 @@ module PublishMyData
         Resource.find_by_sparql("
           SELECT distinct ?uri
           WHERE {
-            ?uri a <http://statistics.data.gov.uk/def/statistical-geography>.
+            ?uri a <#{ self.geography_type }>.
           }
           LIMIT 10
         ")

@@ -45,6 +45,42 @@ FactoryGirl.define do
     end
   end
 
+  factory :geographical_resource, class: PublishMyData::Resource do
+    initialize_with { new(uri, graph_uri) }
+    ignore do
+      uri { "http://#{PublishMyData.local_domain}/data/geographical/resource" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/geography" }
+    end
+    after(:build) do |res|
+      res.rdf_type = RDF::URI("http://statistics.data.gov.uk/def/statistical-geography")
+    end
+  end
+
+  factory :observation, class: PublishMyData::Resource do
+    initialize_with { new(uri, graph_uri) }
+    ignore do
+      uri { "http://#{PublishMyData.local_domain}/data/resources/1" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/data_cube" }
+    end
+    after(:build) do |res|
+      res.rdf_type = RDF::CUBE.Observation
+    end
+  end
+
+  factory :geo_observation, class: PublishMyData::Resource do
+    initialize_with { new(uri, graph_uri) }
+    ignore do
+      uri { "http://#{PublishMyData.local_domain}/data/resources/geo/1" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/geo_data_cube" }
+    end
+
+    after(:build) do |res|
+      res.rdf_type = RDF::CUBE.Observation
+      ref_area = FactoryGirl.create(:geographical_resource)
+      res.write_predicate("http://opendatacommunities.org/def/ontology/geography/refArea", ref_area.uri)
+    end
+  end
+
   factory :rdf_type, class: PublishMyData::Resource do
     initialize_with { new(uri, graph_uri) }
     ignore do
