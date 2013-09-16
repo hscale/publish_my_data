@@ -1,6 +1,16 @@
 module PublishMyData
   module Statistics
     class Selector
+      class Labeller
+        def label_for(uri)
+          if resource = Resource.find(uri)
+            resource.label || uri
+          else
+            resource
+          end
+        end
+      end
+
       class HeaderColumn
         attr_reader :label
         attr_reader :number_of_encompassed_dimension_values
@@ -31,7 +41,7 @@ module PublishMyData
         123
       end
 
-      def header_rows
+      def header_rows(labeller = Labeller.new)
         # This won't handle mismatched sizes yet
         # Also hack the null case for now
         number_of_rows = @fragments.map(&:number_of_dimensions).max || 0
@@ -49,7 +59,7 @@ module PublishMyData
 
               columns_for_row = fragment.dimension_value_labels[index_from_end].map { |label|
                 HeaderColumn.new(
-                  label: label,
+                  label: labeller.label_for(label),
                   number_of_encompassed_dimension_values: fragment.number_of_encompassed_dimension_values_at_level(index_from_end)
                 )
               }
