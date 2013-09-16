@@ -9,11 +9,42 @@ module PublishMyData
 
     def show
       @selector = Statistics::Selector.find(params[:id])
-      add_some_random_fragments_to(@selector)
+      add_some_fragments_to(@selector)
     end
 
     private
 
+    def add_some_fragments_to(selector)
+      add_homelessness_acceptances_ethnicity_to(selector)
+    end
+
+    def add_homelessness_acceptances_ethnicity_to(selector)
+      hae = "http://opendatacommunities.org/data/homelessness/homelessness-acceptances/ethnicity"
+
+      ref_period = "http://opendatacommunities.org/def/ontology/time/refPeriod"
+      ref_periods = [
+        "http://reference.data.gov.uk/id/quarter/2013-Q1",
+        "http://reference.data.gov.uk/id/quarter/2013-Q2",
+        "http://reference.data.gov.uk/id/quarter/2013-Q3"
+      ]
+
+      ethnicity = "http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity"
+      ethnicities = [
+        "http://opendatacommunities.org/def/concept/general-concepts/ethnicity/blackOrBlackBritish",
+        "http://opendatacommunities.org/def/concept/general-concepts/ethnicity/asianOrAsianBritish",
+        "http://opendatacommunities.org/def/concept/general-concepts/ethnicity/white"
+      ]
+
+      @selector.build_fragment(
+        dataset_uri: hae,
+        dimensions: [
+          { dimension_uri: ref_period, dimension_values: ref_periods },
+          { dimension_uri: ethnicity, dimension_values: ethnicities }
+        ]
+      )
+    end
+
+    # Now unused - the random data was making it really hard to see what was going on
     def add_some_random_fragments_to(selector)
       datasets = Dataset.data_cubes.sample(3)
       datasets.each do |dataset|

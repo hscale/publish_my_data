@@ -3,8 +3,9 @@ module PublishMyData
     class Fragment
       attr_reader :selector, :dataset
 
-      def initialize(dimensions = [ ])
-        @dimensions = dimensions
+      def initialize(attributes)
+        @dataset_uri = attributes.fetch(:dataset_uri) # Currently unused
+        @dimensions = attributes.fetch(:dimensions)
       end
 
       def number_of_dimensions
@@ -14,7 +15,9 @@ module PublishMyData
       def dimension_value_labels
         @dimensions.map.with_index { |dimension, level|
           dimension.fetch(:dimension_values).map { |dimension_value|
-            dimension_value.fetch(:dimension_value_label)
+            # dimension_value.fetch(:dimension_value_label)
+            # TEMP HACK:
+            dimension_value
           } * volume_at_level_above(level)
         }
       end

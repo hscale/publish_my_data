@@ -4,12 +4,12 @@ module PublishMyData
   module Statistics
     describe Fragment do
       context "empty" do
-        subject(:fragment) { Fragment.new }
+        subject(:fragment) {
+          Fragment.new(dataset_uri: 'http://example.com/dataset', dimensions: [ ])
+        }
 
         its(:number_of_dimensions) { should be == 0 }
         its(:volume_of_selected_cube) { should be == 1 }
-
-        its(:dimension_value_labels) { should be == [ ] }
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do
@@ -57,32 +57,29 @@ module PublishMyData
       context "with one dimension" do
         subject(:fragment) {
           Fragment.new(
+            dataset_uri: 'http://example.com/dataset',
             # An array...
-            [
+            dimensions: [
               # ... of hashes...
               {
                 # ... of dimensions ...
                 dimension_uri: "http://example.com/dimension_1",
-                dimension_values: [
-                  { dimension_value_uri: "1a", dimension_value_label: "Dim 1a" },
-                  { dimension_value_uri: "1b", dimension_value_label: "Dim 1b" }
-                ]
+                dimension_values: [ "1a", "1b" ]
               }
             ]
           )
         }
 
         its(:number_of_dimensions) { should be == 1 }
-
         its(:volume_of_selected_cube) { should be == 2 }
 
-        describe "#dimension_value_labels" do
-          specify {
-            expect(fragment.dimension_value_labels).to be == [
-              [ "Dim 1a", "Dim 1b" ]
-            ]
-          }
-        end
+        # describe "#dimension_value_labels" do
+        #   specify {
+        #     expect(fragment.dimension_value_labels).to be == [
+        #       [ "Dim 1a", "Dim 1b" ]
+        #     ]
+        #   }
+        # end
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do
@@ -122,31 +119,20 @@ module PublishMyData
       context "three dimensions" do
         subject(:fragment) {
           Fragment.new(
-            [
+            dataset_uri: 'http://example.com/dataset',
+            dimensions: [
               {
                 dimension_uri: "1",
-                dimension_values: [
-                  { dimension_value_uri: "1a", dimension_value_label:  "Dim 1a" },
-                  { dimension_value_uri: "1b", dimension_value_label:  "Dim 1b" }
-                ]
+                dimension_values: [ "1a", "1b" ]
               },
               {
                 dimension_uri: "2",
-                dimension_values: [
-                  { dimension_value_uri: "2a", dimension_value_label:  "Dim 2a" },
-                  { dimension_value_uri: "2b", dimension_value_label:  "Dim 2b" },
-                  { dimension_value_uri: "2c", dimension_value_label:  "Dim 2c" }
-                ]
+                dimension_values: [ "2a", "2b", "2c" ]
               },
               {
                 dimension_uri: "3",
-                dimension_values: [
-                  { dimension_value_uri: "3a", dimension_value_label:  "Dim 3a" },
-                  { dimension_value_uri: "3b", dimension_value_label:  "Dim 3b" },
-                  { dimension_value_uri: "3c", dimension_value_label:  "Dim 3c" },
-                  { dimension_value_uri: "3d", dimension_value_label:  "Dim 3d" }
-                ]
-              },
+                dimension_values: [ "3a", "3b", "3c", "3d" ]
+              }
             ]
           )
         }
@@ -227,25 +213,25 @@ module PublishMyData
           end
         end
 
-        describe "#dimension_value_labels" do
-          specify {
-            expect(fragment.dimension_value_labels).to be == [
-              [ "Dim 1a", "Dim 1b" ],
-              [
-                "Dim 2a", "Dim 2b", "Dim 2c",
-                "Dim 2a", "Dim 2b", "Dim 2c"
-              ],
-              [
-                "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-                "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-                "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-                "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-                "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-                "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d"
-              ]
-            ]
-          }
-        end
+        # describe "#dimension_value_labels" do
+        #   specify {
+        #     expect(fragment.dimension_value_labels).to be == [
+        #       [ "Dim 1a", "Dim 1b" ],
+        #       [
+        #         "Dim 2a", "Dim 2b", "Dim 2c",
+        #         "Dim 2a", "Dim 2b", "Dim 2c"
+        #       ],
+        #       [
+        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
+        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
+        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
+        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
+        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
+        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d"
+        #       ]
+        #     ]
+        #   }
+        # end
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do

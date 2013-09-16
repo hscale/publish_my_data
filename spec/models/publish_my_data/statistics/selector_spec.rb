@@ -29,7 +29,9 @@ module PublishMyData
           let(:dataset) { double("dataset") }
 
           before(:each) do
-            selector.build_fragment([ ])
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ ]
+            )
           end
 
           specify {
@@ -43,26 +45,17 @@ module PublishMyData
           let(:dimension_1) {
             {
               dimension_uri: "http://example.com/dimension_1",
-              dimension_values: [ dimension_value_1a, dimension_value_1b ]
-            }
-          }
-
-          let(:dimension_value_1a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1a",
-              dimension_value_label:  "Dimension 1 a"
-            }
-          }
-
-          let(:dimension_value_1b) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1b",
-              dimension_value_label:  "Dimension 1 b"
+              dimension_values: [
+                "http://example.com/dimension_value_1a",
+                "http://example.com/dimension_value_1b"
+              ]
             }
           }
 
           before(:each) do
-            selector.build_fragment([ dimension_1 ])
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+            )
           end
 
           specify {
@@ -84,40 +77,24 @@ module PublishMyData
           let(:dimension_1) {
             {
               dimension_uri: "http://example.com/dimension_1",
-              dimension_values: [ dimension_value_1a ]
-            }
-          }
-
-          let(:dimension_value_1a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1a",
-              dimension_value_label:  "Dimension 1 a"
+              dimension_values: [ "http://example.com/dimension_value_1a" ]
             }
           }
 
           let(:dimension_2) {
             {
               dimension_uri: "http://example.com/dimension_2",
-              dimension_values: [ dimension_value_2a, dimension_value_2b ]
-            }
-          }
-
-          let(:dimension_value_2a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_2a",
-              dimension_value_label:  "Dimension 2 a"
-            }
-          }
-
-          let(:dimension_value_2b) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_2b",
-              dimension_value_label:  "Dimension 2 b"
+              dimension_values: [
+                "http://example.com/dimension_value_2a",
+                "http://example.com/dimension_value_2b"
+              ]
             }
           }
 
           before(:each) do
-            selector.build_fragment([ dimension_1, dimension_2 ])
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1, dimension_2 ]
+            )
           end
 
           specify {
@@ -140,47 +117,27 @@ module PublishMyData
           let(:dimension_1) {
             {
               dimension_uri: "http://example.com/dimension_1",
-              dimension_values: [ dimension_value_1a, dimension_value_1b ]
-            }
-          }
-
-          let(:dimension_value_1a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1a",
-              dimension_value_label:  "Dimension 1 a"
-            }
-          }
-
-          let(:dimension_value_1b) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1b",
-              dimension_value_label:  "Dimension 1 b"
+              dimension_values: [
+                "http://example.com/dimension_value_1a",
+                "http://example.com/dimension_value_1b"
+              ]
             }
           }
 
           let(:dimension_2) {
             {
               dimension_uri: "http://example.com/dimension_2",
-              dimension_values: [ dimension_value_2a, dimension_value_2b ]
-            }
-          }
-
-          let(:dimension_value_2a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_2a",
-              dimension_value_label:  "Dimension 2 a"
-            }
-          }
-
-          let(:dimension_value_2b) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_2b",
-              dimension_value_label:  "Dimension 2 b"
+              dimension_values: [
+                "http://example.com/dimension_value_2a",
+                "http://example.com/dimension_value_2b"
+              ]
             }
           }
 
           before(:each) do
-            selector.build_fragment([ dimension_1, dimension_2 ])
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1, dimension_2 ]
+            )
           end
 
           specify {
@@ -203,29 +160,21 @@ module PublishMyData
           let(:dimension_1) {
             {
               dimension_uri: "http://example.com/dimension_1",
-              dimension_values: [ dimension_value_1a, dimension_value_1b ]
-            }
-          }
-
-          let(:dimension_value_1a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1a",
-              dimension_value_label:  "Dimension 1 a"
-            }
-          }
-
-          let(:dimension_value_1b) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1b",
-              dimension_value_label:  "Dimension 1 b"
+              dimension_values: [
+                "http://example.com/dimension_value_1a"
+              ]
             }
           }
 
           before(:each) do
             # You wouldn't re-use a dimension across fragments for real,
             # but just to create an example it's fine
-            selector.build_fragment([ dimension_1 ])
-            selector.build_fragment([ dimension_1 ])
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+            )
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+            )
           end
 
           specify {
@@ -241,55 +190,34 @@ module PublishMyData
           let(:dimension_1) {
             {
               dimension_uri: "http://example.com/dimension_1",
-              dimension_values: [ dimension_value_1a ]
-            }
-          }
-
-          let(:dimension_value_1a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_1a",
-              dimension_value_label:  "Dimension 1 a"
+              dimension_values: [ "http://example.com/dimension_value_1a" ]
             }
           }
 
           let(:dimension_2) {
             {
               dimension_uri: "http://example.com/dimension_2",
-              dimension_values: [ dimension_value_2a ]
-            }
-          }
-
-          let(:dimension_value_2a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_2a",
-              dimension_value_label:  "Dimension 2 a"
+              dimension_values: [ "http://example.com/dimension_value_2a" ]
             }
           }
 
           let(:dimension_3) {
             {
               dimension_uri: "http://example.com/dimension_3",
-              dimension_values: [ dimension_value_3a, dimension_value_3b ]
-            }
-          }
-
-          let(:dimension_value_3a) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_3a",
-              dimension_value_label:  "Dimension 3 a"
-            }
-          }
-
-          let(:dimension_value_3b) {
-            {
-              dimension_value_uri:    "http://example.com/dimension_value_3b",
-              dimension_value_label:  "Dimension 3 b"
+              dimension_values: [
+                "http://example.com/dimension_value_3a",
+                "http://example.com/dimension_value_3b"
+              ]
             }
           }
 
           before(:each) do
-            selector.build_fragment([ dimension_1 ])
-            selector.build_fragment([ dimension_2, dimension_3 ])
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+            )
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_2, dimension_3 ]
+            )
           end
 
           specify {
