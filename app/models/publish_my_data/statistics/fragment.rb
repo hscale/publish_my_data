@@ -8,6 +8,13 @@ module PublishMyData
         @dimensions = attributes.fetch(:dimensions)
       end
 
+      def to_h
+        {
+          dataset_uri: @dataset_uri,
+          dimensions: @dimensions
+        }
+      end
+
       def number_of_dimensions
         @dimensions.length
       end

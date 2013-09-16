@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'fileutils'
+
 module PublishMyData
   module Statistics
     describe Selector do
@@ -15,6 +17,90 @@ module PublishMyData
 
         def label_for(uri)
           TEST_LABELS.fetch(uri, "<label not found>")
+        end
+      end
+
+      describe "persistence", focus: true do
+        shared_examples_for "a Selector persistence implementation" do
+          before(:each) do
+            Selector.configure do |config|
+              config.persistence_type     = persistence_type
+              config.persistence_options  = persistence_options
+            end
+          end
+
+          let(:selector) { Selector.new }
+
+          before(:each) do
+            selector.build_fragment(
+              dataset_uri: 'http://example.com/dataset',
+              dimensions: [
+                {
+                  dimension_uri: "http://example.com/dimension_1",
+                  dimension_values: [
+                    "http://example.com/dimension_value_1a",
+                    "http://example.com/dimension_value_1b"
+                  ]
+                }
+              ]
+            )
+          end
+
+          describe "#save" do
+            it "returns true" do
+              expect(selector.save).to be_true
+            end
+
+            describe "reloading" do
+              before(:each) do
+                selector.save
+              end
+
+              let(:selector_reloaded) { Selector.find(selector.id) }
+
+              it "preserves the id" do
+                expect(selector_reloaded.id).to be == selector.id
+              end
+
+              it "preserves all the values" do
+                expect(selector_reloaded.to_h.fetch(:fragments)).to be == [
+                  {
+                    dataset_uri: 'http://example.com/dataset',
+                    dimensions: [
+                      {
+                        dimension_uri: "http://example.com/dimension_1",
+                        dimension_values: [
+                          "http://example.com/dimension_value_1a",
+                          "http://example.com/dimension_value_1b"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              end
+            end
+          end
+        end
+
+        describe "filesystem store" do
+          let(:persistence_type) { :filesystem }
+          let(:persistence_options) {
+            { path: "tmp/selectors" }
+          }
+
+          before(:each) do
+            FileUtils.rm_rf("tmp/selectors")
+          end
+
+          it_behaves_like "a Selector persistence implementation"
+        end
+      end
+
+      describe "#id" do
+        subject(:selector) { Selector.new }
+
+        it "is a UUID" do
+          expect(selector.id).to be_a(UUIDTools::UUID)
         end
       end
 

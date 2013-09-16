@@ -1,12 +1,54 @@
+require 'uuidtools'
+# require 'yaml'
+
 module PublishMyData
   module Statistics
     class Selector
+      class FilesystemRepository
+        def initialize(options)
+          @path = options.fetch(:path) {
+            raise "Selector::FilesystemRepository must be configured with :path"
+          }
+        end
+
+        def find(id)
+          data = unmarshal_selector(YAML.load_file(filename_for_id(id)))
+          Selector.from_hash(data)
+        rescue Errno::ENOENT
+          nil
+        end
+
+        def store(selector)
+          FileUtils.mkdir_p(@path)
+          File.open(filename_for_id(selector.id), "w") do |file|
+            file << YAML.dump(marshal_selector(selector))
+          end
+        end
+
+        private
+
+        def filename_for_id(id)
+          "#{@path}/#{id}.yml"
+        end
+
+        def marshal_selector(selector)
+          selector.to_h.tap do |data|
+            data[:id] = data[:id].to_s
+          end
+        end
+
+        def unmarshal_selector(data)
+          data[:id] = UUIDTools::UUID.parse(data[:id])
+          data
+        end
+      end
+
       class Labeller
         def label_for(uri)
           if resource = Resource.find(uri)
             resource.label || uri
           else
-            resource
+            uri
           end
         end
       end
@@ -21,24 +63,83 @@ module PublishMyData
         end
       end
 
+      # Configuration API
+      class << self
+        def configure(&block)
+          yield self
+          instantiate_repository
+        end
+
+        def persistence_type=(persistence_type_name)
+          @repository_class =
+            case persistence_type_name
+            when :filesystem
+              FilesystemRepository
+            else
+              raise "Unknown Selector persistence_type: #{persistence_type_name}"
+            end
+        end
+
+        def persistence_options=(persistence_options)
+          @persistence_options = persistence_options
+        end
+
+        # This method assumes the repository is stateless. If not, and you're
+        # running in a multi-threaded environment, you're on your own.
+        def instantiate_repository
+          @repository = @repository_class.new(@persistence_options)
+        end
+      end
+
+      # Persistence API
       class << self
         def create
-          new
+          selector = new
+          selector.save
+          selector
         end
 
         def find(id)
-          create
+          @repository.find(id)
+        end
+
+        def repository
+          @repository
+        end
+
+        def from_hash(data)
+          new(id: data.fetch(:id)).tap do |reloaded_selector|
+            data.fetch(:fragments).each do |fragment_data|
+              reloaded_selector.build_fragment(fragment_data)
+            end
+          end
         end
       end
 
       attr_reader :fragments
 
-      def initialize
+      def initialize(attributes = { })
+        @id = attributes.fetch(:id) { UUIDTools::UUID.random_create }
         @fragments = [ ]
       end
 
+      def id
+        @id
+      end
+
       def to_param
-        123
+        raise "Use the id now"
+      end
+
+      def to_h
+        {
+          id: @id,
+          fragments: @fragments.map { |fragment| fragment.to_h }
+        }
+      end
+
+      def save
+        Selector.repository.store(self)
       end
 
       def header_rows(labeller = Labeller.new)
@@ -72,8 +173,8 @@ module PublishMyData
         bottom_up_header_rows.reverse
       end
 
-      def build_fragment(dimensions)
-        @fragments << Fragment.new(dimensions)
+      def build_fragment(fragment_description)
+        @fragments << Fragment.new(fragment_description)
       end
 
       def rows
