@@ -20,7 +20,7 @@ module PublishMyData
         end
       end
 
-      describe "persistence", focus: true do
+      describe "persistence" do
         shared_examples_for "a Selector persistence implementation" do
           before(:each) do
             Selector.configure do |config|
