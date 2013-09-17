@@ -23,13 +23,17 @@ module PublishMyData
       describe "persistence" do
         shared_examples_for "a Selector persistence implementation" do
           before(:each) do
+            unless respond_to?(:selector)
+              raise 'Host example group must provide a Selector (eg `let(:selector) { ... }'
+            end
+          end
+
+          before(:each) do
             Selector.configure do |config|
               config.persistence_type     = persistence_type
               config.persistence_options  = persistence_options
             end
           end
-
-          let(:selector) { Selector.new }
 
           before(:each) do
             selector.build_fragment(
@@ -88,11 +92,29 @@ module PublishMyData
             { path: "tmp/selectors" }
           }
 
+          let(:selector) { Selector.new }
+
           before(:each) do
             FileUtils.rm_rf("tmp/selectors")
           end
 
           it_behaves_like "a Selector persistence implementation"
+
+          describe "the written file" do
+            let(:file_data) { Selector.repository.data_for(selector.id) }
+
+            before(:each) do
+              selector.save
+            end
+
+            it "contains a version (in case we change anything significant in future)" do
+              expect(file_data.fetch(:version)).to be == 1
+            end
+          end
+
+          it "has no glaring security holes" do
+            pending
+          end
         end
       end
 
@@ -101,6 +123,13 @@ module PublishMyData
 
         it "is a UUID" do
           expect(selector.id).to be_a(UUIDTools::UUID)
+        end
+      end
+
+      describe "#to_param" do
+        it "uses the id" do
+          pending "TODO next"
+          expect(selector.to_param).to be == "MOO"
         end
       end
 

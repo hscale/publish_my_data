@@ -12,7 +12,7 @@ module PublishMyData
         end
 
         def find(id)
-          data = unmarshal_selector(YAML.load_file(filename_for_id(id)))
+          data = unmarshal_selector(data_for(id))
           Selector.from_hash(data)
         rescue Errno::ENOENT
           nil
@@ -25,6 +25,10 @@ module PublishMyData
           end
         end
 
+        def data_for(id)
+          YAML.load_file(filename_for_id(id))
+        end
+
         private
 
         def filename_for_id(id)
@@ -33,7 +37,8 @@ module PublishMyData
 
         def marshal_selector(selector)
           selector.to_h.tap do |data|
-            data[:id] = data[:id].to_s
+            data[:version]  = 1
+            data[:id]       = data[:id].to_s
           end
         end
 
