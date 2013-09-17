@@ -25,6 +25,11 @@ module PublishMyData
           end
         end
 
+        def delete(selector)
+          filename = filename_for_id(selector.id)
+          FileUtils.rm(filename) if File.file?(filename)
+        end
+
         def data_for(id)
           YAML.load_file(filename_for_id(id))
         end
@@ -145,6 +150,10 @@ module PublishMyData
 
       def save
         Selector.repository.store(self)
+      end
+
+      def destroy
+        Selector.repository.delete(self)
       end
 
       def header_rows(labeller = Labeller.new)

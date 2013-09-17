@@ -84,6 +84,23 @@ module PublishMyData
               end
             end
           end
+
+          describe "#destroy" do
+            example do
+              selector.save
+              expect {
+                selector.destroy
+              }.to change { Selector.find(selector.id) }.to(nil)
+            end
+
+            it "is idempotent" do
+              selector.save
+              expect {
+                selector.destroy
+                selector.destroy
+              }.to_not raise_error
+            end
+          end
         end
 
         describe "filesystem store" do
