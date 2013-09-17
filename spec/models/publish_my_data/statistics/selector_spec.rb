@@ -20,6 +20,28 @@ module PublishMyData
         end
       end
 
+      describe "interfaces" do
+        subject(:selector) { Selector.new }
+
+        # Some of the Selector methods delegate to the repository, so
+        # we have to re-lint for each repository type
+        before(:each) do
+          Selector.configure do |config|
+            config.persistence_type     = persistence_type
+            config.persistence_options  = persistence_options
+          end
+        end
+
+        context "with a :filesystem store" do
+          let(:persistence_type) { :filesystem }
+          let(:persistence_options) {
+            { path: "tmp/selectors" }
+          }
+
+          it_behaves_like "ActiveModel"
+        end
+      end
+
       describe "persistence" do
         shared_examples_for "a Selector persistence implementation" do
           before(:each) do
@@ -109,6 +131,22 @@ module PublishMyData
               }.to_not raise_error
             end
           end
+
+          describe "#persisted?" do
+            example do
+              expect {
+                selector.save
+              }.to change { selector.persisted? }.from(false).to(true)
+            end
+
+            example do
+              selector.save
+
+              expect {
+                selector.destroy
+              }.to change { selector.persisted? }.from(true).to(false)
+            end
+          end
         end
 
         describe "filesystem store" do
@@ -149,16 +187,41 @@ module PublishMyData
         end
       end
 
-      describe "#to_param" do
-        subject(:selector) { Selector.new }
-        let(:param) { selector.to_param }
+      # See also the lint check above
+      describe "ActiveModel" do
+        describe "#to_key" do
+          let(:test_uuid) { UUIDTools::UUID.parse("5409ef37-1589-4cb5-a7fd-e8a1c7722a09") }
+          subject(:selector) { Selector.new(id: test_uuid) }
 
-        it "uses the id" do
-          expect(param).to be == selector.id.to_s
+          before(:each) do
+            selector.save # ActiveModel made me do it
+          end
+
+          its(:to_key) { should be == [ test_uuid ] }
         end
 
-        it "looks like a UUID" do
-          expect(param).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+        describe "#to_param" do
+          subject(:selector) { Selector.new }
+          let(:param) { selector.to_param }
+
+          before(:each) do
+            selector.save # ActiveModel made me do it
+          end
+
+          it "uses the id" do
+            expect(param).to be == selector.id.to_s
+          end
+
+          it "looks like a UUID" do
+            expect(param).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+          end
+        end
+
+        describe "#valid?" do
+          subject(:selector) { Selector.new }
+          it "is always true (nothing we do yet can cause an error)" do
+            expect(selector).to be_valid
+          end
         end
       end
 

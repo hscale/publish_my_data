@@ -4,6 +4,8 @@ require 'uuidtools'
 module PublishMyData
   module Statistics
     class Selector
+      extend ActiveModel::Naming
+
       class InvalidIdError < ArgumentError; end
       class FilesystemRepository
         def initialize(options)
@@ -27,8 +29,13 @@ module PublishMyData
         end
 
         def delete(selector)
-          filename = filename_for_id(selector.id)
-          FileUtils.rm(filename) if File.file?(filename)
+          if persisted?(selector)
+            FileUtils.rm(filename_for_id(selector.id))
+          end
+        end
+
+        def persisted?(selector)
+          File.file?(filename_for_id(selector.id))
         end
 
         def data_for(id)
@@ -150,8 +157,36 @@ module PublishMyData
         @id
       end
 
+      def to_key
+        [ @id ] if persisted?
+      end
+
       def to_param
-        @id.to_s
+        @id.to_s if persisted?
+      end
+
+      def valid?
+        true
+      end
+
+      # To satisfy ActiveModel - we don't have any errors yet
+      class Errors
+        def [](key)
+          [ ]
+        end
+
+        def full_messages
+          [ ]
+        end
+      end
+
+      def errors
+        Errors.new
+      end
+
+      # ActiveModel makes us do this
+      def to_partial_path
+        "Because it's obviously the domain model's responsibility to determine where the view templates live"
       end
 
       def to_h
@@ -167,6 +202,10 @@ module PublishMyData
 
       def destroy
         Selector.repository.delete(self)
+      end
+
+      def persisted?
+        Selector.repository.persisted?(self)
       end
 
       def header_rows(labeller = Labeller.new)
