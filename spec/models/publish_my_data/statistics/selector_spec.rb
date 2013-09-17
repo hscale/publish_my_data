@@ -26,9 +26,11 @@ module PublishMyData
         # Some of the Selector methods delegate to the repository, so
         # we have to re-lint for each repository type
         before(:each) do
-          Statistics.configure_selector do |config|
-            config.persistence_type     = persistence_type
-            config.persistence_options  = persistence_options
+          PublishMyData.configure do |config|
+            config.stats_selector = {
+              persistence_type:     persistence_type,
+              persistence_options:  persistence_options
+            }
           end
         end
 
@@ -51,9 +53,11 @@ module PublishMyData
           end
 
           before(:each) do
-            Statistics.configure_selector do |config|
-              config.persistence_type     = persistence_type
-              config.persistence_options  = persistence_options
+            PublishMyData.configure do |config|
+              config.stats_selector = {
+                persistence_type:     persistence_type,
+                persistence_options:  persistence_options
+              }
             end
           end
 

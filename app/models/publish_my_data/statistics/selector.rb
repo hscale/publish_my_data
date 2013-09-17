@@ -93,34 +93,6 @@ module PublishMyData
         end
       end
 
-      # Configuration API
-      class << self
-        def configure(&block)
-          yield self
-          instantiate_repository
-        end
-
-        def persistence_type=(persistence_type_name)
-          @repository_class =
-            case persistence_type_name
-            when :filesystem
-              FilesystemRepository
-            else
-              raise "Unknown Selector persistence_type: #{persistence_type_name}"
-            end
-        end
-
-        def persistence_options=(persistence_options)
-          @persistence_options = persistence_options
-        end
-
-        # This method assumes the repository is stateless. If not, and you're
-        # running in a multi-threaded environment, you're on your own.
-        def instantiate_repository
-          @repository = @repository_class.new(@persistence_options)
-        end
-      end
-
       # Persistence API
       class << self
         def create
@@ -130,11 +102,11 @@ module PublishMyData
         end
 
         def find(id)
-          @repository.find(id)
+          repository.find(id)
         end
 
         def repository
-          @repository
+          @repository ||= new_repository
         end
 
         def from_hash(data)
@@ -143,6 +115,22 @@ module PublishMyData
               reloaded_selector.build_fragment(fragment_data)
             end
           end
+        end
+
+        private
+
+        def new_repository
+          config = PublishMyData.stats_selector
+
+          repository_class =
+            case config.fetch(:persistence_type)
+            when :filesystem
+              FilesystemRepository
+            else
+              raise "Unknown Selector persistence_type: #{persistence_type_name}"
+            end
+
+          repository_class.new(config.fetch(:persistence_options))
         end
       end
 
