@@ -26,7 +26,7 @@ module PublishMyData
         # Some of the Selector methods delegate to the repository, so
         # we have to re-lint for each repository type
         before(:each) do
-          Selector.configure do |config|
+          Statistics.configure_selector do |config|
             config.persistence_type     = persistence_type
             config.persistence_options  = persistence_options
           end
@@ -35,7 +35,7 @@ module PublishMyData
         context "with a :filesystem store" do
           let(:persistence_type) { :filesystem }
           let(:persistence_options) {
-            { path: "tmp/selectors" }
+            { path: "tmp/selectors_test" }
           }
 
           it_behaves_like "ActiveModel"
@@ -51,7 +51,7 @@ module PublishMyData
           end
 
           before(:each) do
-            Selector.configure do |config|
+            Statistics.configure_selector do |config|
               config.persistence_type     = persistence_type
               config.persistence_options  = persistence_options
             end
@@ -152,13 +152,13 @@ module PublishMyData
         describe "filesystem store" do
           let(:persistence_type) { :filesystem }
           let(:persistence_options) {
-            { path: "tmp/selectors" }
+            { path: "tmp/selectors_test" }
           }
 
           let(:selector) { Selector.new }
 
           before(:each) do
-            FileUtils.rm_rf("tmp/selectors")
+            FileUtils.rm_rf("tmp/selectors_test")
           end
 
           it_behaves_like "a Selector persistence implementation"
