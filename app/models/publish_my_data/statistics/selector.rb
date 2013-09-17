@@ -4,6 +4,7 @@ require 'uuidtools'
 module PublishMyData
   module Statistics
     class Selector
+      class InvalidIdError < ArgumentError; end
       class FilesystemRepository
         def initialize(options)
           @path = options.fetch(:path) {
@@ -37,7 +38,19 @@ module PublishMyData
         private
 
         def filename_for_id(id)
-          "#{@path}/#{id}.yml"
+          "#{@path}/#{ensure_uuid(id)}.yml"
+        end
+
+        def ensure_uuid(maybe_uuid)
+          if maybe_uuid.is_a?(UUIDTools::UUID)
+            maybe_uuid
+          else
+            begin
+              UUIDTools::UUID.parse(maybe_uuid)
+            rescue ArgumentError
+              raise InvalidIdError.new("Invalid Selector id: #{maybe_uuid.inspect} (not a UUID)")
+            end
+          end
         end
 
         def marshal_selector(selector)

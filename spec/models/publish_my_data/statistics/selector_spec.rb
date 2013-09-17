@@ -50,6 +50,14 @@ module PublishMyData
             )
           end
 
+          describe ".find" do
+            it "only accepts UUIDs" do
+              expect {
+                Selector.find("foo")
+              }.to raise_error(Selector::InvalidIdError, 'Invalid Selector id: "foo" (not a UUID)')
+            end
+          end
+
           describe "#save" do
             it "returns true" do
               expect(selector.save).to be_true
@@ -118,6 +126,8 @@ module PublishMyData
           it_behaves_like "a Selector persistence implementation"
 
           describe "the written file" do
+            # This is a bit of a hack, we expose the repository just to be able
+            # to read the raw data
             let(:file_data) { Selector.repository.data_for(selector.id) }
 
             before(:each) do
@@ -127,10 +137,6 @@ module PublishMyData
             it "contains a version (in case we change anything significant in future)" do
               expect(file_data.fetch(:version)).to be == 1
             end
-          end
-
-          it "has no glaring security holes" do
-            pending
           end
         end
       end
