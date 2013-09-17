@@ -151,7 +151,7 @@ module PublishMyData
       end
 
       def to_param
-        raise "Use the id now"
+        @id.to_s
       end
 
       def to_h

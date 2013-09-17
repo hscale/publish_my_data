@@ -150,9 +150,15 @@ module PublishMyData
       end
 
       describe "#to_param" do
+        subject(:selector) { Selector.new }
+        let(:param) { selector.to_param }
+
         it "uses the id" do
-          pending "TODO next"
-          expect(selector.to_param).to be == "MOO"
+          expect(param).to be == selector.id.to_s
+        end
+
+        it "looks like a UUID" do
+          expect(param).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
         end
       end
 
