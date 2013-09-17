@@ -10,7 +10,6 @@ module PublishMyData
     end
 
     def new
-      @fragment = @selector.build_fragment
       @dimensions = DataCube::Cube.new(@dataset).dimension_objects
       @dimensions.reject! {|d| d.uri == 'http://opendatacommunities.org/def/ontology/geography/refArea'}
 
@@ -21,12 +20,12 @@ module PublishMyData
 
     def create
       dimensions = dimensions_from_params(params[:dataset_dimensions])
-      @fragment = @selector.build_fragment({
-        dataset: @dataset,
+      @selector.build_fragment({
+        dataset_uri: @dataset.uri,
         dimensions: dimensions
       })
 
-      if @fragment.save
+      if @selector.save
         redirect_to selector_path(@selector)
       end
     end
