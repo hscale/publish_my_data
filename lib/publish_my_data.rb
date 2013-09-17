@@ -59,6 +59,9 @@ module PublishMyData
   mattr_accessor :aws_secret_access_key
   mattr_accessor :downloads_s3_bucket
 
+  mattr_accessor :stats_selector
+  @@stats_selector = { }
+
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
   # (defaults shown)
