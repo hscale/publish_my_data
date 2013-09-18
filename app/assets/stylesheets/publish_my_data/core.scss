@@ -39,12 +39,12 @@ article#dataset, article#ontology, article#concept-scheme {
   & > header {
     h1, h2 {
       margin-top: 0;
+      word-break:break-all;
     }
   }
 
   & > footer {
     ul {
-
     }
   }
 
@@ -128,11 +128,17 @@ section#example-data, section#resource-data
 
     h3, h5 {
       margin: 2px 0;
+      a {
+        word-break:break-all;
+      }
     }
 
     ul {
       @extend .list-unstyled;
       margin-bottom: 0;
+      li a {
+        word-break:break-all;
+      }
     }
 
     a, h3, h4, icon {
