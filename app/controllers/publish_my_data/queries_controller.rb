@@ -7,7 +7,6 @@ module PublishMyData
 
     before_filter :check_format, :only => [:show]
 
-    # not implemented yet - will list all named queries
     # GET /queries/:id, where id is the slug.
     def show
       @query_text = get_query_sparql(params[:id])
