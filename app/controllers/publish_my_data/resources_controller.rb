@@ -59,7 +59,7 @@ module PublishMyData
     # http://example.com/doc/blah
     def doc
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
-      resource = PublishMyData::Resource.find(uri)
+      resource = PublishMyData::Resource.find(uri, local:true)
       render_resource(resource)
     end
 
