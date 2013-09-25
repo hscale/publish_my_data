@@ -91,6 +91,7 @@ end
 require 'kaminari'
 require 'rdiscount'
 require 'aws-sdk'
+require 'haml'
 
 Kaminari.configure do |config|
   config.default_per_page = 20
