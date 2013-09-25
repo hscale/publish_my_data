@@ -23,7 +23,7 @@ module PublishMyData
         Raven.send(evt) if evt
       end
 
-      if Rails.env.development?
+      if Rails.env.development? || Rails.env.test?
         #re-raise in dev mode.
         raise e
       else
