@@ -35,6 +35,7 @@ PublishMyData::Engine.routes.draw do
 
   # Download Builder
   resources :selectors, except: [:index] do
+    post :preview, on: :collection
     get :download, on: :member
     resources :fragments, except: [:show, :index] do
       get :datasets, on: :collection

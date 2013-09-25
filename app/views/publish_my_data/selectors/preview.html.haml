@@ -1,0 +1,14 @@
+%h1 Statistics Selector
+%h2 Step 2
+
+%p
+  = pluralize(@selector.gss_codes.size, 'GSS code')
+  imported.
+%p
+  = pluralize(@selector.non_gss_codes.size, 'row')
+  not imported.
+
+= form_for @selector, url: selectors_path, multipart: true do |f|
+  = f.hidden_field :geography_type
+  = hidden_field_tag :gss_codes, @selector.gss_codes.join(', ')
+  = f.submit

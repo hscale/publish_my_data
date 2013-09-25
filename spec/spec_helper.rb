@@ -1,5 +1,4 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-
 ENV["RAILS_ENV"] ||= 'test'
 require_relative 'support/sparql_env_defaults'
 
@@ -53,4 +52,5 @@ end
 Tripod.configure do |config|
   config.update_endpoint = ENV.fetch("PMD_SPARQL_UPDATE_ENDPOINT")
   config.query_endpoint = ENV.fetch("PMD_SPARQL_QUERY_ENDPOINT")
+  config.data_endpoint = ENV.fetch("PMD_SPARQL_DATA_ENDPOINT")
 end

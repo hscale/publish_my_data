@@ -90,7 +90,12 @@ module PublishMyData
             end
 
             describe "reloading" do
+              let(:geography_type) { 'http://opendatacommunities.org/def/geography#LSOA' }
+              let(:gss_codes) { ['E010000001', 'E010000002', 'E010000003'] }
+              
               before(:each) do
+                selector.gss_codes = gss_codes
+                selector.geography_type = geography_type
                 selector.save
               end
 
@@ -100,7 +105,7 @@ module PublishMyData
                 expect(selector_reloaded.id).to be == selector.id
               end
 
-              it "preserves all the values" do
+              it "preserves the fragments" do
                 expect(selector_reloaded.to_h.fetch(:fragments)).to be == [
                   {
                     dataset_uri: 'http://example.com/dataset',
@@ -115,6 +120,14 @@ module PublishMyData
                     ]
                   }
                 ]
+              end
+
+              it "preserves the gss_codes" do
+                expect(selector_reloaded.gss_codes).to be == gss_codes
+              end
+
+              it "preserves the de-normalised geography type" do
+                expect(selector_reloaded.geography_type).to be == geography_type
               end
             end
           end
@@ -225,6 +238,77 @@ module PublishMyData
           subject(:selector) { Selector.new }
           it "is always true (nothing we do yet can cause an error)" do
             expect(selector).to be_valid
+          end
+        end
+      end
+
+      describe '.new_from_csv' do
+        subject(:selector) { Selector.new_from_csv(csv_upload) }
+
+        # shoehorn data in
+        before do
+          RestClient::Request.execute(
+            :method => :post,
+            :url => "#{Tripod.data_endpoint}?graph=http://example.com/data",
+            :payload =>  File.read(File.join(Rails.root, '../support/all_data.nt')),
+            :headers => {content_type: 'text/plain'}
+          )
+        end
+
+        context 'with a valid .csv upload containing a mix of GSS codes and supporting data' do
+          let(:csv_upload) {
+            temp_file = File.new(File.join(Rails.root, '../support/gss_etc.csv'))
+            ActionDispatch::Http::UploadedFile.new(tempfile: temp_file, filename: File.basename(temp_file.path))
+          }
+
+          it 'should return a new Selector' do
+            selector.should be_a Selector
+          end
+
+          it 'should return a Selector with the GSS Codes property set to the contents of the uploaded CSV file which match a GSS code' do
+            selector.gss_codes.should == [
+              "E07000036",
+              "E07000008",
+              "E07000077",
+              "E07000130",
+              "E07000049"
+            ]
+          end
+
+          it 'should return a Selector with the GSS Codes property set to the contents of the uploaded CSV file which match a GSS code' do
+            selector.non_gss_codes.should == [
+              "Beans",
+              "Eggs",
+              "Milk",
+              "Fish",
+              "Ham"
+            ]
+          end
+        end
+
+        context 'with a .csv upload containing GSS codes at both LA and LSOA level' do
+          let(:csv_upload) {
+            temp_file = File.new(File.join(Rails.root, '../support/gss_mixed.csv'))
+            ActionDispatch::Http::UploadedFile.new(tempfile: temp_file, filename: File.basename(temp_file.path))
+          }
+
+          it 'should raise a TooManyGSSCodeTypesError' do
+            expect {
+              selector
+            }.to raise_error(Selector::TooManyGSSCodeTypesError)
+          end
+        end
+
+        context 'with an invalid .csv upload' do
+          let(:csv_upload) {
+            temp_file = File.new(File.join(Rails.root, '../support/dog.gif'))
+            ActionDispatch::Http::UploadedFile.new(tempfile: temp_file, filename: File.basename(temp_file.path))
+          }
+
+          it 'should raise an InvalidCSVUploadError' do
+            expect {
+              selector
+            }.to raise_error(Selector::InvalidCSVUploadError)
           end
         end
       end

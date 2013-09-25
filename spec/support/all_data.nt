@@ -1,0 +1,143 @@
+<http://statistics.data.gov.uk/id/statistical-geography/E07000036> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000036" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000036> <http://www.w3.org/2000/01/rdf-schema#label> "E07000036 Erewash" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000036> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000008> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000008" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000008> <http://www.w3.org/2000/01/rdf-schema#label> "E07000008 Cambridge" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000077> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000077" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000077> <http://www.w3.org/2000/01/rdf-schema#label> "E07000077 Uttlesford" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000077> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000130> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000130" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000130> <http://www.w3.org/2000/01/rdf-schema#label> "E07000130 Charnwood" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000130> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000049> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000049" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000049> <http://www.w3.org/2000/01/rdf-schema#label> "E07000049 East Dorset" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000049> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000143> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000143" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000143> <http://www.w3.org/2000/01/rdf-schema#label> "E07000143 Breckland" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000143> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E08000032> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E08000032" .
+<http://statistics.data.gov.uk/id/statistical-geography/E08000032> <http://www.w3.org/2000/01/rdf-schema#label> "E08000032 Bradford" .
+<http://statistics.data.gov.uk/id/statistical-geography/E08000032> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000128> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000128" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000128> <http://www.w3.org/2000/01/rdf-schema#label> "E07000128 Wyre" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000128> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E08000017> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E08000017" .
+<http://statistics.data.gov.uk/id/statistical-geography/E08000017> <http://www.w3.org/2000/01/rdf-schema#label> "E08000017 Doncaster" .
+<http://statistics.data.gov.uk/id/statistical-geography/E08000017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000222> <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> "E07000222" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000222> <http://www.w3.org/2000/01/rdf-schema#label> "E07000222 Warwick" .
+<http://statistics.data.gov.uk/id/statistical-geography/E07000222> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://statistics.data.gov.uk/def/statistical-geography> .
+
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "562917"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "54.96056"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01008179.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01008179> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E08000020> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://www.w3.org/2004/02/skos/core#notation> "E01008179" .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://www.w3.org/2000/01/rdf-schema#label> "Gateshead 005B" .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "417442"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/00CH> .
+<http://opendatacommunities.org/id/geography/lsoa/E01008179> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-1.72914"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E09000022> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "530664"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://www.w3.org/2004/02/skos/core#notation> "E01003144" .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "51.42096"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-0.12219"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://www.w3.org/2000/01/rdf-schema#label> "Lambeth 034C" .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "170779"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01003144.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01003144> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01003144> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/00AY> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://www.w3.org/2004/02/skos/core#notation> "E01011458" .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "438224"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "53.83978"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://www.w3.org/2000/01/rdf-schema#label> "Leeds 027D" .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000039016> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01011458> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-1.66569"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/00DA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "422096"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01011458.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01011458> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E08000035> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "99725"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "50.79404"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E07000088> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01022837> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "459468"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://www.w3.org/2000/01/rdf-schema#label> "Gosport 009D" .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01022837.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://www.w3.org/2004/02/skos/core#notation> "E01022837" .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-1.15762"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01022837> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/24UF> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000000350> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000000256> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://www.w3.org/2000/01/rdf-schema#label> "Wokingham 001C" .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000000486> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "179196"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/00MF> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01016677> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://www.w3.org/2004/02/skos/core#notation> "E01016677" .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "480753"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E06000041> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "51.50592"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01016677.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01016677> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-0.83788"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "51.23473"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "0.53736"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E07000110> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000018319> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000018400> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/29UH> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01024331> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000018415> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://www.w3.org/2004/02/skos/core#notation> "E01024331" .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01024331.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://www.w3.org/2000/01/rdf-schema#label> "Maidstone 012A" .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "151454"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01024331> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "577235"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000044192> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/12UE> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "272924"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "530239"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://www.w3.org/2004/02/skos/core#notation> "E01018171" .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://www.w3.org/2000/01/rdf-schema#label> "Huntingdonshire 011G" .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "52.33892"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01018171> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E07000011> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01018171.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-0.08979"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000001476> .
+<http://opendatacommunities.org/id/geography/lsoa/E01018171> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000001493> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://www.w3.org/2000/01/rdf-schema#label> "Newcastle-under-Lyme 015A" .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000015174> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "52.98328"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://www.w3.org/2004/02/skos/core#notation> "E01029550" .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "385572"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01029550> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "342906"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01029550.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-2.21634"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/41UE> .
+<http://opendatacommunities.org/id/geography/lsoa/E01029550> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E07000195> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "53.44264"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://www.w3.org/2004/02/skos/core#notation> "E01007721" .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-1.30732"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://statistics.data.gov.uk/def/administrative-geography/district> <http://statistics.data.gov.uk/id/local-authority-district/00CF> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000009086> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/easting> "446107"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://www.w3.org/2000/01/rdf-schema#label> "Rotherham 010C" .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://data.ordnancesurvey.co.uk/ontology/admingeo/inDistrict> <http://statistics.data.gov.uk/id/statistical-geography/E08000018> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://opendatacommunities.org/def/geography#boundaryAsJSON> <http://opendatacommunities.org/files/lsoa_boundaries/E01007721.json> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://geovocab.org/spatial#O> <http://data.ordnancesurvey.co.uk/id/7000000000009058> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://opendatacommunities.org/def/geography#LSOA> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://www.w3.org/2002/07/owl#sameAs> <http://statistics.data.gov.uk/id/statistical-geography/E01007721> .
+<http://opendatacommunities.org/id/geography/lsoa/E01007721> <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/northing> "394211"^^<http://www.w3.org/2001/XMLSchema#integer> .

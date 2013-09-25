@@ -1,0 +1,11 @@
+%h1 Statistics Selector
+%h2 Step 1
+
+%p Upload a single-column .csv file containing some GSS Codes
+= form_tag preview_selectors_path, multipart: true do
+  = file_field_tag :csv_upload
+  %br
+  = submit_tag 'Go'
+
+  - if flash[:error]
+    .error= flash[:error]
