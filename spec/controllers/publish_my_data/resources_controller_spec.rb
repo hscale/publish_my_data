@@ -280,7 +280,7 @@ module PublishMyData
         let(:offset) { (page-1)*per_page }
 
         it "should retreive the right page of results" do
-          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page)
+          PublishMyData::SparqlQuery.any_instance.should_receive(:as_pagination_query).with(page, per_page).and_call_original
           get :index, page: page, per_page: per_page, use_route: :publish_my_data
         end
 

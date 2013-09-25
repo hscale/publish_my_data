@@ -187,7 +187,7 @@ module PublishMyData
               end
 
               it "should just call execute" do
-                SparqlQuery.any_instance.should_receive(:execute)
+                SparqlQuery.any_instance.should_receive(:execute).and_call_original
                 get :endpoint, opts
               end
 
