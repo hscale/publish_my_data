@@ -21,6 +21,7 @@ group :test, :development do
   gem "fuubar" # RSpec formatter
   gem "factory_girl_rails", "~> 4.0"
   gem "capybara"
+  gem "launchy" # For Capybara's save_and_open_page
   gem "ruby-prof"
   gem "awesome_print", require: "ap"
 end
