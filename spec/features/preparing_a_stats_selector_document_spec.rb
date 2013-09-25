@@ -4,7 +4,6 @@ module PublishMyData
   describe "Preparing a Stats Selector document", type: :feature, js: true do
     let(:geography_type) { 'http://statistics.data.gov.uk/def/statistical-geography' }
     let(:peterborough_uri) { 'http://statistics.data.gov.uk/id/statistical-geography/E06000031' }
-
     let(:peterborough) { Resource.new(peterborough_uri, "http://example.com/geography") }
 
     before(:each) do
