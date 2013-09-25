@@ -1,8 +1,8 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["PMD_SPARQL_QUERY_ENDPOINT"] ||= "http://localhost:3030/pmd-test/sparql"
-ENV["PMD_SPARQL_UPDATE_ENDPOINT"] ||= "http://localhost:3030/pmd-test/update"
 
 ENV["RAILS_ENV"] ||= 'test'
+require_relative 'support/sparql_env_defaults'
+
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
