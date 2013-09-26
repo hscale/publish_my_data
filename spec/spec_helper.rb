@@ -43,8 +43,10 @@ RSpec.configure do |config|
 
 end
 
+require 'capybara/poltergeist'
 Capybara.configure do |config|
   config.default_host = 'http://pmdtest.dev'
+  config.javascript_driver = :poltergeist
 end
 
 # set up tripod for dev mode.

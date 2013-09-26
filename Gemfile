@@ -24,6 +24,7 @@ group :test, :development do
   gem "launchy" # For Capybara's save_and_open_page
   gem "ruby-prof"
   gem "awesome_print", require: "ap"
+  gem "poltergeist"
 end
 
 group :install_only do
