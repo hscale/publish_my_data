@@ -66,6 +66,18 @@ Ontologies are formal definitions of vocabularies and are defined using the Web 
 
 For example, "Reference period" (http://opendatacommunities.org/def/ontology/time/refPeriod) is defined by (http://www.w3.org/2000/01/rdf-schema#isDefinedBy) "Vocabulary of terms related to time." (http://opendatacommunities.org/def/ontology/time).
 
+One heuristic to find all data about ontologies (useful for priming an development database) is to ask for the contents of every graph where something is defined as an ontology:
+
+```sparql
+CONSTRUCT { ?s ?p ?o }
+WHERE {
+  GRAPH ?graph {
+    ?ontology a <http://www.w3.org/2002/07/owl#Ontology> .
+    ?s ?p ?o
+  }
+}
+```
+
 ## Dimension Property
 
 A property like "Reference period" is a http://purl.org/linked-data/cube#DimensionProperty and is used to indicate which properties of Observations are used to drill down to a grid view.
