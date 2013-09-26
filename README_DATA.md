@@ -10,8 +10,7 @@ We will assume here that the local domain for data is "pmd.dev". Some real-world
 
 Datasets are a concept in PublishMyData to group related data, data which is likely to be updated at the same time and share the same metadata.
 
-Datasets have a URI of the form `http://pmd.dev/data/<slug>`, for example
-`http://pmd.dev/data/my-first-dataset`. They have RDF type `http://publishmydata.com/def/dataset#Dataset` so you can find them with the SPARQL query:
+Datasets have a URI of the form `http://pmd.dev/data/<slug>`, for example `http://pmd.dev/data/my-first-dataset`. They have RDF type `http://publishmydata.com/def/dataset#Dataset` so you can find them with the SPARQL query:
 
 ```sparql
 SELECT ?s
@@ -20,8 +19,7 @@ WHERE { ?s a <http://publishmydata.com/def/dataset#Dataset> }
 
 Example Dataset: [Homelessness Acceptances 2011 Q2 to 2013 Q2, England, District By Ethnicity][odc-ha]
 
-All the data for a dataset is stored in the graph `http://pmd.dev/graph/<slug>`, eg
-`http://pmd.dev/graph/my-first-dataset`, and all the metadata in `http://pmd.dev/graph/<slug>/metadata`, eg `http://pmd.dev/graph/my-first-dataset/metadata`.
+All the data for a dataset is stored in the graph `http://pmd.dev/graph/<slug>`, eg `http://pmd.dev/graph/my-first-dataset`, and all the metadata in `http://pmd.dev/graph/<slug>/metadata`, eg `http://pmd.dev/graph/my-first-dataset/metadata`.
 
 The metadata of a Dataset is what is used to generate the description at the top of a Dataset page.
 
@@ -88,3 +86,7 @@ ORDER BY ?ontologyLabel ?ontology
 RDF labels are used to give human-readable names to things. PublishMyData uses them extensively to fill in the link text on HTML pages. If you see a link which has text for the URI, it is probably because no http://www.w3.org/2000/01/rdf-schema#label property is defined for that resource.
 
 [owl]: http://www.w3.org/2004/OWL/
+
+## Measure Property
+
+Measure Properties (http://purl.org/linked-data/cube#MeasureProperty) describe the observation and are the values at specific points in the cube. For example, in the Homelessness Acceptances dataset on Open Data Communities, the each Observation has a http://opendatacommunities.org/def/ontology/homelessness/homelessnessAcceptancesObs property (the number of homelessness acceptances, an integer).
