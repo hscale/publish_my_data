@@ -8,6 +8,9 @@ require "active_resource/railtie"
 require "sprockets/railtie"
 #require "rails/test_unit/railtie"
 
+# This is a temporary dependency while we develop the Stats Selector inside PMD:
+require 'jquery-rails'
+
 require 'tripod' # for some reason tripod is lazy loaded by the tests unless you stick this here, which we don't want.
 
 Bundler.require
