@@ -1,32 +1,44 @@
-%h1 Statistics Selector
-:markdown
-  Build a table of statistics by adding columns of data from one or more datasets, then download it as a spreadsheet-compatible .csv file.
-%h2 Data Preview
-= link_to datasets_selector_fragments_path(@selector) do
-  %i.icon-circled-plus
-  Add Data
-%table
-  %thead
-    - @selector.header_rows.each_with_index do |header_row, index|
-      %tr
-        %th=# Row label-column padding
-        - header_row.each do |header_column|
-          %th{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
-  %tbody
-    - @selector.rows.each do |row|
-      %tr
-        %th= row.label
-        - @selector.fragments.each do |fragment|
-          - fragment.volume_of_selected_cube.times do
-            %td x
-            / - column_values(fragment, row).each do |value|
-            /   %td= value
-        - if first_row?(@selector, row)
-          %td(rowspan="#{ @selector.rows.size + 1 }")
-    %tr
-      %th &hellip;
-      %td(colspan="#{ total_columns(@selector) }")
-.actions
-  = link_to download_selector_path(@selector), class: 'btn' do
-    %i.icon-download
-    Download
+- content_for :data_crumb do
+  %ol.breadcrumb
+    %li= link_to 'Home', '/'
+    %li= link_to 'Statistics Selector', '#'
+
+- page_title "Statistics Selector: Add column data"
+
+
+%section#stats-selector.step-three
+  .row.container
+    .sixteen.columns
+      %h3 Statistics Selector
+      %h1 Step 3 of 3: Add column data
+
+      %section#preview
+        %header PREVIEW
+        %table
+          %thead
+            - @selector.header_rows.each_with_index do |header_row, index|
+              %tr
+                %td
+                - header_row.each do |header_column|
+                  %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
+          %tbody
+            - @selector.rows.each do |row|
+              %tr
+                %th= row.label
+                - @selector.fragments.each do |fragment|
+                  - fragment.volume_of_selected_cube.times do
+                    %td x
+                    / - column_values(fragment, row).each do |value|
+                    /   %td= value
+                - if @selector.fragments.empty?
+                  - if first_row?(@selector, row)
+                    %td.intro(rowspan="#{ @selector.rows.size + 1 }")
+                      %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
+        .foot &hellip;
+      .actions
+        = link_to datasets_selector_fragments_path(@selector), class: 'btn btn-add-data' do
+          %i.icon-circled-plus
+          Add Data
+        = link_to download_selector_path(@selector), class: 'btn primary' do
+          %i.icon-download
+          Download

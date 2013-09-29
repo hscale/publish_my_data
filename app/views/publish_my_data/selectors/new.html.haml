@@ -1,11 +1,32 @@
-%h1 Statistics Selector
-%h2 Step 1
+- content_for :data_crumb do
+  %ol.breadcrumb
+    %li= link_to 'Home', '/'
+    %li= link_to 'Statistics Selector', '#'
 
-%p Upload a single-column .csv file containing some GSS Codes
-= form_tag preview_selectors_path, multipart: true do
-  = file_field_tag :csv_upload
-  %br
-  = submit_tag 'Go'
+- page_title "Statistics Selector: Upload GSS Codes"
 
-  - if flash[:error]
-    .error= flash[:error]
+%section#stats-selector
+  .row.container
+    .sixteen.columns
+      %h3 Statistics Selector
+      %h1 Step 1 of 3: Upload GSS Codes
+  .row.container
+    .eight.columns
+      = form_tag preview_selectors_path, multipart: true do
+        %fieldset
+          %legend Select a .csv file
+          = file_field_tag :csv_upload
+          .submit.primary
+            = submit_tag 'Upload'
+          - if flash[:error]
+            .error= flash[:error]
+    .seven.columns.offset-by-one
+      :markdown
+        ### Get started
+        Keytar High Life literally nostrud sunt whatever, laborum fugiat post-ironic. Nostrud incididunt plaid, fugiat mlkshk occupy cornhole DIY fap duis. Lo-fi eu post-ironic occaecat, ethical dolore skateboard nostrud freegan vegan fixie art party raw denim wolf. Excepteur gentrify retro, esse butcher id kale chips incididunt. Pinterest shabby chic authentic pug yr. Cray laboris artisan, hashtag keffiyeh viral voluptate church-key ullamco seitan. Eiusmod dolor excepteur, Cosby sweater letterpress XOXO artisan Echo Park nostrud meh whatever brunch locavore post-ironic.
+
+        #### What's a GSS Code?
+        Veniam elit cred skateboard proident ea. Etsy minim polaroid, occupy leggings dolor ugh seitan delectus you probably haven't heard of them forage blog Odd Future. 3 wolf moon elit flexitarian occupy aliquip, try-hard Vice Brooklyn paleo lomo Pinterest squid pour-over ullamco. Four loko ad enim vinyl, aliqua fingerstache deserunt quinoa cornhole. Williamsburg deserunt et beard gentrify ea sunt accusamus Helvetica eu, labore meh. Intelligentsia qui Odd Future, craft beer literally fanny pack letterpress actually fugiat Thundercats freegan irony mumblecore. Nesciunt incididunt ullamco ugh nisi.
+
+        #### How many [people] you done seen with a leather jogging pant?
+        Ennui proident mollit ethnic, delectus squid DIY bespoke nisi ethical nulla mustache aesthetic. Ullamco Helvetica deserunt, Intelligentsia polaroid gluten-free dolor. Wes Anderson whatever seitan, Vice nisi Pinterest lomo excepteur vinyl ugh. Fashion axe cillum Austin, wayfarers PBR&B synth gentrify Cosby sweater salvia id. Duis small batch reprehenderit, Tumblr vinyl Bushwick ennui you probably haven't heard of them hella Godard put a bird on it vero sunt proident. Dolor duis aliquip Truffaut, fixie officia beard DIY ennui skateboard photo booth. Banh mi irony Intelligentsia ennui vinyl shabby chic Schlitz, ugh forage DIY raw denim ethnic excepteur cillum Bushwick.

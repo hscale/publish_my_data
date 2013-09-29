@@ -1,0 +1,39 @@
+$grey: darken(#FFF, 50%);
+$lightGrey: darken(#FFF, 15%);
+$veryLightGrey: darken(#FFF, 8%);
+$exceedinglyLightGrey: darken(#FFF, 3%);
+$white: #fff;
+$black: #000;
+
+$link-color: #005ce5;
+
+$error-color: #df8989;
+$error-color-text: darken($error-color, 50%);
+$error-color-background: lighten($error-color, 15%);
+$error-color-outline: $error-color;
+
+$warning-color: #f6b83f;
+$warning-color-text: darken($warning-color, 40%);
+$warning-color-background: lighten($warning-color, 10%);
+$warning-color-outline: $warning-color;
+
+$info-color: #3085d6;
+$info-color-text: darken($info-color, 40%);
+$info-color-background: lighten($info-color, 20%);
+$info-color-outline: $info-color;
+
+$button-color: $grey;
+$button-active-color: darken($button-color, 10%);
+$button-hover-color: lighten($button-color, 10%);
+
+$primary-button-color: $info-color;
+$primary-button-active-color: darken($primary-button-color, 10%);
+$primary-button-hover-color: lighten($primary-button-color, 10%);
+
+// Breadcrumb colours
+$data-color: #718d96;
+$datasets-color: #7aa6ae;
+$dataset-color: #33a6b2;
+$resource-color: #d0e64b;
+$ontology-color: #ff7700;
+$type-color: #9ac836;

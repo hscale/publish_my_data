@@ -1,0 +1,110 @@
+section#stats-selector {
+  h4 {
+    font-weight: 600;
+  }
+
+  ul {
+    margin-bottom: 30px;
+
+    li {
+      padding: 10px;
+      margin-bottom: 3px;
+
+      &#imported {
+        background-color: $info-color-background;   
+        color: $info-color-text; 
+      }
+      &#not-imported {
+        background-color: $warning-color-background;
+        color: $warning-color-text;
+
+        code {
+          display: none;
+          background-color: $white;
+          margin-top: 10px;
+          padding: 5px;
+        }
+      }
+    }
+  }
+
+  &.step-two {
+    .submit {
+      text-align: center;
+    }
+  }
+  &.step-three {
+    .actions {
+      margin-top: 30px;
+      text-align: center;
+    }
+  }
+}
+
+input#csv_upload {
+  border: none;
+  margin-bottom: 1em;
+}
+
+a.btn-cancel {
+  background-color: $error-color-text !important;
+
+  &:hover {
+    background-color: lighten($error-color-text, 10%) !important;
+  }
+}
+
+section#preview {
+  overflow: scroll;
+  width: 100%;
+  border: 1px solid $lightGrey;
+  padding: 6px 12px;
+
+  header {
+    color: $lightGrey;
+    font-weight: 600;
+    padding: 0 6px;
+  }
+
+  table {
+    margin-top: 0;
+    width: auto;
+
+    &, tr, th, td {
+      border: none;
+      background-color: $white;
+      padding: 6px;
+    }
+
+    thead {
+      border-bottom: 2px solid $veryLightGrey;
+      th {
+        border-left: 1px solid $veryLightGrey;
+      }
+    }
+
+    tbody {
+      td {
+        min-width: 60px;
+      }
+      th {
+        min-width: 180px;
+      }
+    }
+
+    td.intro {
+      border-bottom: none !important;
+      vertical-align: middle;
+      text-align: center;
+
+      p {
+        display: inline-block;
+        width: 320px;
+      }
+    }
+  }
+
+  .foot {
+    padding: 0 6px;
+  }
+}

@@ -1,14 +1,39 @@
-%h1 Statistics Selector
-%h2 Step 2
+- content_for :data_crumb do
+  %ol.breadcrumb
+    %li= link_to 'Home', '/'
+    %li= link_to 'Statistics Selector', '#'
 
-%p
-  = pluralize(@selector.gss_codes.size, 'GSS code')
-  imported.
-%p
-  = pluralize(@selector.non_gss_codes.size, 'row')
-  not imported.
+- page_title "Statistics Selector: Review the data"
 
-= form_for @selector, url: selectors_path, multipart: true do |f|
-  = f.hidden_field :geography_type
-  = hidden_field_tag :gss_codes, @selector.gss_codes.join(', ')
-  = f.submit
+%section#stats-selector.step-two
+  .row.container
+    .sixteen.columns
+      %h3 Statistics Selector
+      %h1 Step 2 of 3: Review the data
+  .row.container
+    .sixteen.columns
+      %ul
+        - unless @selector.gss_codes.empty?
+          %li#imported
+            %i.icon-thumbs-up
+            = pluralize(@selector.gss_codes.size, 'GSS code')
+            imported.
+        - unless @selector.non_gss_codes.empty?
+          %li#not-imported
+            %i.icon-warning
+            = pluralize(@selector.non_gss_codes.size, 'row')
+            not imported.
+            = link_to 'Show data', '#', id: 'reveal-non-imported-data'
+            %code#non-imported-data
+              %pre
+                - @selector.non_gss_codes.each do |gss_code|
+                  = gss_code
+                  \ 
+
+
+      = form_for @selector, url: selectors_path, multipart: true do |f|
+        = f.hidden_field :geography_type
+        = hidden_field_tag :gss_codes, @selector.gss_codes.join(', ')
+        .submit.primary
+          = f.submit 'Proceed to next step'
+          = link_to 'Return to previous step', new_selector_path, class: 'btn btn-cancel'
