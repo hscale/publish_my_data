@@ -21,11 +21,11 @@
       - resource.predicates.each do |pred|
         %tr
           %td
-            %span(class="#{ vocabulary_class(dataset, pred) }")= link_to_resource_uri_or_label(resource, pred)
+            %span(class="#{ vocabulary_class(dataset, pred) }")= resource_uri_or_label(resource, pred)
           %td
             %ul
               - resource.read_predicate(pred).each do |obj|
-                %li(class="#{ vocabulary_class(dataset, obj) }")= link_to_resource_uri_or_label(resource, obj)
+                %li(class="#{ vocabulary_class(dataset, obj) }")= resource_uri_or_label(resource, obj)
 
       %tfoot
         %tr

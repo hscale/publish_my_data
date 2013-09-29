@@ -4,10 +4,6 @@ module PublishMyData
       DateTime.parse(date_string).to_s(:long)
     end
 
-    def link_to_resource_uri_or_label(resource, term)
-      link_to resource_uri_or_label(resource, term), resource_path_from_uri(term)
-    end
-
     def vocabulary_class(dataset, uri)
       dataset.ontologies.each_with_index do |ontology, index|
         uris = ontology.classes.map(&:uri) + ontology.properties.map(&:uri)
