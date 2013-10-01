@@ -247,13 +247,13 @@ module PublishMyData
 
         # shoehorn data in
         before do
+          Selector.instance_variable_set(:@gss_codes, nil) # don't cross the streams! Memo-ised variables called elsewhere will need resetting..
           RestClient::Request.execute(
             :method => :post,
             :url => "#{Tripod.data_endpoint}?graph=http://example.com/data",
             :payload =>  File.read(File.join(Rails.root, '../support/all_data.nt')),
             :headers => {content_type: 'text/plain'}
           )
-          sleep 5
         end
 
         context 'with a valid .csv upload containing a mix of GSS codes and supporting data' do

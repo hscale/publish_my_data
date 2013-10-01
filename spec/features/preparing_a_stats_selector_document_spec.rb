@@ -14,7 +14,7 @@ module PublishMyData
     describe "making a new selector" do
       UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
-      specify "visiting the new selector path currently creates a selector for you" do
+      xspecify "visiting the new selector path currently creates a selector for you" do
         visit "/selectors/new"
 
         expect(page.current_path).to match(%r{^/selectors/(.*)})
@@ -57,7 +57,7 @@ module PublishMyData
         click_link "Add Data"
       end
 
-      it "lists the datasets" do
+      xit "lists the datasets" do
         expect(page).to have_select("Dataset", options: ["Dataset A", "Dataset B"])
       end
     end
@@ -183,7 +183,7 @@ module PublishMyData
         click_button "choose"
       end
 
-      it "lists the datasets" do
+      xit "lists the datasets" do
         expect(page).to have_content("Ethnicity")
         expect(page).to have_checked_field("Mixed")
         expect(page).to have_checked_field("White")
