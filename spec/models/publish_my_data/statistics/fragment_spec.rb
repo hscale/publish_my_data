@@ -73,13 +73,13 @@ module PublishMyData
         its(:number_of_dimensions) { should be == 1 }
         its(:volume_of_selected_cube) { should be == 2 }
 
-        # describe "#dimension_value_labels" do
-        #   specify {
-        #     expect(fragment.dimension_value_labels).to be == [
-        #       [ "Dim 1a", "Dim 1b" ]
-        #     ]
-        #   }
-        # end
+        describe "#dimension_value_labels" do
+          specify {
+            expect(fragment.dimension_value_labels).to be == [
+              [ "1a", "1b" ]
+            ]
+          }
+        end
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do
@@ -213,25 +213,25 @@ module PublishMyData
           end
         end
 
-        # describe "#dimension_value_labels" do
-        #   specify {
-        #     expect(fragment.dimension_value_labels).to be == [
-        #       [ "Dim 1a", "Dim 1b" ],
-        #       [
-        #         "Dim 2a", "Dim 2b", "Dim 2c",
-        #         "Dim 2a", "Dim 2b", "Dim 2c"
-        #       ],
-        #       [
-        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d",
-        #         "Dim 3a", "Dim 3b", "Dim 3c", "Dim 3d"
-        #       ]
-        #     ]
-        #   }
-        # end
+        describe "#dimension_value_labels" do
+          specify {
+            expect(fragment.dimension_value_labels).to be == [
+              [ "1a", "1b" ],
+              [
+                "2a", "2b", "2c",
+                "2a", "2b", "2c"
+              ],
+              [
+                "3a", "3b", "3c", "3d",
+                "3a", "3b", "3c", "3d",
+                "3a", "3b", "3c", "3d",
+                "3a", "3b", "3c", "3d",
+                "3a", "3b", "3c", "3d",
+                "3a", "3b", "3c", "3d"
+              ]
+            ]
+          }
+        end
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do
