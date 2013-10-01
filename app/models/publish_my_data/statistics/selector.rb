@@ -1,10 +1,21 @@
 require 'uuidtools'
+require 'set'
 # require 'yaml'
 
 module PublishMyData
   module Statistics
     class Selector
       extend ActiveModel::Naming
+
+      class ObservationSource
+        def initialize(query_options)
+          @query_options
+        end
+
+        def observation_value(dataset_uri, row_type_uri, row_uri, coordinates)
+          "x"
+        end
+      end
 
       class InvalidIdError < ArgumentError; end
       class InvalidCSVUploadError < StandardError; end
@@ -98,17 +109,47 @@ module PublishMyData
 
       # Persistence API
       class << self
-        def new_from_csv(csv_upload)
+        def gss_codes_and_uris(gss_codes)
+          gss_code_string = gss_codes.map{|c| %'"#{c}"'}.join(' ')
+          query_results = Tripod::SparqlClient::Query.select("
+            SELECT DISTINCT ?uri ?code ?type
+            WHERE {
+              {
+                ?uri a <http://opendatacommunities.org/def/geography#LSOA> .
+                ?uri <http://www.w3.org/2004/02/skos/core#notation> ?code .
+              } UNION {
+                ?uri a <http://statistics.data.gov.uk/def/statistical-geography> .
+                ?uri <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
+              }
+              ?uri a ?type .
+              VALUES ?code {#{ gss_code_string }}
+            }"
+          )
+
+          query_results.reduce([[], [], Set.new]) { |result, (codes, uris, types)|
+            codes << result['code']['value']
+            uris  << result['uri']['value']
+            types << result['type']['value']
+          }
+        end
+
+        def process_csv(csv_upload)
           begin
-            data = CSV.read(csv_upload.path).map(&:first)
-            gss_codes, non_gss_codes = data.partition{|code| is_gss_code?(code)}
-            geography_types = geography_types(gss_codes)
+            gss_code_candidates = CSV.read(csv_upload.path).map(&:first)
+            gss_codes, gss_resource_uris, geography_types = gss_codes_and_uris(gss_code_candidates)
+            non_gss_codes = gss_code_candidates - gss_codes
             raise TooManyGSSCodeTypesError unless (geography_types.size == 1)
-            
-            self.new(gss_codes: gss_codes, non_gss_codes: non_gss_codes, geography_type: geography_types.first)
-          rescue ArgumentError => e
+
+            return gss_resource_uris, non_gss_codes, geography_types.to_a.first
+          rescue ArgumentError
             raise InvalidCSVUploadError, "file upload does not contain .csv data"
           end
+        end
+
+        def create(attributes)
+          selector = new(attributes)
+          selector.save
+          selector
         end
 
         def find(id)
@@ -121,9 +162,9 @@ module PublishMyData
 
         def from_hash(data)
           new(
-            id: data.fetch(:id),
+            id:             data.fetch(:id),
             geography_type: data.fetch(:geography_type),
-            gss_codes: data.fetch(:gss_codes)
+            row_uris:       data.fetch(:row_uris)
           ).tap do |reloaded_selector|
             data.fetch(:fragments).each do |fragment_data|
               reloaded_selector.build_fragment(fragment_data)
@@ -146,56 +187,17 @@ module PublishMyData
 
           repository_class.new(config.fetch(:persistence_options))
         end
-
-        def gss_codes
-          @gss_codes ||= Tripod::SparqlClient::Query.select("
-            SELECT DISTINCT ?code WHERE {
-              {
-                ?area a <http://opendatacommunities.org/def/geography#LSOA> .
-                ?area <http://www.w3.org/2004/02/skos/core#notation> ?code .
-              } UNION {
-                ?area a <http://statistics.data.gov.uk/def/statistical-geography> .
-                ?area <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
-              }
-            }
-          ").map{|c| c['code']['value']}
-        end
-
-        def is_gss_code?(gss_code)
-          gss_codes.include?(gss_code)
-        end
-
-        def geography_types(gss_codes)
-          gss_code_string = gss_codes.map{|c| "\"#{c}\""}.join(", ")
-          count_select = Tripod::SparqlClient::Query.select("
-            SELECT DISTINCT ?type WHERE {
-              {
-                ?area a <http://opendatacommunities.org/def/geography#LSOA> .
-                ?area <http://www.w3.org/2004/02/skos/core#notation> ?code .
-              } UNION {
-                ?area a <http://statistics.data.gov.uk/def/statistical-geography> .
-                ?area <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
-              }
-              ?area a ?type .
-              FILTER (?code IN(#{ gss_code_string }))
-              FILTER (?type in (<http://statistics.data.gov.uk/def/statistical-geography>, <http://opendatacommunities.org/def/geography#LSOA>))
-            }
-          ")
-          count_select.map{|t| t['type']['value']}
-        end
       end
 
-      attr_reader   :fragments
-      attr_reader   :non_gss_codes
       attr_accessor :geography_type
-      attr_accessor :gss_codes
+      attr_reader   :fragments
 
       def initialize(attributes = {})
-        @id = attributes.fetch(:id) { UUIDTools::UUID.random_create }
+        @id             = attributes.fetch(:id) { UUIDTools::UUID.random_create }
+        @geography_type = attributes.fetch(:geography_type)
+        @row_uris       = attributes.fetch(:row_uris) { [] }
+
         @fragments = [ ]
-        @geography_type = attributes.fetch(:geography_type, nil)
-        @gss_codes = attributes.fetch(:gss_codes, [])
-        @non_gss_codes = attributes.fetch(:non_gss_codes, [])
       end
 
       def id
@@ -236,10 +238,10 @@ module PublishMyData
 
       def to_h
         {
-          id: @id,
-          fragments: @fragments.map { |fragment| fragment.to_h },
-          gss_codes: @gss_codes,
-          geography_type: @geography_type
+          id:             @id,
+          fragments:      @fragments.map { |fragment| fragment.to_h },
+          geography_type: @geography_type,
+          row_uris:       @row_uris
         }
       end
 
@@ -253,6 +255,10 @@ module PublishMyData
 
       def persisted?
         Selector.repository.persisted?(self)
+      end
+
+      def query_options
+        { }
       end
 
       def header_rows(labeller = Labeller.new)
@@ -290,23 +296,29 @@ module PublishMyData
         @fragments << Fragment.new(fragment_description)
       end
 
-      def rows
-        gss_code_string = gss_codes.map{|c| "\"#{c}\""}.join(", ")
-        Resource.find_by_sparql("
-          SELECT distinct ?uri
-          WHERE {
-            ?uri a <#{ self.geography_type }>.
-            {
-              ?uri a <http://opendatacommunities.org/def/geography#LSOA> .
-              ?uri <http://www.w3.org/2004/02/skos/core#notation> ?code .
-            } UNION {
-              ?uri a <http://statistics.data.gov.uk/def/statistical-geography> .
-              ?uri <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
-            }
-            FILTER (?code IN (#{ gss_code_string }))
-          }
-          LIMIT 10
-        ")
+      class Row
+        def initialize(row_type_uri, uri, fragments, labeller = Labeller.new)
+          @row_type_uri = row_type_uri
+          @uri          = uri
+          @fragments    = fragments
+          @labeller     = labeller
+        end
+
+        def label
+          @labeller.label_for(@uri)
+        end
+
+        def values(observation_source)
+          # In the middle of a one-to-many refactor...
+          @fragments.first.values_for_row(@row_type_uri, @uri, observation_source)
+        end
+      end
+
+      # Using @row_uris here will break the UI temporarily
+      def table_rows(labeller = Labeller.new)
+        @row_uris.map { |row_uri|
+          Row.new(geography_type, row_uri, @fragments, labeller)
+        }
       end
     end
   end

@@ -22,17 +22,14 @@
                 - header_row.each do |header_column|
                   %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
           %tbody
-            - @selector.rows.each do |row|
+            - @selector.table_rows.each do |row|
               %tr
                 %th= row.label
-                - @selector.fragments.each do |fragment|
-                  - fragment.volume_of_selected_cube.times do
-                    %td x
-                    / - column_values(fragment, row).each do |value|
-                    /   %td= value
+                - row.values(@observation_source).each do |value|
+                  %td= value
                 - if @selector.fragments.empty?
                   - if first_row?(@selector, row)
-                    %td.intro(rowspan="#{ @selector.rows.size + 1 }")
+                    %td.intro{rowspan: "#{ @selector.rows.size + 1 }"}
                       %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
         .foot &hellip;
       .actions

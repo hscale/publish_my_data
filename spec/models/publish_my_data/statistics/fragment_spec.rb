@@ -52,6 +52,18 @@ module PublishMyData
             end
           end
         end
+
+        describe "#values_for_row" do
+          let(:observation_source) { :unused }
+
+          specify {
+            expect(
+              fragment.values_for_row(
+                "uri:unused_type", "uri:unused_resource", observation_source
+              )
+            ).to be == []
+          }
+        end
       end
 
       context "with one dimension" do
@@ -113,6 +125,28 @@ module PublishMyData
               expect(fragment.volume_at_level_above(-1)).to be == 1
             end
           end
+        end
+
+        describe "#values_for_row" do
+          let(:observation_source) {
+            MockObservationSource.new(
+              "http://example.com/dataset" => {
+                "uri:row_type_1" => {
+                  "uri:row_1" => {
+                    "http://example.com/dimension_1" => {
+                      "1a" => 1, "1b" => 2
+                    }
+                  }
+                }
+              }
+            )
+          }
+
+          specify {
+            expect(
+              fragment.values_for_row("uri:row_type_1", "uri:row_1", observation_source)
+            ).to be == [1, 2]
+          }
         end
       end
 

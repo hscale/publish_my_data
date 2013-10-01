@@ -194,6 +194,15 @@ module PublishMyData
 
         expect(page).to have_button("Go")
       end
+
+      it "adds the values to the selector" do
+        click_button "Go"
+
+        expect(page).to have_content("10")
+        expect(page).to have_content("20")
+        expect(page).to have_content("30")
+        expect(page).to have_content("40")
+      end
     end
   end
 end

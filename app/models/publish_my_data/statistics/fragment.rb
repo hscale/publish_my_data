@@ -15,6 +15,24 @@ module PublishMyData
         }
       end
 
+      def values_for_row(row_type_uri, row_uri, observation_source)
+        return [] if @dimensions.empty?
+
+        # One-to-many refactoring in progress...
+        dimension = @dimensions.first
+        dimension_value = dimension.fetch(:dimension_uri)
+        row_coordinates =
+          dimension.fetch(:dimension_values).inject([]) { |coords, value|
+            coords << { dimension_value => value }
+          }
+
+        row_coordinates.map { |cell_coordinates|
+          observation_source.observation_value(
+            @dataset_uri, row_type_uri, row_uri, cell_coordinates
+          )
+        }
+      end
+
       def number_of_dimensions
         @dimensions.length
       end

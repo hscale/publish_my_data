@@ -92,7 +92,7 @@ module PublishMyData
             describe "reloading" do
               let(:geography_type) { 'http://opendatacommunities.org/def/geography#LSOA' }
               let(:gss_codes) { ['E010000001', 'E010000002', 'E010000003'] }
-              
+
               before(:each) do
                 selector.gss_codes = gss_codes
                 selector.geography_type = geography_type
@@ -105,7 +105,13 @@ module PublishMyData
                 expect(selector_reloaded.id).to be == selector.id
               end
 
-              it "preserves the fragments" do
+              it "preserves the row URIs" do
+                expect(selector_reloaded.to_h.fetch(:row_uris)).to be == %w[
+                  row:a row:b row:c
+                ]
+              end
+
+              it "preserves all the fragment values" do
                 expect(selector_reloaded.to_h.fetch(:fragments)).to be == [
                   {
                     dataset_uri: 'http://example.com/dataset',
@@ -172,7 +178,8 @@ module PublishMyData
             { path: "tmp/selectors_test" }
           }
 
-          let(:selector) { Selector.new }
+          # The shared examples require these specific row URIs
+          let(:selector) { Selector.new(row_uris: %w[ row:a row:b row:c ]) }
 
           before(:each) do
             FileUtils.rm_rf("tmp/selectors_test")
@@ -540,6 +547,69 @@ module PublishMyData
               [ "Dimension 1a", "Dimension 3a", "Dimension 3b" ]
             ]
           }
+        end
+      end
+
+      describe "#table_rows" do
+        subject(:selector) {
+          Selector.new(row_uris: [ "uri:row_1" ])
+        }
+
+        let(:labeller) { MockLabeller.new }
+
+        let(:snapshot) { selector.take_snapshot }
+
+        let(:dimension_1) {
+          {
+            dimension_uri: "http://example.com/dimension_1",
+            dimension_values: [ "http://example.com/dimension_value_1a" ]
+          }
+        }
+
+        let(:dimension_2) {
+          {
+            dimension_uri: "http://example.com/dimension_2",
+            dimension_values: [
+              "http://example.com/dimension_value_2a",
+              "http://example.com/dimension_value_2b"
+            ]
+          }
+        }
+
+        before(:each) do
+          selector.build_fragment(
+            dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1, dimension_2 ]
+          )
+        end
+
+        describe Selector::Row do
+          # We're also testing the construction process here, for now
+          let(:row) { selector.table_rows(labeller).first }
+
+          describe "#values" do
+            let(:observation_source) {
+              # Currently almost the same as the data in the Fragment spec
+              MockObservationSource.new(
+                "http://example.com/dataset" => {
+                  # The row type is currently hard-coded, so we have to use
+                  # this value for now
+                  'http://statistics.data.gov.uk/def/statistical-geography' => {
+                    "uri:row_1" => {
+                      "http://example.com/dimension_1" => {
+                        "http://example.com/dimension_value_1a" => 1
+                      }
+                    }
+                  }
+                }
+              )
+            }
+
+            context "one fragment" do
+              it "returns the correct values" do
+                expect(row.values(observation_source)).to be == [1]
+              end
+            end
+          end
         end
       end
     end

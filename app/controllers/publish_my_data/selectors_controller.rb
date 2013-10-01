@@ -10,7 +10,9 @@ module PublishMyData
     end
 
     def preview
-      @selector = Statistics::Selector.new_from_csv(params[:csv_upload])
+      # TODO: process_csv
+      @gss_resource_uris, @non_gss_codes, @geography_type = Statistics::Selector.process_csv(params[:csv_upload])
+      @gss_resource_uri_data = @gss_resource_uris.join(', ')
 
       respond_to do |format|
         format.html
@@ -18,14 +20,37 @@ module PublishMyData
     end
 
     def create
-      @selector = Statistics::Selector.new(params[:statistics_selector])
-      @selector.gss_codes = params[:gss_codes].split(', ')
-      @selector.save
+      gss_resource_uris = params[:gss_resource_uri_data].split(', ')
+
+      @selector = Statistics::Selector.create(
+        geography_type: params[:geography_type],
+        row_uris:       gss_resource_uris
+      )
+
       redirect_to selector_path(@selector)
     end
 
     def show
       @selector = Statistics::Selector.find(params[:id])
+      @observation_source =
+        Statistics::Selector::ObservationSource.new(@selector.query_options)
+
+      # Maybe...?
+      # @selector_snapshot =
+      #   @selector.take_snapshot(
+      #     labeller: Labeller.new,
+      #     observation_source: ObservationSource.new
+      #   )
+    end
+
+    private
+
+    def row_uris
+      Resource.find_by_sparql("
+        SELECT distinct ?uri
+        WHERE { ?uri a <http://statistics.data.gov.uk/def/statistical-geography>. }
+        LIMIT 10
+      ").map(&:uri)
     end
 
     private

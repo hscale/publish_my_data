@@ -13,27 +13,26 @@
   .row.container
     .sixteen.columns
       %ul
-        - unless @selector.gss_codes.empty?
+        - unless @gss_resource_uris.empty?
           %li#imported
             %i.icon-thumbs-up
-            = pluralize(@selector.gss_codes.size, 'GSS code')
+            = pluralize(@gss_resource_uris.size, 'GSS code')
             imported.
-        - unless @selector.non_gss_codes.empty?
+        - unless @non_gss_codes.empty?
           %li#not-imported
             %i.icon-warning
-            = pluralize(@selector.non_gss_codes.size, 'row')
+            = pluralize(@non_gss_codes.size, 'row')
             not imported.
             = link_to 'Show data', '#', id: 'reveal-non-imported-data'
             %code#non-imported-data
               %pre
-                - @selector.non_gss_codes.each do |gss_code|
-                  = gss_code
-                  \ 
+                - @non_gss_codes.each do |non_gss_code|
+                  = non_gss_code + "\n"
 
 
-      = form_for @selector, url: selectors_path, multipart: true do |f|
-        = f.hidden_field :geography_type
-        = hidden_field_tag :gss_codes, @selector.gss_codes.join(', ')
+      = form_tag selectors_path, multipart: true do |f|
+        = hidden_field_tag :geography_type, @geography_type
+        = hidden_field_tag :gss_resource_uri_data, @gss_resource_uri_data
         .submit.primary
           = f.submit 'Proceed to next step'
           = link_to 'Return to previous step', new_selector_path, class: 'btn btn-cancel'
