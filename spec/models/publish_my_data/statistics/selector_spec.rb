@@ -21,7 +21,7 @@ module PublishMyData
       end
 
       describe "interfaces" do
-        subject(:selector) { Selector.new }
+        subject(:selector) { Selector.new(geography_type: 'unused') }
 
         # Some of the Selector methods delegate to the repository, so
         # we have to re-lint for each repository type
@@ -90,12 +90,7 @@ module PublishMyData
             end
 
             describe "reloading" do
-              let(:geography_type) { 'http://opendatacommunities.org/def/geography#LSOA' }
-              let(:gss_codes) { ['E010000001', 'E010000002', 'E010000003'] }
-
               before(:each) do
-                selector.gss_codes = gss_codes
-                selector.geography_type = geography_type
                 selector.save
               end
 
@@ -103,6 +98,12 @@ module PublishMyData
 
               it "preserves the id" do
                 expect(selector_reloaded.id).to be == selector.id
+              end
+
+              it "preserves the geography type" do
+                expect(
+                  selector_reloaded.to_h.fetch(:geography_type)
+                ).to be == selector.geography_type
               end
 
               it "preserves the row URIs" do
@@ -126,14 +127,6 @@ module PublishMyData
                     ]
                   }
                 ]
-              end
-
-              it "preserves the gss_codes" do
-                expect(selector_reloaded.gss_codes).to be == gss_codes
-              end
-
-              it "preserves the de-normalised geography type" do
-                expect(selector_reloaded.geography_type).to be == geography_type
               end
             end
           end
@@ -179,7 +172,9 @@ module PublishMyData
           }
 
           # The shared examples require these specific row URIs
-          let(:selector) { Selector.new(row_uris: %w[ row:a row:b row:c ]) }
+          let(:selector) {
+            Selector.new(geography_type: 'unused', row_uris: %w[ row:a row:b row:c ])
+          }
 
           before(:each) do
             FileUtils.rm_rf("tmp/selectors_test")
@@ -204,7 +199,7 @@ module PublishMyData
       end
 
       describe "#id" do
-        subject(:selector) { Selector.new }
+        subject(:selector) { Selector.new(geography_type: 'unused') }
 
         it "is a UUID" do
           expect(selector.id).to be_a(UUIDTools::UUID)
@@ -215,7 +210,10 @@ module PublishMyData
       describe "ActiveModel" do
         describe "#to_key" do
           let(:test_uuid) { UUIDTools::UUID.parse("5409ef37-1589-4cb5-a7fd-e8a1c7722a09") }
-          subject(:selector) { Selector.new(id: test_uuid) }
+
+          subject(:selector) {
+            Selector.new(geography_type: 'unused', id: test_uuid)
+          }
 
           before(:each) do
             selector.save # ActiveModel made me do it
@@ -225,7 +223,7 @@ module PublishMyData
         end
 
         describe "#to_param" do
-          subject(:selector) { Selector.new }
+          subject(:selector) { Selector.new(geography_type: 'unused') }
           let(:param) { selector.to_param }
 
           before(:each) do
@@ -242,7 +240,8 @@ module PublishMyData
         end
 
         describe "#valid?" do
-          subject(:selector) { Selector.new }
+          subject(:selector) { Selector.new(geography_type: 'unused') }
+
           it "is always true (nothing we do yet can cause an error)" do
             expect(selector).to be_valid
           end
@@ -322,7 +321,7 @@ module PublishMyData
       end
 
       describe "#header_rows" do
-        subject(:selector) { Selector.new }
+        subject(:selector) { Selector.new(geography_type: 'unused') }
 
         let(:labeller) { MockLabeller.new }
 
@@ -552,7 +551,10 @@ module PublishMyData
 
       describe "#table_rows" do
         subject(:selector) {
-          Selector.new(row_uris: [ "uri:row_1" ])
+          Selector.new(
+            geography_type: "http://statistics.data.gov.uk/def/statistical-geography",
+            row_uris:       [ "uri:row_1" ]
+          )
         }
 
         let(:labeller) { MockLabeller.new }
