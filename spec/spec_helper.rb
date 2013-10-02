@@ -9,6 +9,7 @@ require 'factory_girl_rails'
 require 'capybara/rails'
 require 'active_support/core_ext/numeric/bytes'
 require 'ap'
+require 'term/ansicolor'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -26,14 +27,22 @@ RSpec.configure do |config|
 
   config.mock_with :rspec
 
+  config.include(Term::ANSIColor)
+
   config.before(:each) do
     # delete from all graphs.
-    Tripod::SparqlClient::Update.update('
-      # delete from default graph:
-      DELETE {?s ?p ?o} WHERE {?s ?p ?o};
-      # delete from named graphs:
-      DELETE {graph ?g {?s ?p ?o}} WHERE {graph ?g {?s ?p ?o}};
-    ')
+    begin
+      Tripod::SparqlClient::Update.update('
+        # delete from default graph:
+        DELETE {?s ?p ?o} WHERE {?s ?p ?o};
+        # delete from named graphs:
+        DELETE {graph ?g {?s ?p ?o}} WHERE {graph ?g {?s ?p ?o}};
+      ')
+    rescue RestClient::ResourceNotFound
+      puts red("Could not delete empty the database, have you specified the right endpoint?")
+      puts cyan("Set the PMD_SPARQL_QUERY_* environment variables according to your Fuseki installation.")
+      raise
+    end
   end
 
   config.before(:each, :type => :controller) do
