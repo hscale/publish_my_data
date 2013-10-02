@@ -13,7 +13,7 @@ module PublishMyData
         end
 
         def observation_value(dataset_uri, row_type_uri, row_uri, coordinates)
-          "x"
+          "y"
         end
       end
 
