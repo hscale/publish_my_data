@@ -6,7 +6,6 @@ module PublishMyData
     rescue_from Statistics::Selector::TooManyGSSCodeTypesError, with: :mixed_gss_codes
 
     def new
-      @selector = Statistics::Selector.new
     end
 
     def preview
