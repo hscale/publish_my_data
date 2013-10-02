@@ -576,13 +576,6 @@ module PublishMyData
           }
         }
 
-        before(:each) do
-          # We demonstrate how multiple dimensions work in the Fragment spec
-          selector.build_fragment(
-            dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
-          )
-        end
-
         describe Selector::Row do
           # We're also testing the construction process here, for now
           let(:row) { selector.table_rows(labeller).first }
@@ -598,6 +591,10 @@ module PublishMyData
                     "uri:row_1" => {
                       "http://example.com/dimension_1" => {
                         "http://example.com/dimension_value_1a" => 1
+                      },
+                      "http://example.com/dimension_2" => {
+                        "http://example.com/dimension_value_2a" => 2,
+                        "http://example.com/dimension_value_2b" => 3
                       }
                     }
                   }
@@ -606,8 +603,31 @@ module PublishMyData
             }
 
             context "one fragment" do
+              before(:each) do
+                # We demonstrate how multiple dimensions work in the Fragment spec
+                selector.build_fragment(
+                  dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+                )
+              end
+
               it "returns the correct values" do
                 expect(row.values(observation_source)).to be == [1]
+              end
+            end
+
+            context "two fragments" do
+              before(:each) do
+                # We demonstrate how multiple dimensions work in the Fragment spec
+                selector.build_fragment(
+                  dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+                )
+                selector.build_fragment(
+                  dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_2 ]
+                )
+              end
+
+              it "returns the correct values" do
+                expect(row.values(observation_source)).to be == [1, 2, 3]
               end
             end
           end

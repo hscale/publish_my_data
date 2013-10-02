@@ -309,8 +309,11 @@ module PublishMyData
         end
 
         def values(observation_source)
-          # In the middle of a one-to-many refactor...
-          @fragments.first.values_for_row(@row_type_uri, @uri, observation_source)
+          @fragments.inject([]) { |values, fragment|
+            values.concat(
+              fragment.values_for_row(@row_type_uri, @uri, observation_source)
+            )
+          }
         end
       end
 
