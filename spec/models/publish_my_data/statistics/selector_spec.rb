@@ -577,8 +577,9 @@ module PublishMyData
         }
 
         before(:each) do
+          # We demonstrate how multiple dimensions work in the Fragment spec
           selector.build_fragment(
-            dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1, dimension_2 ]
+            dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
           )
         end
 

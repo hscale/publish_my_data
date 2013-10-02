@@ -302,6 +302,44 @@ module PublishMyData
             end
           end
         end
+
+        describe "#values_for_row" do
+          # I probably should have made a simpler 3-dimensional example context for this :-S
+          let(:observation_source) {
+            MockObservationSource.new(
+              "http://example.com/dataset" => {
+                "uri:row_type_1" => {
+                  "uri:row_1" => {
+                    "1" => {
+                      "1a" => {
+                        "2" => {
+                          "2a" => { "3" => { "3a" => 1, "3b" =>  2, "3c" =>  3, "3d" =>  4 } },
+                          "2b" => { "3" => { "3a" => 5, "3b" =>  6, "3c" =>  7, "3d" =>  8 } },
+                          "2c" => { "3" => { "3a" => 9, "3b" => 10, "3c" => 11, "3d" => 12 } }
+                        }
+                      },
+                      "1b" => {
+                        "2" => {
+                          "2a" => { "3" => { "3a" => 13, "3b" => 14, "3c" => 15, "3d" => 16 } },
+                          "2b" => { "3" => { "3a" => 17, "3b" => 18, "3c" => 19, "3d" => 20 } },
+                          "2c" => { "3" => { "3a" => 21, "3b" => 22, "3c" => 23, "3d" => 24 } }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            )
+          }
+
+          specify {
+            expect(
+              fragment.values_for_row("uri:row_type_1", "uri:row_1", observation_source)
+            ).to be == [
+              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+            ]
+          }
+        end
       end
     end
   end

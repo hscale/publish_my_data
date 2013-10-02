@@ -11,14 +11,9 @@ module PublishMyData
           fetch(row_type_uri).
           fetch(row_uri)
 
-        # TODO next:
-        # probably wrong...
-        # coordinates.inject(row_data) { |remaining_data, coord|
-        #   remaining_data.fetch
-        # }
-
-        key = coordinates.keys.first
-        row_data.fetch(key).fetch(coordinates[key])
+        coordinates.inject(row_data) { |remaining_data, (dimension, dimension_value)|
+          remaining_data.fetch(dimension).fetch(dimension_value)
+        }
       end
     end
   end

@@ -16,21 +16,35 @@ module PublishMyData
       end
 
       def values_for_row(row_type_uri, row_uri, observation_source)
+        # [].inject(...) => nil below means we have to catch the empty case
         return [] if @dimensions.empty?
 
-        # One-to-many refactoring in progress...
-        dimension = @dimensions.first
-        dimension_value = dimension.fetch(:dimension_uri)
-        row_coordinates =
+        # Yes, it works. Don't touch it.
+        @dimensions.map { |dimension|
+          dimension_uri = dimension.fetch(:dimension_uri)
           dimension.fetch(:dimension_values).inject([]) { |coords, value|
-            coords << { dimension_value => value }
+            coords << { dimension_uri => value }
           }
-
-        row_coordinates.map { |cell_coordinates|
-          observation_source.observation_value(
-            @dataset_uri, row_type_uri, row_uri, cell_coordinates
-          )
-        }
+        }.inject(:product).
+          map { |maybe_already_flattened_product|
+            if maybe_already_flattened_product.is_a?(Hash)
+              maybe_already_flattened_product
+            else
+              maybe_already_flattened_product.flatten
+            end
+          }.
+          map { |maybe_already_merged_product|
+            if maybe_already_merged_product.is_a?(Hash)
+              maybe_already_merged_product
+            else
+              maybe_already_merged_product.inject(:merge)
+            end
+          }.
+          map { |cell_coordinates|
+            observation_source.observation_value(
+              @dataset_uri, row_type_uri, row_uri, cell_coordinates
+            )
+          }
       end
 
       def number_of_dimensions
