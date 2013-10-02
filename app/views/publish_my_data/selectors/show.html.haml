@@ -22,15 +22,14 @@
                 - header_row.each do |header_column|
                   %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
           %tbody
-            - @selector.table_rows.each do |row|
+            - @selector.table_rows.each_with_index do |row, index|
               %tr
                 %th= row.label
                 - row.values(@observation_source).each do |value|
                   %td= value
-                - if @selector.fragments.empty?
-                  - if first_row?(@selector, row)
-                    %td.intro{rowspan: "#{ @selector.rows.size + 1 }"}
-                      %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
+                - if @selector.fragments.empty? && index == 0
+                  %td.intro{rowspan: "#{ @selector.table_rows.size + 1 }"}
+                    %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
         .foot &hellip;
       .actions
         = link_to datasets_selector_fragments_path(@selector), class: 'btn btn-add-data' do

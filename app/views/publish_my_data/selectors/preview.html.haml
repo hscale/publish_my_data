@@ -27,12 +27,12 @@
             %code#non-imported-data
               %pre
                 - @non_gss_codes.each do |non_gss_code|
-                  = non_gss_code + "\n"
+                  = non_gss_code
+                  \
 
-
-      = form_tag selectors_path, multipart: true do |f|
+      = form_tag selectors_path, multipart: true do
         = hidden_field_tag :geography_type, @geography_type
         = hidden_field_tag :gss_resource_uri_data, @gss_resource_uri_data
         .submit.primary
-          = f.submit 'Proceed to next step'
+          = submit_tag 'Proceed to next step'
           = link_to 'Return to previous step', new_selector_path, class: 'btn btn-cancel'

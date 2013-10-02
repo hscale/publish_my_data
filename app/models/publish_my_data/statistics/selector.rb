@@ -126,10 +126,11 @@ module PublishMyData
             }"
           )
 
-          query_results.reduce([[], [], Set.new]) { |result, (codes, uris, types)|
+          query_results.reduce([[], [], Set.new]) { |(codes, uris, types), result|
             codes << result['code']['value']
             uris  << result['uri']['value']
             types << result['type']['value']
+            [codes, uris, types]
           }
         end
 
