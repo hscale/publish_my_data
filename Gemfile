@@ -25,6 +25,7 @@ group :test, :development do
   gem "ruby-prof"
   gem "awesome_print", require: "ap"
   gem "poltergeist"
+  gem "term-ansicolor"
 end
 
 group :install_only do
