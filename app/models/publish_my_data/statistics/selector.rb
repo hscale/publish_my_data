@@ -13,13 +13,11 @@ module PublishMyData
         end
 
         def observation_value(dataset_uri, row_type_uri, row_uri, coordinates)
-          "y"
+          "x"
         end
       end
 
       class InvalidIdError < ArgumentError; end
-      class InvalidCSVUploadError < StandardError; end
-      class TooManyGSSCodeTypesError < StandardError; end
 
       class FilesystemRepository
         def initialize(options)
@@ -109,44 +107,6 @@ module PublishMyData
 
       # Persistence API
       class << self
-        def gss_codes_and_uris(gss_codes)
-          gss_code_string = gss_codes.map{|c| %'"#{c}"'}.join(' ')
-          query_results = Tripod::SparqlClient::Query.select("
-            SELECT DISTINCT ?uri ?code ?type
-            WHERE {
-              {
-                ?uri a <http://opendatacommunities.org/def/geography#LSOA> .
-                ?uri <http://www.w3.org/2004/02/skos/core#notation> ?code .
-              } UNION {
-                ?uri a <http://statistics.data.gov.uk/def/statistical-geography> .
-                ?uri <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
-              }
-              ?uri a ?type .
-              VALUES ?code {#{ gss_code_string }}
-            }"
-          )
-
-          query_results.reduce([[], [], Set.new]) { |(codes, uris, types), result|
-            codes << result['code']['value']
-            uris  << result['uri']['value']
-            types << result['type']['value']
-            [codes, uris, types]
-          }
-        end
-
-        def process_csv(csv_upload)
-          begin
-            gss_code_candidates = CSV.read(csv_upload.path).map(&:first)
-            gss_codes, gss_resource_uris, geography_types = gss_codes_and_uris(gss_code_candidates)
-            non_gss_codes = gss_code_candidates - gss_codes
-            raise TooManyGSSCodeTypesError unless (geography_types.size == 1)
-
-            return gss_resource_uris, non_gss_codes, geography_types.to_a.first
-          rescue ArgumentError
-            raise InvalidCSVUploadError, "file upload does not contain .csv data"
-          end
-        end
-
         def create(attributes)
           selector = new(attributes)
           selector.save
@@ -318,7 +278,6 @@ module PublishMyData
         end
       end
 
-      # Using @row_uris here will break the UI temporarily
       def table_rows(labeller = Labeller.new)
         @row_uris.map { |row_uri|
           Row.new(geography_type, row_uri, @fragments, labeller)
