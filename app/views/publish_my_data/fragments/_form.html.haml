@@ -1,13 +1,146 @@
-= form_tag selector_fragments_path(@selector) do
-  = hidden_field_tag :dataset_uri, @dataset.uri
+.step-two
+  %header
+    %h3 Add data
+    %h1 Step 2 of 2: Filter data
+    %p
+      %strong Dataset:
+      = @dataset.title
 
-  %ul
-    - @dimensions.each do |dimension|
-      %li
-        %h3= dimension.label
-        %ul
-          - dimension.values.each do |dimension_value|
-            %li
-              = check_box_tag "dataset_dimensions[#{dimension.uri}][#{dimension_value[:uri]}]", 1, true, id: dom_id_from_uri(dimension_value[:uri])
-              = label_tag dom_id_from_uri(dimension_value[:uri]), dimension_value[:label]
-  = submit_tag 'Go'
+  = form_tag selector_fragments_path(@selector) do
+    = hidden_field_tag :dataset_uri, @dataset.uri
+  
+    %p#no-filters
+      %em All possible combinations of dataset dimension are currently chosen. To reduce the amount of data, select some dimension values to filter by.
+    #filters(style="display: none;")
+      %h3 Filtered by
+      #filter-lists
+        - @dimensions.each do |dimension|
+          .dimension
+            %em.all-values
+              All
+              = dimension.label.pluralize
+            %ul(style="display: none;")
+              %li.dimension-label= dimension.label
+              - dimension.values.each do |dimension_value|
+                %li{'id' => dom_id_for_dimension_value(dimension_value, 'filter'), 'style' => 'display: none;'}
+                  = dimension_value[:label]
+                  = link_to '#', class: 'remove-dimension-value' do
+                    &times;
+
+    %hr
+
+    %h2 Filter by &hellip;
+    %ul#dimensions
+      - @dimensions.each do |dimension|
+        %li.dimension
+          = hidden_field_tag "dataset_dimensions[#{dimension.uri}]", ''
+          %h3
+            = dimension.label
+          %ul
+            - dimension.values.each do |dimension_value|
+              %li{'id' => dom_id_for_dimension_value(dimension_value)}
+                = link_to dimension_value[:label], '#', 'data-uri' =>  dimension_value[:uri], 'class' => 'dimension-value'
+
+    .submit.primary
+      = submit_tag "Add #{column_count(@dimensions)} columns of data", id: 'submit-fragment'
+      = link_to 'Pick a different data set', datasets_selector_fragments_path(@selector), id: 'pick-again', class: 'btn btn-cancel', remote: true
+      .spinner(style="display: none;")
+        = image_tag 'publish_my_data/dclg_stats_selector/spinner.gif'
+
+:javascript
+  var addValueWithAnchor = function(anchor) {
+    var uri = anchor.attr('data-uri'),
+        input = anchor.parents('li.dimension').find('input'),
+        dimensionValues;
+
+    if (input.val().length == 0) {
+      dimensionValues = [uri];
+    } else {
+      dimensionValues = input.val().split(', ');
+      dimensionValues.push(uri);
+    }
+    input.val(dimensionValues.join(', '));
+  },
+  removeValueWithAnchor = function(anchor) {
+    var uri = anchor.attr('data-uri'),
+        input = anchor.parents('li.dimension').find('input'),
+        dimensionValues = input.val().split(', '),
+        idx;
+
+    idx = dimensionValues.indexOf(uri);
+    dimensionValues.splice(idx, 1);
+    input.val(dimensionValues.join(', '));
+  },
+  calculateColumnCount = function() {
+    var total = 1,
+        dimCount,
+        colPlural;
+
+    $('#filter-lists ul').each(function(idx) {
+      var ul = $(this);
+
+      if (ul.is(':hidden')) {
+        // all values
+        dimCount = $('#dimensions li.dimension').eq(idx).find('li').size();
+      } else  {
+        // selected values
+        dimCount = ul.find('li:visible').not('.dimension-label').size();
+      }
+      total = total * dimCount;
+    });
+    colPlural = (total == 1) ? 'column' : 'columns';
+    $('input#submit-fragment').val('Add ' + total + ' ' + colPlural + ' of data');
+  }
+
+  $('a.dimension-value').click(function(e) {
+    e.preventDefault();
+
+    var filterOption = $(this).parent(),
+        filter = $('#filter-' + filterOption.attr('id')),
+        filterList = filter.parent();
+
+    filterOption.hide();
+    filter.show();
+    if (filterList.is(':hidden')) {
+      filterList.show();
+      filterList.siblings('.all-values').hide();
+
+      if ($('#filters').is(':hidden')) {
+        $('#filters').show();
+        $('#no-filters').hide();
+      }
+    }
+
+    addValueWithAnchor($(this));
+    calculateColumnCount();
+  });
+
+  $('a.remove-dimension-value').click(function(e) {
+    e.preventDefault();
+
+    var filter = $(this).parent(),
+        filterOption = $('#' + filter.attr('id').replace('filter-', '')),
+        filterList = filter.parent(),
+        anchor;
+    
+    filter.hide();
+    filterOption.show();
+
+    if (!filter.siblings().not('.dimension-label').is(':visible')) {
+      filterList.hide();
+      filterList.siblings('.all-values').show();
+
+      if (!$('#filter-lists .dimension ul').is(':visible')) {
+        $('#filters').hide();
+        $('#no-filters').show();
+      }
+    }
+
+    anchor = filterOption.find('a');
+    removeValueWithAnchor(anchor);
+    calculateColumnCount();
+  });
+
+  $('#submit-fragment, #pick-again').click(function() {
+    $('.spinner').show();
+  });

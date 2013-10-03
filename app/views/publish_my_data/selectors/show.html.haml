@@ -32,9 +32,35 @@
                     %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
         .foot &hellip;
       .actions
-        = link_to datasets_selector_fragments_path(@selector), class: 'btn btn-add-data' do
+        = link_to datasets_selector_fragments_path(@selector), 'class' => 'btn btn-add-data', 'data-toggle' => 'modal', 'data-target' => '#add-data-modal' do
           %i.icon-circled-plus
           Add Data
         = link_to download_selector_path(@selector), class: 'btn primary' do
           %i.icon-download
           Download
+
+#add-data-modal(style="display: none;")
+  
+
+#add-data-spinner.modal-dialog
+  .modal-content
+    .modal-body
+      %em Loading Datasets
+
+:javascript
+  var spinner = $('#add-data-spinner').detach();
+
+  $('#add-data-modal').on('hidden.bs.modal', function() {
+    $(this).removeData();
+    $('#add-data-modal').empty();
+  });
+
+  $('#add-data-modal').on('show.bs.modal', function() {
+    $('#add-data-modal').append(spinner);
+    console.log('show');
+  });
+
+  $('#add-data-modal').on('pmd.modal.loaded', function() {
+    spinner.remove();
+    console.log('shown');
+  });

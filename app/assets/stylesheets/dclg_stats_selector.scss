@@ -1,4 +1,8 @@
 @charset "UTF-8";
 
-@import "dclg_stats_selector/vars/colors";
+@import "dclg_stats_selector/bootstrap/colors";
+@import "dclg_stats_selector/bootstrap/variables";
+@import "dclg_stats_selector/bootstrap/mixins";
+@import "dclg_stats_selector/bootstrap/forms";
+@import "dclg_stats_selector/modals";
 @import "dclg_stats_selector/main";

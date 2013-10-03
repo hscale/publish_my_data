@@ -1,3 +1,8 @@
+legend {
+  border-bottom: none;
+  width: auto;
+}
+
 section#stats-selector {
   h4 {
     font-weight: 600;
@@ -43,7 +48,7 @@ section#stats-selector {
 
 input#csv_upload {
   border: none;
-  margin-bottom: 1em;
+  margin-bottom: 10px;
 }
 
 a.btn-cancel {
@@ -96,6 +101,7 @@ section#preview {
       border-bottom: none !important;
       vertical-align: middle;
       text-align: center;
+      width: auto;
 
       p {
         display: inline-block;
@@ -107,4 +113,173 @@ section#preview {
   .foot {
     padding: 0 6px;
   }
+}
+
+div#add-data-spinner {
+  width: 240px;
+
+  .modal-body {
+    text-align: center;
+  }
+}
+
+div#add-data-modal {
+  @extend .modal;
+
+  a.close {
+    float: right;
+    position: relative;
+    top: -5px;
+    font-weight: 700;
+    font-size: 20px;
+    color: $lightGrey;
+
+    &:hover {
+      color: $grey;
+    }
+  }
+}
+
+div#new-fragment {
+  .step-two {
+    h1 {
+      margin-bottom: 0;
+    }
+
+    h2, h3 {
+      margin-bottom: 5px;
+    }
+
+    header h3 {
+      margin-bottom: 0;
+    }
+  }
+
+  .spinner {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    left: 3px;
+  }
+
+  form {
+    margin-bottom: 0;
+
+    .form-control {
+      margin-bottom: 10px;
+    }
+    .submit input {
+      margin-bottom: 0;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    hr {
+      margin: 10px 0;
+    }
+  }
+}
+
+div#filter-lists {
+  div.dimension {
+    em {
+      display: block;
+      padding: 3px 0;
+      font-weight: 600;
+    }
+
+    ul {
+      @include clearfix();
+      margin: 0;
+
+      & > li {
+        float: left;
+        margin: 0 3px 3px 0;
+        padding: 3px 5px;
+        border-radius: 3px;
+        
+        &.dimension-label {
+          background-color: inherit !important;
+          padding: 3px 0;
+        }
+
+        a {
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+ul#dimensions > li {
+  & > ul {
+    @include clearfix();
+    margin: 0;
+
+    li {
+      float: left;
+      margin: 0 3px 3px 0;
+      padding: 0;
+
+      a {
+        display: block;
+        border-radius: 3px;
+        padding: 3px 5px;
+      }
+    }
+  }
+}
+
+ul#dimensions > li:nth-child(4n+1) li a, div#filter-lists div.dimension:nth-child(4n+1) li {
+  background-color: lighten($first-tag-color, 30%);
+  color: darken($first-tag-color, 10%);
+
+  &:hover {
+    background-color: lighten($first-tag-color, 20%);
+  }
+}
+
+ul#dimensions > li:nth-child(4n+2) li a, div#filter-lists div.dimension:nth-child(4n+2) li {
+  background-color: lighten($second-tag-color, 30%);
+  color: darken($second-tag-color, 10%);
+
+  &:hover {
+    background-color: lighten($second-tag-color, 20%);
+  }
+}
+
+ul#dimensions > li:nth-child(4n+3) li a, div#filter-lists div.dimension:nth-child(4n+3) li {
+  background-color: lighten($third-tag-color, 30%);
+  color: darken($third-tag-color, 20%);
+
+  &:hover {
+    background-color: lighten($third-tag-color, 20%);
+  }
+}
+
+ul#dimensions > li:nth-child(4n) li a, div#filter-lists div.dimension:nth-child(4n) li {
+  background-color: lighten($fourth-tag-color, 30%);
+  color: darken($fourth-tag-color, 10%);
+
+  &:hover {
+    background-color: lighten($fourth-tag-color, 20%);
+  }
+}
+
+div#filter-lists div.dimension:nth-child(4n+1) em.all-values {
+  color: darken($first-tag-color, 10%);
+}
+
+div#filter-lists div.dimension:nth-child(4n+2) em.all-values {
+  color: darken($second-tag-color, 10%);
+}
+
+div#filter-lists div.dimension:nth-child(4n+3) em.all-values {
+  color: darken($third-tag-color, 20%);
+}
+
+div#filter-lists div.dimension:nth-child(4n) em.all-values {
+  color: darken($fourth-tag-color, 10%);
 }

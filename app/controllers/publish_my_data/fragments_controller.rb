@@ -7,6 +7,11 @@ module PublishMyData
 
     def datasets
       @datasets = Dataset.geographical_data_cubes(@selector.geography_type)
+      
+      respond_to do |format|
+        format.html { render layout: false }
+        format.js
+      end
     end
 
     def new
@@ -44,7 +49,7 @@ module PublishMyData
       dimension_params.keys.map do |uri|
         {
           dimension_uri: uri,
-          dimension_values: dimension_params[uri].keys
+          dimension_values: dimension_params[uri].split(', ')
         }
       end
     end
