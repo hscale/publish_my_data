@@ -32,12 +32,7 @@ RSpec.configure do |config|
   config.before(:each) do
     # delete from all graphs.
     begin
-      Tripod::SparqlClient::Update.update('
-        # delete from default graph:
-        DELETE {?s ?p ?o} WHERE {?s ?p ?o};
-        # delete from named graphs:
-        DELETE {graph ?g {?s ?p ?o}} WHERE {graph ?g {?s ?p ?o}};
-      ')
+      Tripod::SparqlClient::Update.update("DROP ALL")
     rescue RestClient::ResourceNotFound
       puts red("Could not delete empty the database, have you specified the right endpoint?")
       puts cyan("Set the PMD_SPARQL_QUERY_* environment variables according to your Fuseki installation.")
