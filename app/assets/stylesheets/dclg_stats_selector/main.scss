@@ -3,6 +3,10 @@ legend {
   width: auto;
 }
 
+code {
+  display: block;
+}
+
 section#stats-selector {
   h4 {
     font-weight: 600;
@@ -101,7 +105,7 @@ section#preview {
       border-bottom: none !important;
       vertical-align: middle;
       text-align: center;
-      width: auto;
+      width: 100%;
 
       p {
         display: inline-block;

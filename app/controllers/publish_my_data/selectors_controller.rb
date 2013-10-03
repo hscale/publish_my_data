@@ -67,10 +67,12 @@ module PublishMyData
 
     def invalid_upload
       flash.now[:error] = 'The uploaded file did not contain valid CSV data, please check and try again.'
+      render :new
     end
 
     def mixed_gss_codes
       flash.now[:error] = 'The uploaded file should contain GSS codes at either LSOA or Local Authority level.'
+      render :new
     end
   end
 end
