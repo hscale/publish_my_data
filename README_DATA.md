@@ -48,6 +48,8 @@ Data Cubes are multi-dimensional datasets defined in the http://purl.org/linked-
 
 Each Observation (ie each uniquely identified value when area, period and ethnicity are all specified), has a http://purl.org/linked-data/cube#dataSet property that points back to the PublishMyData Dataset.
 
+Note that in RDF terms, the type and predicate for a dataset are different. So you say `<uri:my-dataset> a <http://purl.org/linked-data/cube#DataSet>`, but `<uri:my-observation> <http://purl.org/linked-data/cube#dataSet> <uri:my-dataset>` to link an observation to that dataset.
+
 ## Geographic Data Cubes
 
 This applies to Open Data Communities. A Geographic Data Cube is a Data Cube where one of the Dimensions is geographic. This is currently defined by the presensce of an observation with a geographic Dimension Property, rather than at the metadata level itself, so you can find them with the following (slow) query:
