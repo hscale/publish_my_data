@@ -50,6 +50,40 @@ Each Observation (ie each uniquely identified value when area, period and ethnic
 
 Note that in RDF terms, the type and predicate for a dataset are different. So you say `<uri:my-dataset> a <http://purl.org/linked-data/cube#DataSet>`, but `<uri:my-observation> <http://purl.org/linked-data/cube#dataSet> <uri:my-dataset>` to link an observation to that dataset.
 
+Because the data currently should be uniform in each dataset (ie only one type of observation in each), and also use a purl.org cube (as opposed to the RDF Data Cube ontology) you can get a list of every predicate used with the following query:
+
+```sparql
+PREFIX qb: <http://purl.org/linked-data/cube#>
+
+SELECT DISTINCT ?p
+WHERE {
+  {
+    SELECT DISTINCT ?g
+    WHERE {
+      GRAPH ?g { ?something a qb:Observation . }
+    }
+  }
+  GRAPH ?g {
+    {
+      SELECT DISTINCT ?p
+      WHERE {
+        {
+          SELECT ?obs
+          WHERE {
+            ?obs a qb:Observation
+          }
+          LIMIT 1
+        }
+        ?obs ?p ?o
+      }
+    }
+  }
+}
+ORDER BY ?p
+```
+
+(Writing an efficient query without this assumption is harder as it's easy to end up pulling back every triple in the db - it's probably possible, but I didn't find an obvious way how - Ash)
+
 ## Geographic Data Cubes
 
 This applies to Open Data Communities. A Geographic Data Cube is a Data Cube where one of the Dimensions is geographic. This is currently defined by the presensce of an observation with a geographic Dimension Property, rather than at the metadata level itself, so you can find them with the following (slow) query:
