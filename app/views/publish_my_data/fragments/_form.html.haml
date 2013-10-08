@@ -29,23 +29,24 @@
 
     %hr
 
-    %h2 Filter by &hellip;
-    %ul#dimensions
-      - @dimensions.each do |dimension|
-        %li.dimension
-          = hidden_field_tag "dataset_dimensions[#{dimension.uri}]", ''
-          %h3
-            = dimension.label
-          %ul
-            - dimension.values.each do |dimension_value|
-              %li{'id' => dom_id_for_dimension_value(dimension_value)}
-                = link_to dimension_value[:label], '#', 'data-uri' =>  dimension_value[:uri], 'class' => 'dimension-value'
+    #filter-options
+      %h2 Filter by &hellip;
+      %ul#dimensions
+        - @dimensions.each do |dimension|
+          %li.dimension
+            = hidden_field_tag "dataset_dimensions[#{dimension.uri}]", ''
+            %h3
+              = dimension.label
+            %ul
+              - dimension.values.each do |dimension_value|
+                %li{'id' => dom_id_for_dimension_value(dimension_value)}
+                  = link_to dimension_value[:label], '#', 'data-uri' =>  dimension_value[:uri], 'class' => 'dimension-value'
 
-    .submit.primary
-      = submit_tag "Add #{column_count(@dimensions)} columns of data", id: 'submit-fragment'
-      = link_to 'Pick a different data set', datasets_selector_fragments_path(@selector), id: 'pick-again', class: 'btn btn-cancel', remote: true
-      .spinner(style="display: none;")
-        = image_tag 'publish_my_data/dclg_stats_selector/spinner.gif'
+      .submit.primary
+        = submit_tag "Add #{column_count(@dimensions)} columns of data", id: 'submit-fragment'
+        = link_to 'Pick a different data set', datasets_selector_fragments_path(@selector), id: 'pick-again', class: 'btn btn-cancel', remote: true
+        .spinner(style="display: none;")
+          = image_tag 'publish_my_data/dclg_stats_selector/spinner.gif'
 
 :javascript
   var addValueWithAnchor = function(anchor) {

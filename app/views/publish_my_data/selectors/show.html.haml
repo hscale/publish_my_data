@@ -3,7 +3,7 @@
     %li= link_to 'Home', '/'
     %li= link_to 'Statistics Selector', '#'
 
-- page_title "Statistics Selector: Add column data"
+-# page_title "Statistics Selector: Add column data"
 
 
 %section#stats-selector.step-three
@@ -45,7 +45,9 @@
 #add-data-spinner.modal-dialog
   .modal-content
     .modal-body
-      %em Loading Datasets
+      %p
+        %em Loading Datasets
+      = image_tag 'publish_my_data/dclg_stats_selector/spinner.gif'
 
 :javascript
   var spinner = $('#add-data-spinner').detach();

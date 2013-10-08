@@ -1,208 +1,149 @@
+# UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+
 require 'spec_helper'
 
-module PublishMyData
-  describe "Preparing a Stats Selector document", type: :feature, js: true do
-    let(:geography_type) { 'http://statistics.data.gov.uk/def/statistical-geography' }
-    let(:peterborough_uri) { 'http://statistics.data.gov.uk/id/statistical-geography/E06000031' }
-    let(:peterborough) { Resource.new(peterborough_uri, "http://example.com/geography") }
+include PublishMyData
 
-    before(:each) do
-      peterborough.rdf_type = geography_type
-      peterborough.save!
+feature "Preparing a Stats Selector document" do
+  let(:selector) { Statistics::Selector.create(
+    id: '12345678-abcd-efab-1234-5678abcdefab',
+    geography_type: 'http://statistics.data.gov.uk/def/statistical-geography',
+    row_uris: ['http://statistics.data.gov.uk/id/statistical-geography/E07000008', 'http://statistics.data.gov.uk/id/statistical-geography/E07000036']
+  ) }
+  let(:dataset)  { FactoryGirl.create(:dataset) }
+
+  describe "Previewing data for a selector" do
+    background do
+      GeographyTasks.create_some_gss_resources
     end
 
-    describe "making a new selector" do
-      UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+    scenario 'Visitor uploads a file containing a mix of GSS codes and other text' do
+      visit '/selectors/new'
+      attach_file 'csv_upload', File.expand_path('spec/support/gss_etc.csv')
+      click_on 'Upload'
 
-      xspecify "visiting the new selector path currently creates a selector for you" do
-        visit "/selectors/new"
-
-        expect(page.current_path).to match(%r{^/selectors/(.*)})
-        expect(
-          %r{^/selectors/(.*)}.match(page.current_path)[1]
-        ).to match(UUID_REGEX)
-      end
+      page.should have_content 'Step 2 of 3: Review the data'
+      page.should have_content '2 GSS codes imported'
+      page.should have_content '3 rows not imported'
+      find('#non-imported-data').should have_content 'Ham'
+      find('#non-imported-data').should have_content 'Beans'
+      find('#non-imported-data').should have_content 'Eggs'
     end
 
-    describe "adding a dataset" do
-      let(:dataset_a) { FactoryGirl.create(:dataset, title: "Dataset A", slug: "dataset-a") }
-      let(:dataset_b) { FactoryGirl.create(:dataset, title: "Dataset B", slug: "dataset-b") }
+    scenario 'Visitor uploads an animal gif' do
+      visit '/selectors/new'
+      attach_file 'csv_upload', File.expand_path('spec/support/dog.gif')
+      click_on 'Upload'
 
-      let(:observation_a_1) {
-        Resource.new('http://example.com/observation-a-1', dataset_a.data_graph_uri)
-      }
-
-      let(:observation_b_1) {
-        Resource.new('http://example.com/observation-b-1', dataset_b.data_graph_uri)
-      }
-
-      before(:each) do
-        observation_a_1.write_predicate(RDF::CUBE.dataSet, RDF::URI.new(dataset_a.uri))
-        observation_a_1.write_predicate(
-          RDF::URI.new('http://opendatacommunities.org/def/ontology/geography/refArea'),
-          RDF::URI.new(peterborough_uri)
-        )
-        observation_a_1.save!
-
-        observation_b_1.write_predicate(RDF::CUBE.dataSet, RDF::URI.new(dataset_b.uri))
-        observation_b_1.write_predicate(
-          RDF::URI.new('http://opendatacommunities.org/def/ontology/geography/refArea'),
-          RDF::URI.new(peterborough_uri)
-        )
-        observation_b_1.save!
-      end
-
-      before(:each) do
-        visit "/selectors/new"
-        click_link "Add Data"
-      end
-
-      xit "lists the datasets" do
-        expect(page).to have_select("Dataset", options: ["Dataset A", "Dataset B"])
-      end
+      page.should have_content 'Step 1 of 3: Upload GSS Codes'
+      page.should have_content 'The uploaded file did not contain valid CSV data'
     end
 
-    describe "selecting dimension property values" do
-      let!(:dataset) {
-        FactoryGirl.create(:dataset,
-          title: "Homelessness Acceptances, District By Ethnicity",
-          slug: "homelessness-acceptances"
-        )
-      }
+    scenario 'Visitor uploads a file containing GSS codes at both LA and LSOA level' do
+      visit '/selectors/new'
+      attach_file 'csv_upload', File.expand_path('spec/support/gss_mixed.csv')
+      click_on 'Upload'
 
-      let(:area_1) { peterborough_uri }
+      page.should have_content 'Step 1 of 3: Upload GSS Codes'
+      page.should have_content 'The uploaded file should contain GSS codes at either LSOA or Local Authority level.'
+    end
+  end
 
-      def create_dimension_property_resource(attributes)
-        Resource.new(attributes.fetch(:uri), 'http://example.com/vocabs').tap do |resource|
-          resource.rdf_type = 'http://purl.org/linked-data/cube#DimensionProperty'
-          resource.label = attributes.fetch(:label)
-          resource.save!
-        end
-      end
+  describe 'Creating a new Selector' do
+    background do
+      GeographyTasks.create_some_gss_resources
 
-      # Dimension properties
-      # The Reference Area dimension property is excluded from the fragment builder
-      # because it's always used for row values
-      let!(:ref_area_resource) {
-        create_dimension_property_resource(
-          label:  "Reference Area",
-          uri:    'http://opendatacommunities.org/def/ontology/geography/refArea'
-        )
-      }
-      let!(:ref_period_resource) {
-        create_dimension_property_resource(
-          label:  "Reference period",
-          uri:    'http://opendatacommunities.org/def/ontology/time/refPeriod'
-        )
-      }
-      let!(:ethnicity_resource) {
-        create_dimension_property_resource(
-          label:  "Ethnicity",
-          uri:    'http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity'
-        )
-      }
+      visit '/selectors/new'
+      attach_file 'csv_upload', File.expand_path('spec/support/gss_etc.csv')
+      click_on 'Upload'
+    end
 
-      let(:ref_period_1) { 'http://reference.data.gov.uk/id/quarter/2013-Q1' }
-      let(:ref_period_2) { 'http://reference.data.gov.uk/id/quarter/2013-Q2' }
+    scenario 'Accepting the preview and creating a selector' do
+      click_on 'Proceed to next step'
 
-      let(:ethnicity_1) { 'http://opendatacommunities.org/def/concept/general-concepts/ethnicity/white' }
-      let(:ethnicity_2) { 'http://opendatacommunities.org/def/concept/general-concepts/ethnicity/mixed' }
+      page.should have_content 'Step 3 of 3: Add column data'
+      page.should have_content 'E07000008 Cambridge'
+      page.should have_content 'E07000036 Erewash'
+    end
+  end
 
-      before(:each) do
-        label_dimension_values(
-          ref_period_1: "2013-Q1",
-          ref_period_2: "2013-Q2",
-          ethnicity_1:  "White",
-          ethnicity_2:  "Mixed"
-        )
-      end
+  describe 'Selecting a dataset', js: true do
+    background do
+      GeographyTasks.create_some_gss_resources
+      GeographyTasks.create_relevant_vocabularies
+      GeographyTasks.populate_dataset_with_geographical_observations(dataset)
+    end
 
-      def label_dimension_values(dimension_labels)
-        dimension_labels.each do |dimension_property_name, label|
-          Resource.new(send(dimension_property_name), 'http://example.com/vocabs').tap do |value|
-            value.label = label
-            value.save!
-          end
-        end
-      end
+    scenario 'Visitor selects a dataset from which to create a fragment' do
+      visit "/selectors/#{selector.id}"
+      click_on 'Add Data'
 
-      let(:measure_property) { 'http://opendatacommunities.org/def/ontology/homelessness/homelessnessAcceptancesObs' }
+      page.should have_content 'Step 1 of 2: Select a Dataset'
 
-      let(:observation_data) {
-        {
-          area_1: {
-            ref_period_1: { ethnicity_1: 10, ethnicity_2: 20 },
-            ref_period_2: { ethnicity_1: 30, ethnicity_2: 40 }
-          }
-        }
-      }
+      select dataset.title, from: 'dataset_uri'
+      click_on 'Select Dataset'
 
-      let!(:observations) { turn_observation_data_into_resources }
+      page.should have_content 'Step 2 of 2: Filter data'
+      page.should have_content dataset.title
+    end
+  end
 
-      def turn_observation_data_into_resources
-        observation_data.each do |area_name, time_series_data|
-          time_series_data.each do |ref_period_name, ethnicity_data|
-            ethnicity_data.each do |ethnicity_name, measure|
-              observation = Resource.new(
-                "http://example.com/observation-#{area_name}-#{ref_period_name}-#{ethnicity_name}",
-                dataset.data_graph_uri
-              )
+  describe 'Selecting some dimension filters for a dataset', js: true do
+    background do
+      GeographyTasks.create_some_gss_resources
+      GeographyTasks.create_relevant_vocabularies
+      GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
-              observation.write_predicate(RDF::CUBE.dataSet, RDF::URI.new(dataset.uri))
+      visit "/selectors/#{selector.id}"
+      click_on 'Add Data'
+      select dataset.title, from: 'dataset_uri'
+      click_on 'Select Dataset'
+    end
 
-              # The Dimension Properties
-              observation.write_predicate(
-                RDF::URI.new('http://opendatacommunities.org/def/ontology/geography/refArea'),
-                RDF::URI.new(send(area_name))
-              )
-              observation.write_predicate(
-                RDF::URI.new('http://opendatacommunities.org/def/ontology/time/refPeriod'),
-                RDF::URI.new(send(ref_period_name))
-              )
-              observation.write_predicate(
-                RDF::URI.new('http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity'),
-                RDF::URI.new(send(ethnicity_name))
-              )
+    scenario 'Visitor selects a dimension filter, leaving another open' do
+      click_on '2013 Q1'
 
-              # The Measure Property
-              observation.write_predicate(
-                RDF::URI.new('http://opendatacommunities.org/def/ontology/homelessness/homelessnessAcceptancesObs'),
-                measure
-              )
+      page.should have_content 'Filtered by'
+      page.should have_content 'All Ethnicities'
+      # filter should have moved from the list of options to the list of applied filters
+      find('#filters').should have_content '2013 Q1'
+      find('#filter-options').should_not have_content '2013 Q1'
+    end
 
-              observation.save!
-            end
-          end
-        end
-      end
+    scenario 'Visitor selects a dimension filter, then unselects it' do
+      click_on '2013 Q1'
+      find('#filters').should have_content '2013 Q1'
+      find('#filter-options').should_not have_content '2013 Q1'
 
-      before(:each) do
-        visit "/selectors/new"
-        click_link "Add Data"
-        select "Homelessness Acceptances, District By Ethnicity", from: "Dataset"
-        click_button "choose"
-      end
+      find('#filters').click_link '×'
+      page.should have_content 'All possible combinations of dataset dimension are currently chosen'
+      page.should_not have_css('#filters')
+      find('#filter-options').should have_content '2013 Q1'
+    end
+  end
 
-      xit "lists the datasets" do
-        expect(page).to have_content("Ethnicity")
-        expect(page).to have_checked_field("Mixed")
-        expect(page).to have_checked_field("White")
+  describe 'Creating a fragment', js: true do
+    background do
+      GeographyTasks.create_some_gss_resources
+      GeographyTasks.create_relevant_vocabularies
+      GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
-        expect(page).to have_content("Reference period")
-        expect(page).to have_checked_field("2013-Q1")
-        expect(page).to have_checked_field("2013-Q2")
+      visit "/selectors/#{selector.id}"
+      click_on 'Add Data'
+      select dataset.title, from: 'dataset_uri'
+      click_on 'Select Dataset'
+      click_on '2013 Q1'
+      click_on 'Mixed'
+    end
 
-        expect(page).to have_button("Go")
-      end
+    scenario 'Visitor completes the fragment creation process' do
+      click_on 'Add 1 column of data'
 
-      it "adds the values to the selector" do
-        click_button "Go"
-
-        expect(page).to have_content("10")
-        expect(page).to have_content("20")
-        expect(page).to have_content("30")
-        expect(page).to have_content("40")
-      end
+      page.should have_content 'Step 3 of 3: Add column data'
+      page.should have_content '2013 Q1'
+      page.should have_content 'Mixed'
+      # page.should have_content '234'
+      # page.should have_content '2345'
     end
   end
 end

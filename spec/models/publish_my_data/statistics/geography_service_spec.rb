@@ -7,30 +7,7 @@ module PublishMyData
         subject(:service) { GeographyService.new }
 
         before(:each) do
-          Tripod::SparqlClient::Update.update(<<-TTL
-            PREFIX sg: <http://statistics.data.gov.uk/id/statistical-geography/>
-            PREFIX odclsoa: <http://opendatacommunities.org/id/geography/lsoa/>
-            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-            PREFIX admingeo: <http://data.ordnancesurvey.co.uk/ontology/admingeo/>
-
-            INSERT DATA {
-              GRAPH <http://pmdtest.dev/graph/geodata> {
-                # LA E07000008
-                sg:E07000008 skos:notation "E07000008" .
-                sg:E07000008 a <http://statistics.data.gov.uk/def/statistical-geography> .
-                sg:E07000008 admingeo:gssCode "E07000008" .
-                # LA E07000036
-                sg:E07000036 skos:notation "E07000036" .
-                sg:E07000036 a <http://statistics.data.gov.uk/def/statistical-geography> .
-                sg:E07000036 admingeo:gssCode "E07000036" .
-                # LSOA E01018171
-                odclsoa:E01018171 skos:notation "E01018171" .
-                odclsoa:E01018171 a <http://opendatacommunities.org/def/geography#LSOA> .
-                odclsoa:E01018171 admingeo:gssCode "E01018171" .
-              }
-            }
-          TTL
-          )
+          GeographyTasks.create_some_gss_resources
         end
 
         context "a mix of GSS codes and non-GSS codes" do

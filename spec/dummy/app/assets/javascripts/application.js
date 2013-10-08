@@ -12,4 +12,5 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require dclg_stats_selector
 //= require_tree .
