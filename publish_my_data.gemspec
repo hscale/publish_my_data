@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency "kaminari"
   s.add_dependency "rdiscount"
   s.add_dependency "haml"
+  s.add_dependency "sparql-client"
   # This is a temporary dependency while we develop the Stats Selector inside PMD:
   s.add_dependency "jquery-rails"
 end
