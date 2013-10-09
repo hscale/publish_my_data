@@ -132,18 +132,38 @@ feature "Preparing a Stats Selector document" do
       click_on 'Add Data'
       select dataset.title, from: 'dataset_uri'
       click_on 'Select Dataset'
-      click_on '2013 Q1'
-      click_on 'Mixed'
     end
 
-    scenario 'Visitor completes the fragment creation process' do
-      click_on 'Add 1 column of data'
+    context '... filtering on all dimensions' do
+      background do
+        click_on '2013 Q1'
+        click_on 'Mixed'
+      end
 
-      page.should have_content 'Step 3 of 3: Add column data'
-      page.should have_content '2013 Q1'
-      page.should have_content 'Mixed'
-      # page.should have_content '234'
-      # page.should have_content '2345'
+      scenario 'Visitor completes the fragment creation process' do
+        click_on 'Add 1 column of data'
+
+        page.should have_content 'Step 3 of 3: Add column data'
+        page.should have_content '2013 Q1'
+        page.should have_content 'Mixed'
+        # page.should have_content '234'
+        # page.should have_content '2345'
+      end
+    end
+
+    context '... filtering on a single dimensions' do
+      background do
+        click_on '2013 Q1'
+      end
+
+      scenario 'Visitor completes the fragment creation process' do
+        click_on 'Add 3 columns of data'
+
+        page.should have_content 'Step 3 of 3: Add column data'
+        page.should have_content 'White'
+        page.should have_content 'Mixed'
+        page.should have_content 'Black' # all values for unfiltered dimension are present
+      end
     end
   end
 

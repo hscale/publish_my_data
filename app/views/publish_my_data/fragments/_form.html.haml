@@ -35,6 +35,7 @@
         - @dimensions.each do |dimension|
           %li.dimension
             = hidden_field_tag "dataset_dimensions[#{dimension.uri}]", ''
+            = hidden_field_tag "all_dataset_dimensions[#{dimension.uri}]", dimension.values.map{|v| v[:uri]}.join(', ')
             %h3
               = dimension.label
             %ul

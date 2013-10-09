@@ -55,10 +55,19 @@ module PublishMyData
 
     def dimensions_from_params(dimension_params)
       dimension_params.keys.map do |uri|
+        dimension_values = dimension_params[uri].split(', ')
         {
           dimension_uri: uri,
-          dimension_values: dimension_params[uri].split(', ')
+          dimension_values: dimension_values.present? ? dimension_values : all_dimensions[uri]
         }
+      end
+    end
+
+    def all_dimensions
+      all_dimensions = params[:all_dataset_dimensions]
+      all_dimensions.keys.inject({}) do |dimensions_map, dimension_uri|
+        dimensions_map[dimension_uri] = all_dimensions[dimension_uri].split(', ')
+        dimensions_map
       end
     end
   end
