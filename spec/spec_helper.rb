@@ -28,6 +28,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
 
   config.include(Term::ANSIColor)
+  config.include(RDFHelpers)
 
   config.before(:each) do
     # delete from all graphs.
@@ -43,7 +44,6 @@ RSpec.configure do |config|
   config.before(:each, :type => :controller) do
     @request.host = 'pmdtest.dev'
   end
-
 end
 
 require 'capybara/poltergeist'
