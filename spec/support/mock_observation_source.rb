@@ -13,7 +13,6 @@ module PublishMyData
       def observation_value(description)
         dataset_uri           = description.fetch(:dataset_uri)
         measure_property_uri  = description.fetch(:measure_property_uri)
-        row_type_uri          = description.fetch(:row_type_uri)
         row_uri               = description.fetch(:row_uri)
         cell_coordinates      = description.fetch(:cell_coordinates)
 
@@ -22,7 +21,6 @@ module PublishMyData
 
         row_data = @observation_data.
           fetch(dataset_uri).
-          fetch(row_type_uri).
           fetch(row_uri)
 
         cell_coordinates.inject(row_data) { |remaining_data, (dimension, dimension_value)|

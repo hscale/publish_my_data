@@ -7,7 +7,7 @@ module PublishMyData
 
     def datasets
       @datasets = Dataset.geographical_data_cubes(@selector.geography_type)
-      
+
       respond_to do |format|
         format.html { render layout: false }
         format.js
@@ -32,11 +32,10 @@ module PublishMyData
       # so we currently just pick the first available. This sort of
       # policy shouldn't live in a controller, but we'd need to
       # restructure the code a lot to give it a proper home.
-      observation_source = Statistics::ObservationSource.new(dataset_uri: @dataset_uri)
-      measure_property_uri = observation_source.measure_property_uris.first
+      measure_property_uri = Statistics::ObservationSource.measure_property_uri(@dataset.uri)
 
       @selector.build_fragment(
-        dataset_uri:          @dataset.uri,
+        dataset_uri:          @dataset.uri.to_s,
         measure_property_uri: measure_property_uri,
         dimensions:           dimensions
       )

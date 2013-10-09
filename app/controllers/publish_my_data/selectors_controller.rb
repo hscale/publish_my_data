@@ -48,10 +48,10 @@ module PublishMyData
     end
 
     def show
-      @observation_source =
-        Statistics::ObservationSource.new({})
-
       @selector       = Statistics::Selector.find(params[:id])
+
+      @observation_source = Statistics::ObservationSource.new(dimensions: { })
+
       @header_rows    = @selector.header_rows
       @table_rows     = @selector.table_rows(@observation_source)
       @selector_empty = @selector.fragments.empty?

@@ -4,7 +4,13 @@ module PublishMyData
   module Statistics
     describe ObservationSource do
       subject(:source) {
-        ObservationSource.new(dataset_uri: 'uri:pmd/dataset/1')
+        ObservationSource.new(
+          dimensions: {
+            'http://opendatacommunities.org/def/ontology/geography/refArea' => ['uri:row/1', 'uri:row/2'],
+            'uri:dim/1' => ['uri:dim/1/val/1', 'uri:dim/1/val/2'],
+            'uri:dim/2' => ['uri:dim/2/val/1', 'uri:dim/2/val/2']
+          }
+        )
       }
 
       def insert_statements_into_graph(data, graph_uri)
@@ -17,34 +23,31 @@ module PublishMyData
         )
       end
 
-      describe "#measure_property_uris" do
+      describe ".measure_property_uri" do
         let(:data) {
           [
-            [uri('uri:obs/1'),              RDF::CUBE.dataset,              uri('uri:pmd/dataset/1')],
+            [uri('uri:obs/1'),              RDF::CUBE.dataSet,              uri('uri:pmd/dataset/1')],
             [uri('uri:pmd/dataset/1'),      RDF::PMD_DS.graph,              uri('uri:pmd/graph/1')],
             [uri('uri:measure-property/a'), a,                              uri('http://purl.org/linked-data/cube#MeasureProperty')],
             [uri('uri:measure-property/b'), a,                              uri('http://purl.org/linked-data/cube#MeasureProperty')],
 
             [uri('uri:obs/1'),              a,                              uri('http://purl.org/linked-data/cube#Observation')],
             [uri('uri:obs/1'),              uri('uri:measure-property/a'),  "measure value a1"],
-            [uri('uri:obs/1'),              uri('uri:measure-property/b'),  "measure value b1"],
             # Another observation which re-uses the measure properties (forces DISTINCT)
             [uri('uri:obs/2'),              a,                              uri('http://purl.org/linked-data/cube#Observation')],
             [uri('uri:obs/2'),              uri('uri:measure-property/a'),  "measure value a2"],
-            [uri('uri:obs/2'),              uri('uri:measure-property/b'),  "measure value b2"]
           ]
         }
 
         let(:other_data) {
           [
-            [uri('uri:obs/other1'),         RDF::CUBE.dataset,              uri('uri:pmd/dataset/other')],
+            [uri('uri:obs/other1'),         RDF::CUBE.dataSet,              uri('uri:pmd/dataset/other')],
             [uri('uri:pmd/dataset/other'),  RDF::PMD_DS.graph,              uri('uri:pmd/graph/2')],
             [uri('uri:measure-property/c'), a,                              uri('http://purl.org/linked-data/cube#MeasureProperty')],
             [uri('uri:measure-property/d'), a,                              uri('http://purl.org/linked-data/cube#MeasureProperty')],
 
             [uri('uri:obs/other1'),         a,                              uri('http://purl.org/linked-data/cube#Observation')],
             [uri('uri:obs/other1'),         uri('uri:measure-property/c'),  "measure value c1"],
-            [uri('uri:obs/other1'),         uri('uri:measure-property/d'),  "measure value d1"],
           ]
         }
 
@@ -53,15 +56,22 @@ module PublishMyData
           insert_statements_into_graph(other_data,  'uri:pmd/graph/2')
         end
 
-        it "returns all URIs"do
-          pending "we need to use this on a per-dataset basis to construct fragments"
-          expect(source.measure_property_uris.sort).to be == %w[
-            uri:measure-property/a uri:measure-property/b
-          ]
+        example do
+          expect(
+            ObservationSource.measure_property_uri('uri:pmd/dataset/1')
+          ).to be == 'uri:measure-property/a'
+        end
+
+        example do
+          expect(
+            ObservationSource.measure_property_uri('uri:pmd/dataset/other')
+          ).to be == 'uri:measure-property/c'
         end
       end
 
       describe "#observation_value" do
+        let(:ref_area) { uri('http://opendatacommunities.org/def/ontology/geography/refArea') }
+
         before(:each) do
           insert_statements_into_graph(data, 'uri:pmd/graph/1')
         end
@@ -69,21 +79,32 @@ module PublishMyData
         context "looking in the right dataset" do
           let(:data) {
             [
-              # Observation 1
-              [uri('uri:obs/1'), a,                              RDF::CUBE.Observation],
-              [uri('uri:obs/1'), RDF::CUBE.dataset,              uri('uri:pmd/data/A')],
-              [uri('uri:obs/1'), uri('uri:row-type'),            uri('uri:row/1')],
-              [uri('uri:obs/1'), uri('uri:dim/1'),               uri('uri:dim/1/val/1')],
-              [uri('uri:obs/1'), uri('uri:measure-property/1'),  1],
-              [uri('uri:obs/1'), uri('uri:measure-property/2'),  101],
+              # Observation
+              [uri('uri:obs/1'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/1'), RDF::CUBE.dataSet,             uri('uri:pmd/data/A')],
+              [uri('uri:obs/1'), ref_area,                      uri('uri:row/1')],
+              [uri('uri:obs/1'), uri('uri:dim/1'),              uri('uri:dim/1/val/1')],
+              [uri('uri:obs/1'), uri('uri:dim/2'),              uri('uri:dim/2/val/1')],
+              [uri('uri:obs/1'), uri('uri:measure-property/1'), 1],
+              [uri('uri:obs/1'), uri('uri:measure-property/2'), 101],
 
-              # Observation 2
-              [uri('uri:obs/2'), a,                              RDF::CUBE.Observation],
-              [uri('uri:obs/2'), RDF::CUBE.dataset,              uri('uri:pmd/data/A')],
-              [uri('uri:obs/2'), uri('uri:row-type'),            uri('uri:row/2')],
-              [uri('uri:obs/2'), uri('uri:dim/1'),               uri('uri:dim/1/val/1')],
-              [uri('uri:obs/2'), uri('uri:measure-property/1'),  2],
-              [uri('uri:obs/2'), uri('uri:measure-property/2'),  102],
+              # Observation
+              [uri('uri:obs/1a'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/1a'), RDF::CUBE.dataSet,             uri('uri:pmd/data/A')],
+              [uri('uri:obs/1a'), ref_area,                      uri('uri:row/1')],
+              [uri('uri:obs/1a'), uri('uri:dim/1'),              uri('uri:dim/1/val/2')],
+              [uri('uri:obs/1a'), uri('uri:dim/2'),              uri('uri:dim/2/val/2')],
+              [uri('uri:obs/1a'), uri('uri:measure-property/1'), 2],
+              [uri('uri:obs/1a'), uri('uri:measure-property/2'), 102],
+
+              # Observation
+              [uri('uri:obs/2'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/2'), RDF::CUBE.dataSet,             uri('uri:pmd/data/A')],
+              [uri('uri:obs/2'), ref_area,                      uri('uri:row/2')],
+              [uri('uri:obs/2'), uri('uri:dim/1'),              uri('uri:dim/1/val/1')],
+              [uri('uri:obs/2'), uri('uri:dim/2'),              uri('uri:dim/2/val/1')],
+              [uri('uri:obs/2'), uri('uri:measure-property/1'), 3],
+              [uri('uri:obs/2'), uri('uri:measure-property/2'), 103],
             ]
           }
 
@@ -92,11 +113,27 @@ module PublishMyData
               source.observation_value(
                 dataset_uri:          'uri:pmd/data/A',
                 measure_property_uri: 'uri:measure-property/1',
-                row_type_uri:         'uri:row-type',
                 row_uri:              'uri:row/1',
-                cell_coordinates:     { 'uri:dim/1' => 'uri:dim/1/val/1' }
+                cell_coordinates:     {
+                  'uri:dim/1' => 'uri:dim/1/val/1',
+                  'uri:dim/2' => 'uri:dim/2/val/1'
+                }
               )
             ).to be == 1
+          end
+
+          example do
+            expect(
+              source.observation_value(
+                dataset_uri:          'uri:pmd/data/A',
+                measure_property_uri: 'uri:measure-property/1',
+                row_uri:              'uri:row/1',
+                cell_coordinates:     {
+                  'uri:dim/1' => 'uri:dim/1/val/2',
+                  'uri:dim/2' => 'uri:dim/2/val/2'
+                }
+              )
+            ).to be == 2
           end
         end
 
@@ -106,9 +143,10 @@ module PublishMyData
           let(:data) {
             [
               [uri('uri:obs/x1'), a,                              RDF::CUBE.Observation],
-              [uri('uri:obs/x1'), RDF::CUBE.dataset,              uri('uri:pmd/data/NOT-A')],
-              [uri('uri:obs/x1'), uri('uri:row-type'),            uri('uri:row/1')],
+              [uri('uri:obs/x1'), RDF::CUBE.dataSet,              uri('uri:pmd/data/NOT-A')],
+              [uri('uri:obs/x1'), ref_area,                       uri('uri:row/1')],
               [uri('uri:obs/x1'), uri('uri:dim/1'),               uri('uri:dim/1/val/1')],
+              [uri('uri:obs/x1'), uri('uri:dim/2'),               uri('uri:dim/2/val/1')],
               [uri('uri:obs/x1'), uri('uri:measure-property/1'),  666],
               [uri('uri:obs/x1'), uri('uri:measure-property/2'),  667],
             ]
@@ -119,13 +157,19 @@ module PublishMyData
               source.observation_value(
                 dataset_uri:          'uri:pmd/data/A',
                 measure_property_uri: 'uri:measure-property/1',
-                row_type_uri:         'uri:row-type',
                 row_uri:              'uri:row/1',
-                cell_coordinates:     { 'uri:dim/1' => 'uri:dim/1/val/1' }
+                cell_coordinates:     {
+                  'uri:dim/1' => 'uri:dim/1/val/1',
+                  'uri:dim/2' => 'uri:dim/2/val/1'
+                }
               )
             ).to be_nil
           end
         end
+      end
+
+      it "uses a graph block" do
+        pending
       end
 
       it "limits the rows" do

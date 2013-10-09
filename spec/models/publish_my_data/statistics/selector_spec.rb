@@ -536,7 +536,6 @@ module PublishMyData
             expect(Selector::Row).to have_received(:new).with(
               hash_including(
                 observation_source:   observation_source,
-                row_type_uri:         'uri:statistical-geography',
                 row_uri:              'uri:row_1'
               )
             )
@@ -554,15 +553,13 @@ module PublishMyData
                 measure_property_uris: %w[ uri:measure-property/1 uri:measure-property/2 ],
                 observation_data: {
                   "uri:dataset/1" => {
-                    'uri:statistical-geography' => {
-                      "uri:row_1" => {
-                        "uri:dimension/1" => {
-                          "http://example.com/dimension_value_1a" => 1
-                        },
-                        "uri:dimension/2" => {
-                          "http://example.com/dimension_value_2a" => 2,
-                          "http://example.com/dimension_value_2b" => 3
-                        }
+                    "uri:row_1" => {
+                      "uri:dimension/1" => {
+                        "http://example.com/dimension_value_1a" => 1
+                      },
+                      "uri:dimension/2" => {
+                        "http://example.com/dimension_value_2a" => 2,
+                        "http://example.com/dimension_value_2b" => 3
                       }
                     }
                   }

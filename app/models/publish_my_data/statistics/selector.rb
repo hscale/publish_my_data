@@ -256,7 +256,6 @@ module PublishMyData
       class Row
         def initialize(attributes)
           @observation_source   = attributes.fetch(:observation_source)
-          @row_type_uri         = attributes.fetch(:row_type_uri)
           @row_uri              = attributes.fetch(:row_uri)
           @fragments            = attributes.fetch(:fragments)
           @labeller             = attributes.fetch(:labeller)
@@ -270,7 +269,6 @@ module PublishMyData
           @fragments.inject([]) { |values, fragment|
             values.concat(
               fragment.values_for_row(
-                row_type_uri:         @row_type_uri,
                 row_uri:              @row_uri,
                 observation_source:   @observation_source
               )
@@ -283,7 +281,6 @@ module PublishMyData
         @row_uris.map { |row_uri|
           Row.new(
             observation_source:   observation_source,
-            row_type_uri:         geography_type,
             row_uri:              row_uri,
             fragments:            @fragments,
             labeller:             labeller

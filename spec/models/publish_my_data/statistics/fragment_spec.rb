@@ -63,7 +63,6 @@ module PublishMyData
           specify {
             expect(
               fragment.values_for_row(
-                row_type_uri:         "uri:unused-type",
                 row_uri:              "uri:unused-resource",
                 measure_property_uri: "uri:unused-measure-property",
                 observation_source:   observation_source
@@ -153,10 +152,13 @@ module PublishMyData
             )
           }
 
+          it "handles empty dimension value arrays" do
+            pending
+          end
+
           specify {
             expect(
               fragment.values_for_row(
-                row_type_uri:         "uri:row-type/1",
                 row_uri:              "uri:row/1",
                 measure_property_uri: "uri:measure-property/1",
                 observation_source:   observation_source
@@ -351,7 +353,6 @@ module PublishMyData
           specify {
             expect(
               fragment.values_for_row(
-                row_type_uri:         "uri:row-type/1",
                 row_uri:              "uri:row/1",
                 measure_property_uri: "uri:measure-property/1",
                 observation_source:   observation_source

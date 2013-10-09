@@ -47,7 +47,6 @@ module PublishMyData
             options.fetch(:observation_source).observation_value(
               dataset_uri:          @dataset_uri,
               measure_property_uri: @measure_property_uri,
-              row_type_uri:         options.fetch(:row_type_uri),
               row_uri:              options.fetch(:row_uri),
               cell_coordinates:     cell_coordinates
             )
