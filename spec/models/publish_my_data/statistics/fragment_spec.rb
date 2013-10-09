@@ -5,7 +5,11 @@ module PublishMyData
     describe Fragment do
       context "empty" do
         subject(:fragment) {
-          Fragment.new(dataset_uri: 'http://example.com/dataset', dimensions: [ ])
+          Fragment.new(
+            dataset_uri:          'uri:dataset/1',
+            measure_property_uri: 'uri:measure-property/1',
+            dimensions:           [ ]
+          )
         }
 
         its(:number_of_dimensions) { should be == 0 }
@@ -59,7 +63,10 @@ module PublishMyData
           specify {
             expect(
               fragment.values_for_row(
-                "uri:unused_type", "uri:unused_resource", observation_source
+                row_type_uri:         "uri:unused-type",
+                row_uri:              "uri:unused-resource",
+                measure_property_uri: "uri:unused-measure-property",
+                observation_source:   observation_source
               )
             ).to be == []
           }
@@ -69,7 +76,8 @@ module PublishMyData
       context "with one dimension" do
         subject(:fragment) {
           Fragment.new(
-            dataset_uri: 'http://example.com/dataset',
+            dataset_uri:          'uri:dataset/1',
+            measure_property_uri: 'uri:measure-property/1',
             # An array...
             dimensions: [
               # ... of hashes...
@@ -130,11 +138,14 @@ module PublishMyData
         describe "#values_for_row" do
           let(:observation_source) {
             MockObservationSource.new(
-              "http://example.com/dataset" => {
-                "uri:row_type_1" => {
-                  "uri:row_1" => {
-                    "http://example.com/dimension_1" => {
-                      "1a" => 1, "1b" => 2
+              measure_property_uris: [ "uri:measure-property/1" ],
+              observation_data: {
+                "uri:dataset/1" => {
+                  "uri:row-type/1" => {
+                    "uri:row/1" => {
+                      "http://example.com/dimension_1" => {
+                        "1a" => 1, "1b" => 2
+                      }
                     }
                   }
                 }
@@ -144,7 +155,12 @@ module PublishMyData
 
           specify {
             expect(
-              fragment.values_for_row("uri:row_type_1", "uri:row_1", observation_source)
+              fragment.values_for_row(
+                row_type_uri:         "uri:row-type/1",
+                row_uri:              "uri:row/1",
+                measure_property_uri: "uri:measure-property/1",
+                observation_source:   observation_source
+              )
             ).to be == [1, 2]
           }
         end
@@ -153,7 +169,8 @@ module PublishMyData
       context "three dimensions" do
         subject(:fragment) {
           Fragment.new(
-            dataset_uri: 'http://example.com/dataset',
+            dataset_uri:          'uri:dataset/1',
+            measure_property_uri: 'uri:measure-property/1',
             dimensions: [
               {
                 dimension_uri: "1",
@@ -176,10 +193,6 @@ module PublishMyData
         its(:volume_of_selected_cube) { should be == 24 }
 
         describe "#volume_at_level" do
-          it "needs to mean the same with level 0 as the selector" do
-            pending
-          end
-
           describe "positive indexing" do
             example "level 0" do
               expect(fragment.volume_at_level(0)).to be == 2
@@ -307,22 +320,25 @@ module PublishMyData
           # I probably should have made a simpler 3-dimensional example context for this :-S
           let(:observation_source) {
             MockObservationSource.new(
-              "http://example.com/dataset" => {
-                "uri:row_type_1" => {
-                  "uri:row_1" => {
-                    "1" => {
-                      "1a" => {
-                        "2" => {
-                          "2a" => { "3" => { "3a" => 1, "3b" =>  2, "3c" =>  3, "3d" =>  4 } },
-                          "2b" => { "3" => { "3a" => 5, "3b" =>  6, "3c" =>  7, "3d" =>  8 } },
-                          "2c" => { "3" => { "3a" => 9, "3b" => 10, "3c" => 11, "3d" => 12 } }
-                        }
-                      },
-                      "1b" => {
-                        "2" => {
-                          "2a" => { "3" => { "3a" => 13, "3b" => 14, "3c" => 15, "3d" => 16 } },
-                          "2b" => { "3" => { "3a" => 17, "3b" => 18, "3c" => 19, "3d" => 20 } },
-                          "2c" => { "3" => { "3a" => 21, "3b" => 22, "3c" => 23, "3d" => 24 } }
+              measure_property_uris: ["uri:measure-property/1"],
+              observation_data: {
+                "uri:dataset/1" => {
+                  "uri:row-type/1" => {
+                    "uri:row/1" => {
+                      "1" => {
+                        "1a" => {
+                          "2" => {
+                            "2a" => { "3" => { "3a" => 1, "3b" =>  2, "3c" =>  3, "3d" =>  4 } },
+                            "2b" => { "3" => { "3a" => 5, "3b" =>  6, "3c" =>  7, "3d" =>  8 } },
+                            "2c" => { "3" => { "3a" => 9, "3b" => 10, "3c" => 11, "3d" => 12 } }
+                          }
+                        },
+                        "1b" => {
+                          "2" => {
+                            "2a" => { "3" => { "3a" => 13, "3b" => 14, "3c" => 15, "3d" => 16 } },
+                            "2b" => { "3" => { "3a" => 17, "3b" => 18, "3c" => 19, "3d" => 20 } },
+                            "2c" => { "3" => { "3a" => 21, "3b" => 22, "3c" => 23, "3d" => 24 } }
+                          }
                         }
                       }
                     }
@@ -334,7 +350,12 @@ module PublishMyData
 
           specify {
             expect(
-              fragment.values_for_row("uri:row_type_1", "uri:row_1", observation_source)
+              fragment.values_for_row(
+                row_type_uri:         "uri:row-type/1",
+                row_uri:              "uri:row/1",
+                measure_property_uri: "uri:measure-property/1",
+                observation_source:   observation_source
+              )
             ).to be == [
               1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
             ]

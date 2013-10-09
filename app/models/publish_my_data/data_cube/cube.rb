@@ -58,6 +58,9 @@ module PublishMyData
       end
 
       # the (one and only) measure property for this cube.
+      # This method appears to exist only for the DimensionsController,
+      # currently in PMD Enterprise (link taken 17-Oct-2013):
+      # https://github.com/Swirrl/publish_my_data_enterprise/blob/545215a331ea8752b6ff4c9692db17170453d2c8/app/controllers/publish_my_data/data_cube/dimensions_controller.rb#L19-L23
       def measure_property
 
         query = "PREFIX qb: <http://purl.org/linked-data/cube#>

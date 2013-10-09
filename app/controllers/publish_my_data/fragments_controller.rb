@@ -25,10 +25,21 @@ module PublishMyData
 
     def create
       dimensions = dimensions_from_params(params[:dataset_dimensions])
-      @selector.build_fragment({
-        dataset_uri: @dataset.uri,
-        dimensions: dimensions
-      })
+
+      # The Data Cube spec permits multiple measures per observation:
+      # http://www.w3.org/TR/vocab-data-cube/#dsd-mm-obs
+      # PMD currently only supports one measure property in a cube,
+      # so we currently just pick the first available. This sort of
+      # policy shouldn't live in a controller, but we'd need to
+      # restructure the code a lot to give it a proper home.
+      observation_source = Statistics::ObservationSource.new(dataset_uri: @dataset_uri)
+      measure_property_uri = observation_source.measure_property_uris.first
+
+      @selector.build_fragment(
+        dataset_uri:          @dataset.uri,
+        measure_property_uri: measure_property_uri,
+        dimensions:           dimensions
+      )
 
       if @selector.save
         redirect_to selector_path(@selector)

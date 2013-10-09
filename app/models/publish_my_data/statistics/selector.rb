@@ -7,16 +7,6 @@ module PublishMyData
     class Selector
       extend ActiveModel::Naming
 
-      class ObservationSource
-        def initialize(query_options)
-          @query_options
-        end
-
-        def observation_value(dataset_uri, row_type_uri, row_uri, coordinates)
-          "x"
-        end
-      end
-
       class InvalidIdError < ArgumentError; end
 
       class FilesystemRepository
@@ -264,29 +254,40 @@ module PublishMyData
       end
 
       class Row
-        def initialize(row_type_uri, uri, fragments, labeller = Labeller.new)
-          @row_type_uri = row_type_uri
-          @uri          = uri
-          @fragments    = fragments
-          @labeller     = labeller
+        def initialize(attributes)
+          @observation_source   = attributes.fetch(:observation_source)
+          @row_type_uri         = attributes.fetch(:row_type_uri)
+          @row_uri              = attributes.fetch(:row_uri)
+          @fragments            = attributes.fetch(:fragments)
+          @labeller             = attributes.fetch(:labeller)
         end
 
         def label
-          @labeller.label_for(@uri)
+          @labeller.label_for(@row_uri)
         end
 
-        def values(observation_source)
+        def values
           @fragments.inject([]) { |values, fragment|
             values.concat(
-              fragment.values_for_row(@row_type_uri, @uri, observation_source)
+              fragment.values_for_row(
+                row_type_uri:         @row_type_uri,
+                row_uri:              @row_uri,
+                observation_source:   @observation_source
+              )
             )
           }
         end
       end
 
-      def table_rows(labeller = Labeller.new)
+      def table_rows(observation_source, labeller = Labeller.new)
         @row_uris.map { |row_uri|
-          Row.new(geography_type, row_uri, @fragments, labeller)
+          Row.new(
+            observation_source:   observation_source,
+            row_type_uri:         geography_type,
+            row_uri:              row_uri,
+            fragments:            @fragments,
+            labeller:             labeller
+          )
         }
       end
     end

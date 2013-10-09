@@ -4,18 +4,20 @@ module PublishMyData
       attr_reader :selector, :dataset_uri
 
       def initialize(attributes)
-        @dataset_uri = attributes.fetch(:dataset_uri)
-        @dimensions = attributes.fetch(:dimensions)
+        @dataset_uri          = attributes.fetch(:dataset_uri)
+        @measure_property_uri = attributes.fetch(:measure_property_uri)
+        @dimensions           = attributes.fetch(:dimensions)
       end
 
       def to_h
         {
-          dataset_uri: @dataset_uri,
-          dimensions: @dimensions
+          dataset_uri:          @dataset_uri,
+          measure_property_uri: @measure_property_uri,
+          dimensions:           @dimensions
         }
       end
 
-      def values_for_row(row_type_uri, row_uri, observation_source)
+      def values_for_row(options)
         # [].inject(...) => nil below means we have to catch the empty case
         return [] if @dimensions.empty?
 
@@ -41,8 +43,13 @@ module PublishMyData
             end
           }.
           map { |cell_coordinates|
-            observation_source.observation_value(
-              @dataset_uri, row_type_uri, row_uri, cell_coordinates
+            # This will be much nicer when we switch to Ruby 2 and can use kwargs
+            options.fetch(:observation_source).observation_value(
+              dataset_uri:          @dataset_uri,
+              measure_property_uri: @measure_property_uri,
+              row_type_uri:         options.fetch(:row_type_uri),
+              row_uri:              options.fetch(:row_uri),
+              cell_coordinates:     cell_coordinates
             )
           }
       end

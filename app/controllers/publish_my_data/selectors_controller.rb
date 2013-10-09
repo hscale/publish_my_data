@@ -48,9 +48,13 @@ module PublishMyData
     end
 
     def show
-      @selector = Statistics::Selector.find(params[:id])
       @observation_source =
-        Statistics::Selector::ObservationSource.new(@selector.query_options)
+        Statistics::ObservationSource.new({})
+
+      @selector       = Statistics::Selector.find(params[:id])
+      @header_rows    = @selector.header_rows
+      @table_rows     = @selector.table_rows(@observation_source)
+      @selector_empty = @selector.fragments.empty?
     end
 
     private

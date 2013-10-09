@@ -63,10 +63,11 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset',
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
               dimensions: [
                 {
-                  dimension_uri: "http://example.com/dimension_1",
+                  dimension_uri: "uri:dimension/1",
                   dimension_values: [
                     "http://example.com/dimension_value_1a",
                     "http://example.com/dimension_value_1b"
@@ -115,10 +116,11 @@ module PublishMyData
               it "preserves all the fragment values" do
                 expect(selector_reloaded.to_h.fetch(:fragments)).to be == [
                   {
-                    dataset_uri: 'http://example.com/dataset',
+                    dataset_uri:          'uri:dataset/1',
+                    measure_property_uri: 'uri:measure-property/1',
                     dimensions: [
                       {
-                        dimension_uri: "http://example.com/dimension_1",
+                        dimension_uri: "uri:dimension/1",
                         dimension_values: [
                           "http://example.com/dimension_value_1a",
                           "http://example.com/dimension_value_1b"
@@ -277,7 +279,9 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions: [ ]
             )
           end
 
@@ -291,7 +295,7 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "http://example.com/dimension_1",
+              dimension_uri: "uri:dimension/1",
               dimension_values: [
                 "http://example.com/dimension_value_1a",
                 "http://example.com/dimension_value_1b"
@@ -301,7 +305,9 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_1 ]
             )
           end
 
@@ -323,14 +329,14 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "http://example.com/dimension_1",
+              dimension_uri: "uri:dimension/1",
               dimension_values: [ "http://example.com/dimension_value_1a" ]
             }
           }
 
           let(:dimension_2) {
             {
-              dimension_uri: "http://example.com/dimension_2",
+              dimension_uri: "uri:dimension/2",
               dimension_values: [
                 "http://example.com/dimension_value_2a",
                 "http://example.com/dimension_value_2b"
@@ -340,7 +346,9 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1, dimension_2 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_1, dimension_2 ]
             )
           end
 
@@ -363,7 +371,7 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "http://example.com/dimension_1",
+              dimension_uri: "uri:dimension/1",
               dimension_values: [
                 "http://example.com/dimension_value_1a",
                 "http://example.com/dimension_value_1b"
@@ -373,7 +381,7 @@ module PublishMyData
 
           let(:dimension_2) {
             {
-              dimension_uri: "http://example.com/dimension_2",
+              dimension_uri: "uri:dimension/2",
               dimension_values: [
                 "http://example.com/dimension_value_2a",
                 "http://example.com/dimension_value_2b"
@@ -383,7 +391,9 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1, dimension_2 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_1, dimension_2 ]
             )
           end
 
@@ -406,7 +416,7 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "http://example.com/dimension_1",
+              dimension_uri: "uri:dimension/1",
               dimension_values: [
                 "http://example.com/dimension_value_1a",
                 "http://example.com/dimension_value_1b",
@@ -418,10 +428,14 @@ module PublishMyData
             # You wouldn't re-use a dimension across fragments for real,
             # but just to create an example it's fine
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_1 ]
             )
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_1 ]
             )
           end
 
@@ -437,14 +451,14 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "http://example.com/dimension_1",
+              dimension_uri: "uri:dimension/1",
               dimension_values: [ "http://example.com/dimension_value_1a" ]
             }
           }
 
           let(:dimension_2) {
             {
-              dimension_uri: "http://example.com/dimension_2",
+              dimension_uri: "uri:dimension/2",
               dimension_values: [ "http://example.com/dimension_value_2a" ]
             }
           }
@@ -461,10 +475,14 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_1 ]
             )
             selector.build_fragment(
-              dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_2, dimension_3 ]
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions:           [ dimension_2, dimension_3 ]
             )
           end
 
@@ -480,25 +498,23 @@ module PublishMyData
       describe "#table_rows" do
         subject(:selector) {
           Selector.new(
-            geography_type: "http://statistics.data.gov.uk/def/statistical-geography",
+            geography_type: "uri:statistical-geography",
             row_uris:       [ "uri:row_1" ]
           )
         }
 
         let(:labeller) { MockLabeller.new }
 
-        let(:snapshot) { selector.take_snapshot }
-
         let(:dimension_1) {
           {
-            dimension_uri: "http://example.com/dimension_1",
+            dimension_uri: "uri:dimension/1",
             dimension_values: [ "http://example.com/dimension_value_1a" ]
           }
         }
 
         let(:dimension_2) {
           {
-            dimension_uri: "http://example.com/dimension_2",
+            dimension_uri: "uri:dimension/2",
             dimension_values: [
               "http://example.com/dimension_value_2a",
               "http://example.com/dimension_value_2b"
@@ -506,25 +522,47 @@ module PublishMyData
           }
         }
 
+        describe "Row construction" do
+          let(:observation_source) {
+            double(ObservationSource)
+          }
+
+          before(:each) do
+            Selector::Row.stub(:new)
+          end
+
+          specify do
+            selector.table_rows(observation_source, labeller)
+            expect(Selector::Row).to have_received(:new).with(
+              hash_including(
+                observation_source:   observation_source,
+                row_type_uri:         'uri:statistical-geography',
+                row_uri:              'uri:row_1'
+              )
+            )
+          end
+        end
+
         describe Selector::Row do
           # We're also testing the construction process here, for now
-          let(:row) { selector.table_rows(labeller).first }
+          let(:row) { selector.table_rows(observation_source, labeller).first }
 
           describe "#values" do
             let(:observation_source) {
               # Currently almost the same as the data in the Fragment spec
               MockObservationSource.new(
-                "http://example.com/dataset" => {
-                  # The row type is currently hard-coded, so we have to use
-                  # this value for now
-                  'http://statistics.data.gov.uk/def/statistical-geography' => {
-                    "uri:row_1" => {
-                      "http://example.com/dimension_1" => {
-                        "http://example.com/dimension_value_1a" => 1
-                      },
-                      "http://example.com/dimension_2" => {
-                        "http://example.com/dimension_value_2a" => 2,
-                        "http://example.com/dimension_value_2b" => 3
+                measure_property_uris: %w[ uri:measure-property/1 uri:measure-property/2 ],
+                observation_data: {
+                  "uri:dataset/1" => {
+                    'uri:statistical-geography' => {
+                      "uri:row_1" => {
+                        "uri:dimension/1" => {
+                          "http://example.com/dimension_value_1a" => 1
+                        },
+                        "uri:dimension/2" => {
+                          "http://example.com/dimension_value_2a" => 2,
+                          "http://example.com/dimension_value_2b" => 3
+                        }
                       }
                     }
                   }
@@ -536,28 +574,36 @@ module PublishMyData
               before(:each) do
                 # We demonstrate how multiple dimensions work in the Fragment spec
                 selector.build_fragment(
-                  dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+                  dataset_uri:          'uri:dataset/1',
+                  measure_property_uri: 'uri:measure-property/1',
+                  dimensions:           [ dimension_1 ]
                 )
               end
 
               it "returns the correct values" do
-                expect(row.values(observation_source)).to be == [1]
+                expect(row.values).to be == [1]
               end
             end
 
             context "two fragments" do
               before(:each) do
                 # We demonstrate how multiple dimensions work in the Fragment spec
+                # This hackily re-uses datasets across fragments to avoid adding
+                # more data to the observation source
                 selector.build_fragment(
-                  dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_1 ]
+                  dataset_uri:          'uri:dataset/1',
+                  measure_property_uri: 'uri:measure-property/1',
+                  dimensions:           [ dimension_1 ]
                 )
                 selector.build_fragment(
-                  dataset_uri: 'http://example.com/dataset', dimensions: [ dimension_2 ]
+                  dataset_uri:          'uri:dataset/1',
+                  measure_property_uri: 'uri:measure-property/2',
+                  dimensions:           [ dimension_2 ]
                 )
               end
 
               it "returns the correct values" do
-                expect(row.values(observation_source)).to be == [1, 2, 3]
+                expect(row.values).to be == [1, 2, 3]
               end
             end
           end
@@ -566,7 +612,12 @@ module PublishMyData
 
       describe '#remove_fragment' do
         subject(:selector) { Selector.new(geography_type: 'unused') }
-        let!(:fragment) { selector.build_fragment(dataset_uri: 'http://example.com/dataset', dimensions: []) }
+
+        let!(:fragment) {
+          selector.build_fragment(
+            dataset_uri: 'uri:unused', measure_property_uri: 'uri:unused', dimensions: []
+          )
+        }
 
         it 'should remove the fragment at the given index' do
           selector.remove_fragment(0)

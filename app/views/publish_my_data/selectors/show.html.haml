@@ -23,20 +23,19 @@
                     /= fragment.dataset_uri
                     = link_to selector_fragments_path(@selector, index: index), method: :delete, confirm: 'Are you sure?' do
                       &times;
-
-            - @selector.header_rows.each_with_index do |header_row, index|
+            - @header_rows.each_with_index do |header_row, index|
               %tr
                 %td
                 - header_row.each do |header_column|
                   %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
           %tbody
-            - @selector.table_rows.each_with_index do |row, index|
+            - @table_rows.each_with_index do |row, index|
               %tr
                 %th= row.label
-                - row.values(@observation_source).each do |value|
+                - row.values.each do |value|
                   %td= value
-                - if @selector.fragments.empty? && index == 0
-                  %td.intro{rowspan: "#{ @selector.table_rows.size + 1 }"}
+                - if @selector_empty && index == 0
+                  %td.intro{rowspan: "#{ @table_rows.size + 1 }"}
                     %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
         .foot &hellip;
       .actions
@@ -48,7 +47,7 @@
           Download
 
 #add-data-modal(style="display: none;")
-  
+
 
 #add-data-spinner.modal-dialog
   .modal-content
