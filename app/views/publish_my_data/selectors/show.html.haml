@@ -16,6 +16,14 @@
         %header PREVIEW
         %table
           %thead
+            %tr
+              %td
+                - @selector.fragments.each_with_index do |fragment, index|
+                  %th.fragment-actions{ colspan: fragment.volume_of_selected_cube }
+                    /= fragment.dataset_uri
+                    = link_to selector_fragments_path(@selector, index: index), method: :delete, confirm: 'Are you sure?' do
+                      &times;
+
             - @selector.header_rows.each_with_index do |header_row, index|
               %tr
                 %td

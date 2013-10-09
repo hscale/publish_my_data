@@ -90,6 +90,21 @@ section#preview {
       th {
         border-left: 1px solid $veryLightGrey;
       }
+      th.fragment-actions {
+        cursor: pointer;
+        text-align: center;
+
+        a {
+          display: none;
+        }
+        &:hover {
+          background-color: $exceedinglyLightGrey;
+
+          a {
+            display: inline-block;
+          }
+        }
+      }
     }
 
     tbody {

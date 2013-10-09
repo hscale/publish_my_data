@@ -254,7 +254,13 @@ module PublishMyData
       end
 
       def build_fragment(fragment_description)
-        @fragments << Fragment.new(fragment_description)
+        fragment = Fragment.new(fragment_description)
+        @fragments << fragment
+        fragment
+      end
+
+      def remove_fragment(fragment_index)
+        @fragments.delete_at(fragment_index)
       end
 
       class Row

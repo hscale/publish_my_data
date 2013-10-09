@@ -146,4 +146,26 @@ feature "Preparing a Stats Selector document" do
       # page.should have_content '2345'
     end
   end
+
+  describe 'removing a fragment' do
+    background do
+      GeographyTasks.create_some_gss_resources
+      GeographyTasks.create_relevant_vocabularies
+      GeographyTasks.populate_dataset_with_geographical_observations(dataset)
+
+      selector.build_fragment(dataset_uri: dataset.uri, dimensions: [
+        { dimension_uri: 'http://opendatacommunities.org/def/ontology/time/refPeriod', dimension_values: ['http://reference.data.gov.uk/id/quarter/2013-Q1'] },
+        { dimension_uri: 'http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity', dimension_values: ['http://opendatacommunities.org/def/concept/general-concepts/ethnicity/mixed'] }
+      ])
+      selector.save
+
+      visit "/selectors/#{selector.id}"
+    end
+
+    scenario 'Visitor removes some data from the selector', js: true do
+      find('th.fragment-actions').trigger(:mouseover)
+      find('th.fragment-actions').click_link '×'
+      page.should_not have_content '2013 Q1'
+    end
+  end
 end

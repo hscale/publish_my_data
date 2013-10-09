@@ -39,6 +39,7 @@ PublishMyData::Engine.routes.draw do
     get :download, on: :member
     resources :fragments, except: [:show, :index] do
       get :datasets, on: :collection
+      delete :destroy, on: :collection
     end
   end
 

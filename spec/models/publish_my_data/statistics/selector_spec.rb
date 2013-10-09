@@ -563,6 +563,16 @@ module PublishMyData
           end
         end
       end
+
+      describe '#remove_fragment' do
+        subject(:selector) { Selector.new(geography_type: 'unused') }
+        let!(:fragment) { selector.build_fragment(dataset_uri: 'http://example.com/dataset', dimensions: []) }
+
+        it 'should remove the fragment at the given index' do
+          selector.remove_fragment(0)
+          selector.fragments.should_not include(fragment)
+        end
+      end
     end
   end
 end

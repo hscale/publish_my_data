@@ -2,7 +2,7 @@ require_dependency "publish_my_data/application_controller"
 
 module PublishMyData
   class FragmentsController < ApplicationController
-    before_filter :get_selector, only: [ :datasets, :new, :create ]
+    before_filter :get_selector, only: [ :datasets, :new, :create, :destroy ]
     before_filter :get_dataset, only:  [ :new, :create ]
 
     def datasets
@@ -29,6 +29,14 @@ module PublishMyData
         dataset_uri: @dataset.uri,
         dimensions: dimensions
       })
+
+      if @selector.save
+        redirect_to selector_path(@selector)
+      end
+    end
+
+    def destroy
+      @selector.remove_fragment(params[:index].to_i)
 
       if @selector.save
         redirect_to selector_path(@selector)

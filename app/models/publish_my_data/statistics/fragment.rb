@@ -1,10 +1,10 @@
 module PublishMyData
   module Statistics
     class Fragment
-      attr_reader :selector, :dataset
+      attr_reader :selector, :dataset_uri
 
       def initialize(attributes)
-        @dataset_uri = attributes.fetch(:dataset_uri) # Currently unused
+        @dataset_uri = attributes.fetch(:dataset_uri)
         @dimensions = attributes.fetch(:dimensions)
       end
 
