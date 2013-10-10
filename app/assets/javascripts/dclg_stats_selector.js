@@ -10,17 +10,16 @@ $(function() {
     e.preventDefault();
   });
 
-  // $('#stats-selector th, #stats-selector td').hover(function() {
-  //   $(this).addClass('highlight');
-  //   console.log($(this));
-  // },
-  // function() {
-  //   $(this).removeClass('highlight');
-  // });
-  $('th.fragment-actions').hover(function() {
-    $(this).find('.btn').show();
+  $('#stats-selector thead th, #stats-selector tbody td, #stats-selector tfoot th').hover(function() {
+    var fragmentClass = $(this).attr('class').split(' ')[0], // our custom fragment class is always the first..
+        fragmentElements = $('.'+fragmentClass);
+    fragmentElements.addClass('highlight');
+    fragmentElements.find('.btn').show();
   },
   function() {
-    $(this).find('.btn').hide();
+    var fragmentClass = $(this).attr('class').split(' ')[0], // our custom fragment class is always the first..
+        fragmentElements = $('.'+fragmentClass);
+    fragmentElements.removeClass('highlight');
+    fragmentElements.find('.btn').hide();
   });
 });

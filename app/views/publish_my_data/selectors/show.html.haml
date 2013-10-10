@@ -19,7 +19,7 @@
             %tr
               %td
                 - @selector.fragments.each do |fragment|
-                  %th.measure{ colspan: fragment.volume_of_selected_cube }= fragment.measure_label
+                  %th.measure{ colspan: fragment.volume_of_selected_cube, class: dom_class_for_fragment(fragment) }= fragment.measure_label
             - @selector.header_rows.each do |header_row|
               %tr
                 %td
@@ -30,15 +30,15 @@
               %tr
                 %th= row.label
                 - row.values.each do |value|
-                  %td= value
+                  %td{ class: dom_class_for_row_value(value) }= value
                 - if @selector_empty && index == 0
                   %td.intro{rowspan: "#{ @table_rows.size + 1 }"}
                     %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
           %tfoot
             %tr
-              %th &hellip;
-              - @selector.fragments.each_with_index do |fragment, index|
-                %th.fragment-actions{ 'colspan' => fragment.volume_of_selected_cube }
+              %td &hellip;
+              - @selector.fragments.each do |fragment|
+                %th.fragment-actions{ colspan: fragment.volume_of_selected_cube, class: dom_class_for_fragment(fragment) }
                   = link_to selector_fragment_path(@selector, id: fragment.id), method: :delete, class: 'btn btn-remove-data', style: 'display: none;' do
                     %i.icon-circled-minus
                     Remove Data
