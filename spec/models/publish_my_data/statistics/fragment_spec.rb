@@ -4,7 +4,13 @@ module PublishMyData
   module Statistics
     describe Fragment do
       describe '#id' do
-        subject(:fragment) { Fragment.new(dataset_uri: 'http://example.com/dataset', dimensions: [ ]) }
+        subject(:fragment) {
+          Fragment.new(
+            dataset_uri:          'uri:dataset/1',
+            measure_property_uri: 'uri:measure-property/1',
+            dimensions:           { }
+          )
+        }
 
         it 'should assign an identifier during instantiation' do
           fragment.id.should_not be_blank

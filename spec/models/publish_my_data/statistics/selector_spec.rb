@@ -46,6 +46,10 @@ module PublishMyData
 
       describe "persistence" do
         shared_examples_for "a Selector persistence implementation" do
+          let(:test_fragment_uuid) {
+            UUIDTools::UUID.parse("460d107e-7f22-4bd4-a665-0f493041e75f")
+          }
+
           before(:each) do
             unless respond_to?(:selector)
               raise 'Host example group must provide a Selector (eg `let(:selector) { ... }'
@@ -63,6 +67,7 @@ module PublishMyData
 
           before(:each) do
             selector.build_fragment(
+              id:                   test_fragment_uuid,
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
               dimensions: {
@@ -113,6 +118,7 @@ module PublishMyData
               it "preserves all the fragment values" do
                 expect(selector_reloaded.to_h.fetch(:fragments)).to be == [
                   {
+                    id:                   test_fragment_uuid,
                     dataset_uri:          'uri:dataset/1',
                     measure_property_uri: 'uri:measure-property/1',
                     dimensions: {

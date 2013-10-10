@@ -29,16 +29,6 @@ module PublishMyData
         }
       end
 
-      # We want to use this structure everywhere
-      # TODO: delete me
-      def simplified_dimensions
-        @dimensions.reduce({}) { |dimensions, dimension|
-          dimensions.merge!(
-            dimension.fetch(:dimension_uri) => dimension.fetch(:dimension_values)
-          )
-        }
-      end
-
       def values_for_row(options)
         # [].reduce(...) => nil below means we have to catch the empty case
         return [] if @dimensions.empty?
