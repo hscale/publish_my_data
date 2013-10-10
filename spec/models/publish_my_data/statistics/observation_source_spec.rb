@@ -89,57 +89,62 @@ module PublishMyData
         let(:ref_area) { uri('http://opendatacommunities.org/def/ontology/geography/refArea') }
 
         before(:each) do
+          customise_data
           insert_statements_into_graph(data, 'uri:pmd/graph/1')
         end
 
-        context "looking in the right dataset" do
-          let(:data) {
-            [
-              # Observation
-              [uri('uri:obs/1'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/1'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
-              [uri('uri:obs/1'), ref_area,                      uri('uri:row/1')],
-              [uri('uri:obs/1'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/1')],
-              [uri('uri:obs/1'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/1')],
-              [uri('uri:obs/1'), uri('uri:measure-property/1'), 1],
-              [uri('uri:obs/1'), uri('uri:measure-property/2'), 101],
+        let(:data) {
+          [
+            # Observation
+            [uri('uri:obs/1'), a,                             RDF::CUBE.Observation],
+            [uri('uri:obs/1'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+            [uri('uri:obs/1'), ref_area,                      uri('uri:row/1')],
+            [uri('uri:obs/1'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/1')],
+            [uri('uri:obs/1'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/1')],
+            [uri('uri:obs/1'), uri('uri:measure-property/1'), 1],
+            [uri('uri:obs/1'), uri('uri:measure-property/2'), 101],
 
-              # Observation
-              [uri('uri:obs/2'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/2'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
-              [uri('uri:obs/2'), ref_area,                      uri('uri:row/1')],
-              [uri('uri:obs/2'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/1')],
-              [uri('uri:obs/2'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/2')],
-              [uri('uri:obs/2'), uri('uri:measure-property/1'), 2],
-              [uri('uri:obs/2'), uri('uri:measure-property/2'), 102],
+            # Observation
+            [uri('uri:obs/2'), a,                             RDF::CUBE.Observation],
+            [uri('uri:obs/2'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+            [uri('uri:obs/2'), ref_area,                      uri('uri:row/1')],
+            [uri('uri:obs/2'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/1')],
+            [uri('uri:obs/2'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/2')],
+            [uri('uri:obs/2'), uri('uri:measure-property/1'), 2],
+            [uri('uri:obs/2'), uri('uri:measure-property/2'), 102],
 
-              # Observation
-              [uri('uri:obs/3'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/3'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
-              [uri('uri:obs/3'), ref_area,                      uri('uri:row/1')],
-              [uri('uri:obs/3'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/2')],
-              [uri('uri:obs/3'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/1')],
-              [uri('uri:obs/3'), uri('uri:measure-property/1'), 3],
-              [uri('uri:obs/3'), uri('uri:measure-property/2'), 103],
+            # Observation
+            [uri('uri:obs/3'), a,                             RDF::CUBE.Observation],
+            [uri('uri:obs/3'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+            [uri('uri:obs/3'), ref_area,                      uri('uri:row/1')],
+            [uri('uri:obs/3'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/2')],
+            [uri('uri:obs/3'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/1')],
+            [uri('uri:obs/3'), uri('uri:measure-property/1'), 3],
+            [uri('uri:obs/3'), uri('uri:measure-property/2'), 103],
 
-              # Observation
-              [uri('uri:obs/4'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/4'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
-              [uri('uri:obs/4'), ref_area,                      uri('uri:row/1')],
-              [uri('uri:obs/4'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/2')],
-              [uri('uri:obs/4'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/2')],
-              [uri('uri:obs/4'), uri('uri:measure-property/1'), 4],
-              [uri('uri:obs/4'), uri('uri:measure-property/2'), 104],
+            # Observation
+            [uri('uri:obs/4'), a,                             RDF::CUBE.Observation],
+            [uri('uri:obs/4'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+            [uri('uri:obs/4'), ref_area,                      uri('uri:row/1')],
+            [uri('uri:obs/4'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/2')],
+            [uri('uri:obs/4'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/2')],
+            [uri('uri:obs/4'), uri('uri:measure-property/1'), 4],
+            [uri('uri:obs/4'), uri('uri:measure-property/2'), 104],
 
-              # Observation (dataset 2, row 2)
-              [uri('uri:obs/5'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/5'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/2')],
-              [uri('uri:obs/5'), ref_area,                      uri('uri:row/2')],
-              [uri('uri:obs/5'), uri('uri:dimension/3'),        uri('uri:dimension/3/val/1')],
-              [uri('uri:obs/5'), uri('uri:measure-property/1'), 105],
-              [uri('uri:obs/5'), uri('uri:measure-property/2'), 5],
-            ]
-          }
+            # Observation (dataset 2, row 2)
+            [uri('uri:obs/5'), a,                             RDF::CUBE.Observation],
+            [uri('uri:obs/5'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/2')],
+            [uri('uri:obs/5'), ref_area,                      uri('uri:row/2')],
+            [uri('uri:obs/5'), uri('uri:dimension/3'),        uri('uri:dimension/3/val/1')],
+            [uri('uri:obs/5'), uri('uri:measure-property/1'), 105],
+            [uri('uri:obs/5'), uri('uri:measure-property/2'), 5],
+          ]
+        }
+
+        context "all the data" do
+          def customise_data
+            # Nothing to do in this context
+          end
 
           example "dataset 1, row 1, dimension 1 val 1, dimension 2 val 1" do
             expect(
@@ -182,6 +187,40 @@ module PublishMyData
             ).to be == 5
           end
         end
+
+        context "with a missing value" do
+          def customise_data
+            data.delete([uri('uri:obs/1'), ref_area, uri('uri:row/1')])
+          end
+
+          it "returns nil" do
+            expect(
+              source.observation_value(
+                dataset_uri:          'uri:pmd/dataset/1',
+                measure_property_uri: 'uri:measure-property/1',
+                row_uri:              'uri:row/1',
+                cell_coordinates:     {
+                  'uri:dimension/1' => 'uri:dimension/1/val/1',
+                  'uri:dimension/2' => 'uri:dimension/2/val/1'
+                }
+              )
+            ).to be_nil
+          end
+
+          it "doesn't affect other values in the same row (like in the grid viewer)" do
+            expect(
+              source.observation_value(
+                dataset_uri:          'uri:pmd/dataset/1',
+                measure_property_uri: 'uri:measure-property/1',
+                row_uri:              'uri:row/1',
+                cell_coordinates:     {
+                  'uri:dimension/1' => 'uri:dimension/1/val/1',
+                  'uri:dimension/2' => 'uri:dimension/2/val/2'
+                }
+              )
+            ).to be == 2
+          end
+        end
       end
 
       specify "Fragment uses a more similar data structure" do
@@ -193,10 +232,6 @@ module PublishMyData
       end
 
       it "limits the rows" do
-        pending
-      end
-
-      it "allows missing values" do
         pending
       end
 
