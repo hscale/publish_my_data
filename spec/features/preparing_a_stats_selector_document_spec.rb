@@ -76,7 +76,7 @@ feature "Preparing a Stats Selector document" do
 
     scenario 'Visitor selects a dataset from which to create a fragment' do
       visit "/selectors/#{selector.id}"
-      click_on 'Add Data'
+      find('.btn-add-data').trigger(:click)
 
       page.should have_content 'Step 1 of 2: Select a Dataset'
 
@@ -95,7 +95,8 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
       visit "/selectors/#{selector.id}"
-      click_on 'Add Data'
+      page.save_screenshot('wtf.png')
+      find('.btn-add-data').trigger(:click)
       select dataset.title, from: 'dataset_uri'
       click_on 'Select Dataset'
     end
@@ -129,7 +130,8 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
       visit "/selectors/#{selector.id}"
-      click_on 'Add Data'
+      page.save_screenshot('wtf.png')
+      find('.btn-add-data').trigger(:click)
       select dataset.title, from: 'dataset_uri'
       click_on 'Select Dataset'
     end
@@ -173,18 +175,22 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.create_relevant_vocabularies
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
-      selector.build_fragment(dataset_uri: dataset.uri, dimensions: [
-        { dimension_uri: 'http://opendatacommunities.org/def/ontology/time/refPeriod', dimension_values: ['http://reference.data.gov.uk/id/quarter/2013-Q1'] },
-        { dimension_uri: 'http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity', dimension_values: ['http://opendatacommunities.org/def/concept/general-concepts/ethnicity/mixed'] }
-      ])
+      selector.build_fragment(
+        dataset_uri: dataset.uri, 
+        dimensions: {
+          'http://opendatacommunities.org/def/ontology/time/refPeriod' => ['http://reference.data.gov.uk/id/quarter/2013-Q1'],
+          'http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity' => ['http://opendatacommunities.org/def/concept/general-concepts/ethnicity/mixed']
+        },
+        measure_property_uri: 'http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/homelessnessAcceptancesObs'
+      )
       selector.save
 
       visit "/selectors/#{selector.id}"
     end
 
     scenario 'Visitor removes some data from the selector', js: true do
-      find('th.fragment-actions').trigger(:mouseover)
-      find('th.fragment-actions').click_link '×'
+      find('th.fragment-actions').hover
+      click_link 'Remove Data'
       page.should_not have_content '2013 Q1'
     end
   end

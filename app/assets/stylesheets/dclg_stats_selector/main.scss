@@ -90,21 +90,13 @@ section#preview {
       th {
         border-left: 1px solid $veryLightGrey;
       }
-      th.fragment-actions {
-        cursor: pointer;
+      th.measure {
         text-align: center;
-
-        a {
-          display: none;
-        }
-        &:hover {
-          background-color: $exceedinglyLightGrey;
-
-          a {
-            display: inline-block;
-          }
-        }
       }
+    }
+
+    .highlight {
+      background-color: $exceedinglyLightGrey;
     }
 
     tbody {
@@ -113,6 +105,19 @@ section#preview {
       }
       th {
         min-width: 180px;
+      }
+    }
+
+    tfoot {
+      th.fragment-actions {
+        text-align: center;
+        padding: 0;
+
+        a.btn-remove-data {
+          display: inline-block;
+          background-color: $exceedinglyLightGrey;
+          color: $grey !important;
+        }
       }
     }
 
@@ -127,10 +132,6 @@ section#preview {
         width: 320px;
       }
     }
-  }
-
-  .foot {
-    padding: 0 6px;
   }
 }
 

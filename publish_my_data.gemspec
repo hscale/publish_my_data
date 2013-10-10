@@ -29,4 +29,5 @@ Gem::Specification.new do |s|
   s.add_dependency "sparql-client"
   # This is a temporary dependency while we develop the Stats Selector inside PMD:
   s.add_dependency "jquery-rails"
+  s.add_dependency "sass"
 end
