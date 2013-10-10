@@ -223,10 +223,6 @@ module PublishMyData
         end
       end
 
-      specify "Fragment uses a more similar data structure" do
-        pending
-      end
-
       it "uses a graph block" do
         pending
       end
