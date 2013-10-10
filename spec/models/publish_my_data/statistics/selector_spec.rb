@@ -607,6 +607,66 @@ module PublishMyData
         end
       end
 
+      describe "#to_observation_query_options" do
+        subject(:selector) {
+          Selector.new(
+            geography_type: 'uri:geography-type/1',
+            row_uris:       ['uri:row/1', 'uri:row/2']
+          )
+        }
+
+        before(:each) do
+          selector.build_fragment(
+            dataset_uri:          'uri:dataset/1',
+            measure_property_uri: 'uri:measure-property/1',
+            dimensions: [
+              {
+                dimension_uri: 'uri:dimension/1',
+                dimension_values: ['uri:dimension/1/val/1', 'uri:dimension/1/val/2']
+              },
+              {
+                dimension_uri: 'uri:dimension/2',
+                dimension_values: ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
+              }
+            ]
+          )
+          selector.build_fragment(
+            dataset_uri:          'uri:dataset/2',
+            measure_property_uri: 'uri:measure-property/2',
+            dimensions: [
+              {
+                dimension_uri: 'uri:dimension/3',
+                dimension_values: ['uri:dimension/3/val/1']
+              }
+            ]
+          )
+        end
+
+        it "returns all the data needed for an ObservationSource" do
+          expect(selector.to_observation_query_options).to be == {
+            row_dimension: 'http://opendatacommunities.org/def/ontology/geography/refArea',
+            row_uris: ['uri:row/1', 'uri:row/2'],
+            datasets: [
+              {
+                dataset_uri: 'uri:dataset/1' ,
+                measure_property_uri: 'uri:measure-property/1',
+                dimensions: {
+                  'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
+                  'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
+                }
+              },
+              {
+                dataset_uri: 'uri:dataset/2' ,
+                measure_property_uri: 'uri:measure-property/2',
+                dimensions: {
+                  'uri:dimension/3' => ['uri:dimension/3/val/1']
+                }
+              }
+            ]
+          }
+        end
+      end
+
       describe '#remove_fragment' do
         subject(:selector) { Selector.new(geography_type: 'unused') }
 

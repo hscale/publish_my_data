@@ -17,6 +17,23 @@ module PublishMyData
         }
       end
 
+      def to_observation_query_options
+        {
+          dataset_uri:          @dataset_uri,
+          measure_property_uri: @measure_property_uri,
+          dimensions:           simplified_dimensions
+        }
+      end
+
+      # We want to use this structure everywhere
+      def simplified_dimensions
+        @dimensions.reduce({}) { |dimensions, dimension|
+          dimensions.merge!(
+            dimension.fetch(:dimension_uri) => dimension.fetch(:dimension_values)
+          )
+        }
+      end
+
       def values_for_row(options)
         # [].inject(...) => nil below means we have to catch the empty case
         return [] if @dimensions.empty?

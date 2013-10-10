@@ -24,21 +24,18 @@ module PublishMyData
       end
 
       def initialize(query_options)
-        @dimension_values = query_options.fetch(:dimensions)
+        @row_dimension  = query_options.fetch(:row_dimension)
+        @row_uris       = query_options.fetch(:row_uris)
+
+        @datasets       = query_options.fetch(:datasets)
       end
 
       def observation_value(description)
-        # Bring on Ruby 2 and kwargs...
-        dataset_uri           = description.fetch(:dataset_uri)
         measure_property_uri  = description.fetch(:measure_property_uri)
         row_uri               = description.fetch(:row_uri)
         cell_coordinates      = description.fetch(:cell_coordinates)
 
-        fetch_dataset_data(dataset_uri)
-
-        # Per-cell
-
-        coordinate_clauses = cell_coordinates.inject({}) { |clauses, (dimension, value)|
+        coordinate_clauses = cell_coordinates.reduce({}) { |clauses, (dimension, value)|
           clauses.merge!(uri(dimension) => uri(value))
         }
         query = RDF::Query.new(
@@ -57,13 +54,25 @@ module PublishMyData
       private
 
       def observation_graph
-        @observation_graph ||= RDF::Graph.new
+        @observation_graph ||= begin
+          RDF::Graph.new.tap { |graph| load_dataset_data_into_graph(graph) }
+        end
       end
 
-      def fetch_dataset_data(dataset_uri)
-        triples, values = dimensions_specification.values_at(:triples, :values)
+      def load_dataset_data_into_graph(graph)
+        @datasets.each do |dataset|
+          dataset_uri           = dataset.fetch(:dataset_uri)
+          measure_property_uri  = dataset.fetch(:measure_property_uri)
+          dimensions            = dataset.fetch(:dimensions)
 
-        measure_property_uri = "http://example.com/fake-value-to-let-controller-run"
+          dimensions_with_rows  = dimensions.merge(@row_dimension => @row_uris)
+
+          load_single_dataset_data_into_graph(graph, dataset_uri, measure_property_uri, dimensions_with_rows)
+        end
+      end
+
+      def load_single_dataset_data_into_graph(graph, dataset_uri, measure_property_uri, dimensions)
+        triples, values = dimensions_query_fragments(dimensions).values_at(:triples, :values)
 
         query = <<-SPARQL
           CONSTRUCT {
@@ -73,37 +82,31 @@ module PublishMyData
           WHERE {
             ?obs <#{RDF::CUBE.dataSet}> <#{dataset_uri}> .
             ?obs <#{measure_property_uri}> ?measure .
-            # Next line is hacked to allow the controller to run without real data in here
             #{triples} #{"." unless triples.blank?}
             #{values}
           }
         SPARQL
 
-        statements = run_query(query)
-        observation_graph.insert(*statements)
+        graph.insert(*query_result_statements(query))
       end
 
-      def dimensions_specification
-        triple_descriptions = [ ]
-        values_restrictions = [ ]
+      def dimensions_query_fragments(dimensions)
+        triples = [ ]
+        value_tables = [ ]
 
-        @dimension_values.each_with_index do |(dimension, values), index|
+        dimensions.each_with_index do |(dimension, values), index|
           dim_value = "?dimValue#{index}"
-          triple_descriptions << "?obs <#{dimension}> #{dim_value}"
+          triples << "?obs <#{dimension}> #{dim_value}"
           values_list = values.map { |value| "<#{value}>" }.join(" ")
-          values_restrictions << "VALUES #{dim_value} {#{ values_list }}"
+          value_tables << "VALUES #{dim_value} {#{values_list}}"
         end
 
-        {
-          triples: triple_descriptions.join(" . "),
-          values: values_restrictions.join(" ")
-        }
+        { triples: triples.join(" . "), values: value_tables.join(" ") }
       end
 
-      def run_query(query)
-        response = Tripod::SparqlClient::Query.query(query.to_s, 'application/n-triples')
-        parsed = RDF::Reader.for(:ntriples).new(response).each_statement.to_a
-        parsed
+      def query_result_statements(query)
+        ntriples_data = Tripod::SparqlClient::Query.query(query.to_s, 'application/n-triples')
+        RDF::Reader.for(:ntriples).new(ntriples_data).each_statement.to_a
       end
 
       def uri(uri_string_representation)

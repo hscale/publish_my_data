@@ -5,11 +5,25 @@ module PublishMyData
     describe ObservationSource do
       subject(:source) {
         ObservationSource.new(
-          dimensions: {
-            'http://opendatacommunities.org/def/ontology/geography/refArea' => ['uri:row/1', 'uri:row/2'],
-            'uri:dim/1' => ['uri:dim/1/val/1', 'uri:dim/1/val/2'],
-            'uri:dim/2' => ['uri:dim/2/val/1', 'uri:dim/2/val/2']
-          }
+          row_dimension: 'http://opendatacommunities.org/def/ontology/geography/refArea',
+          row_uris: ['uri:row/1', 'uri:row/2'],
+          datasets: [
+            {
+              dataset_uri: 'uri:pmd/dataset/1' ,
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions: {
+                'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
+                'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
+              }
+            },
+            {
+              dataset_uri: 'uri:pmd/dataset/2' ,
+              measure_property_uri: 'uri:measure-property/2',
+              dimensions: {
+                'uri:dimension/3' => ['uri:dimension/3/val/1']
+              }
+            }
+          ]
         )
       }
 
@@ -23,6 +37,8 @@ module PublishMyData
         )
       end
 
+      # Note, this currently uses slightly different data than below, which is confusing.
+      # We need to move this anyway.
       describe ".measure_property_uri" do
         let(:data) {
           [
@@ -35,7 +51,7 @@ module PublishMyData
             [uri('uri:obs/1'),              uri('uri:measure-property/a'),  "measure value a1"],
             # Another observation which re-uses the measure properties (forces DISTINCT)
             [uri('uri:obs/2'),              a,                              uri('http://purl.org/linked-data/cube#Observation')],
-            [uri('uri:obs/2'),              uri('uri:measure-property/a'),  "measure value a2"],
+            [uri('uri:obs/2'),              uri('uri:measure-property/a'),  "measure value a2"]
           ]
         }
 
@@ -81,91 +97,95 @@ module PublishMyData
             [
               # Observation
               [uri('uri:obs/1'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/1'), RDF::CUBE.dataSet,             uri('uri:pmd/data/A')],
+              [uri('uri:obs/1'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
               [uri('uri:obs/1'), ref_area,                      uri('uri:row/1')],
-              [uri('uri:obs/1'), uri('uri:dim/1'),              uri('uri:dim/1/val/1')],
-              [uri('uri:obs/1'), uri('uri:dim/2'),              uri('uri:dim/2/val/1')],
+              [uri('uri:obs/1'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/1')],
+              [uri('uri:obs/1'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/1')],
               [uri('uri:obs/1'), uri('uri:measure-property/1'), 1],
               [uri('uri:obs/1'), uri('uri:measure-property/2'), 101],
 
               # Observation
-              [uri('uri:obs/1a'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/1a'), RDF::CUBE.dataSet,             uri('uri:pmd/data/A')],
-              [uri('uri:obs/1a'), ref_area,                      uri('uri:row/1')],
-              [uri('uri:obs/1a'), uri('uri:dim/1'),              uri('uri:dim/1/val/2')],
-              [uri('uri:obs/1a'), uri('uri:dim/2'),              uri('uri:dim/2/val/2')],
-              [uri('uri:obs/1a'), uri('uri:measure-property/1'), 2],
-              [uri('uri:obs/1a'), uri('uri:measure-property/2'), 102],
+              [uri('uri:obs/2'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/2'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+              [uri('uri:obs/2'), ref_area,                      uri('uri:row/1')],
+              [uri('uri:obs/2'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/1')],
+              [uri('uri:obs/2'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/2')],
+              [uri('uri:obs/2'), uri('uri:measure-property/1'), 2],
+              [uri('uri:obs/2'), uri('uri:measure-property/2'), 102],
 
               # Observation
-              [uri('uri:obs/2'), a,                             RDF::CUBE.Observation],
-              [uri('uri:obs/2'), RDF::CUBE.dataSet,             uri('uri:pmd/data/A')],
-              [uri('uri:obs/2'), ref_area,                      uri('uri:row/2')],
-              [uri('uri:obs/2'), uri('uri:dim/1'),              uri('uri:dim/1/val/1')],
-              [uri('uri:obs/2'), uri('uri:dim/2'),              uri('uri:dim/2/val/1')],
-              [uri('uri:obs/2'), uri('uri:measure-property/1'), 3],
-              [uri('uri:obs/2'), uri('uri:measure-property/2'), 103],
+              [uri('uri:obs/3'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/3'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+              [uri('uri:obs/3'), ref_area,                      uri('uri:row/1')],
+              [uri('uri:obs/3'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/2')],
+              [uri('uri:obs/3'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/1')],
+              [uri('uri:obs/3'), uri('uri:measure-property/1'), 3],
+              [uri('uri:obs/3'), uri('uri:measure-property/2'), 103],
+
+              # Observation
+              [uri('uri:obs/4'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/4'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/1')],
+              [uri('uri:obs/4'), ref_area,                      uri('uri:row/1')],
+              [uri('uri:obs/4'), uri('uri:dimension/1'),        uri('uri:dimension/1/val/2')],
+              [uri('uri:obs/4'), uri('uri:dimension/2'),        uri('uri:dimension/2/val/2')],
+              [uri('uri:obs/4'), uri('uri:measure-property/1'), 4],
+              [uri('uri:obs/4'), uri('uri:measure-property/2'), 104],
+
+              # Observation (dataset 2, row 2)
+              [uri('uri:obs/5'), a,                             RDF::CUBE.Observation],
+              [uri('uri:obs/5'), RDF::CUBE.dataSet,             uri('uri:pmd/dataset/2')],
+              [uri('uri:obs/5'), ref_area,                      uri('uri:row/2')],
+              [uri('uri:obs/5'), uri('uri:dimension/3'),        uri('uri:dimension/3/val/1')],
+              [uri('uri:obs/5'), uri('uri:measure-property/1'), 105],
+              [uri('uri:obs/5'), uri('uri:measure-property/2'), 5],
             ]
           }
 
-          example do
+          example "dataset 1, row 1, dimension 1 val 1, dimension 2 val 1" do
             expect(
               source.observation_value(
-                dataset_uri:          'uri:pmd/data/A',
+                dataset_uri:          'uri:pmd/dataset/1',
                 measure_property_uri: 'uri:measure-property/1',
                 row_uri:              'uri:row/1',
                 cell_coordinates:     {
-                  'uri:dim/1' => 'uri:dim/1/val/1',
-                  'uri:dim/2' => 'uri:dim/2/val/1'
+                  'uri:dimension/1' => 'uri:dimension/1/val/1',
+                  'uri:dimension/2' => 'uri:dimension/2/val/1'
                 }
               )
             ).to be == 1
           end
 
-          example do
+          example "dataset 1, row 1, dimension 2 val 1, dimension 2 val 2" do
             expect(
               source.observation_value(
-                dataset_uri:          'uri:pmd/data/A',
+                dataset_uri:          'uri:pmd/dataset/1',
                 measure_property_uri: 'uri:measure-property/1',
                 row_uri:              'uri:row/1',
                 cell_coordinates:     {
-                  'uri:dim/1' => 'uri:dim/1/val/2',
-                  'uri:dim/2' => 'uri:dim/2/val/2'
+                  'uri:dimension/1' => 'uri:dimension/1/val/2',
+                  'uri:dimension/2' => 'uri:dimension/2/val/2'
                 }
               )
-            ).to be == 2
+            ).to be == 4
           end
-        end
 
-        # This is a separate context because I couldn't make the one above fail with
-        # this stray observation no matter how I prepared the data
-        context "looking in the wrong dataset" do
-          let(:data) {
-            [
-              [uri('uri:obs/x1'), a,                              RDF::CUBE.Observation],
-              [uri('uri:obs/x1'), RDF::CUBE.dataSet,              uri('uri:pmd/data/NOT-A')],
-              [uri('uri:obs/x1'), ref_area,                       uri('uri:row/1')],
-              [uri('uri:obs/x1'), uri('uri:dim/1'),               uri('uri:dim/1/val/1')],
-              [uri('uri:obs/x1'), uri('uri:dim/2'),               uri('uri:dim/2/val/1')],
-              [uri('uri:obs/x1'), uri('uri:measure-property/1'),  666],
-              [uri('uri:obs/x1'), uri('uri:measure-property/2'),  667],
-            ]
-          }
-
-          example do
+          example "dataset 2, row 2, dimension 3 val 1" do
             expect(
               source.observation_value(
-                dataset_uri:          'uri:pmd/data/A',
-                measure_property_uri: 'uri:measure-property/1',
-                row_uri:              'uri:row/1',
+                dataset_uri:          'uri:pmd/dataset/1',
+                measure_property_uri: 'uri:measure-property/2',
+                row_uri:              'uri:row/2',
                 cell_coordinates:     {
-                  'uri:dim/1' => 'uri:dim/1/val/1',
-                  'uri:dim/2' => 'uri:dim/2/val/1'
+                  'uri:dimension/3' => 'uri:dimension/3/val/1'
                 }
               )
-            ).to be_nil
+            ).to be == 5
           end
         end
+      end
+
+      specify "Fragment uses a more similar data structure" do
+        pending
       end
 
       it "uses a graph block" do

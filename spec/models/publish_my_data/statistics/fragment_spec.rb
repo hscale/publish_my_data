@@ -82,12 +82,25 @@ module PublishMyData
               # ... of hashes...
               {
                 # ... of dimensions ...
-                dimension_uri: "http://example.com/dimension_1",
+                dimension_uri: "uri:dimension/1",
                 dimension_values: [ "1a", "1b" ]
               }
             ]
           )
         }
+
+        # Currently this is the only example of this method
+        describe "#to_observation_query_options" do
+          specify {
+            expect(fragment.to_observation_query_options).to be == {
+              dataset_uri: 'uri:dataset/1' ,
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions: {
+                'uri:dimension/1' => ['1a', '1b']
+              }
+            }
+          }
+        end
 
         its(:number_of_dimensions) { should be == 1 }
         its(:volume_of_selected_cube) { should be == 2 }
@@ -140,11 +153,9 @@ module PublishMyData
               measure_property_uris: [ "uri:measure-property/1" ],
               observation_data: {
                 "uri:dataset/1" => {
-                  "uri:row-type/1" => {
-                    "uri:row/1" => {
-                      "http://example.com/dimension_1" => {
-                        "1a" => 1, "1b" => 2
-                      }
+                  "uri:row/1" => {
+                    "uri:dimension/1" => {
+                      "1a" => 1, "1b" => 2
                     }
                   }
                 }
@@ -325,22 +336,20 @@ module PublishMyData
               measure_property_uris: ["uri:measure-property/1"],
               observation_data: {
                 "uri:dataset/1" => {
-                  "uri:row-type/1" => {
-                    "uri:row/1" => {
-                      "1" => {
-                        "1a" => {
-                          "2" => {
-                            "2a" => { "3" => { "3a" => 1, "3b" =>  2, "3c" =>  3, "3d" =>  4 } },
-                            "2b" => { "3" => { "3a" => 5, "3b" =>  6, "3c" =>  7, "3d" =>  8 } },
-                            "2c" => { "3" => { "3a" => 9, "3b" => 10, "3c" => 11, "3d" => 12 } }
-                          }
-                        },
-                        "1b" => {
-                          "2" => {
-                            "2a" => { "3" => { "3a" => 13, "3b" => 14, "3c" => 15, "3d" => 16 } },
-                            "2b" => { "3" => { "3a" => 17, "3b" => 18, "3c" => 19, "3d" => 20 } },
-                            "2c" => { "3" => { "3a" => 21, "3b" => 22, "3c" => 23, "3d" => 24 } }
-                          }
+                  "uri:row/1" => {
+                    "1" => {
+                      "1a" => {
+                        "2" => {
+                          "2a" => { "3" => { "3a" => 1, "3b" =>  2, "3c" =>  3, "3d" =>  4 } },
+                          "2b" => { "3" => { "3a" => 5, "3b" =>  6, "3c" =>  7, "3d" =>  8 } },
+                          "2c" => { "3" => { "3a" => 9, "3b" => 10, "3c" => 11, "3d" => 12 } }
+                        }
+                      },
+                      "1b" => {
+                        "2" => {
+                          "2a" => { "3" => { "3a" => 13, "3b" => 14, "3c" => 15, "3d" => 16 } },
+                          "2b" => { "3" => { "3a" => 17, "3b" => 18, "3c" => 19, "3d" => 20 } },
+                          "2c" => { "3" => { "3a" => 21, "3b" => 22, "3c" => 23, "3d" => 24 } }
                         }
                       }
                     }

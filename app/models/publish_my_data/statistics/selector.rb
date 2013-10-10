@@ -196,6 +196,14 @@ module PublishMyData
         }
       end
 
+      def to_observation_query_options
+        {
+          row_dimension: 'http://opendatacommunities.org/def/ontology/geography/refArea',
+          row_uris:      @row_uris,
+          datasets:      @fragments.map(&:to_observation_query_options)
+        }
+      end
+
       def save
         Selector.repository.store(self)
       end
@@ -206,10 +214,6 @@ module PublishMyData
 
       def persisted?
         Selector.repository.persisted?(self)
-      end
-
-      def query_options
-        { }
       end
 
       def header_rows(labeller = Labeller.new)
