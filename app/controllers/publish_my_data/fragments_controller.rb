@@ -63,19 +63,26 @@ module PublishMyData
       @dataset = Dataset.find(params[:dataset_uri])
     end
 
+    # Converts {dimension_uri => csv_dimension_value_data} to {dimension_uri => [dim_value_1, ...]}
+    # and uses all dimension values for a dimension if none were provided
     def dimensions_from_params(dimension_params)
-      dimension_params.keys.map do |uri|
-        dimension_values = dimension_params[uri].split(', ')
-        {
-          dimension_uri: uri,
-          dimension_values: dimension_values.present? ? dimension_values : all_dimensions[uri]
-        }
+      dimension_params.reduce({}) do |dimensions, (dimension_uri, value_data)|
+        dimension_values_provided = value_data.split(', ')
+
+        dimension_values =
+          if dimension_values_provided.present?
+            dimension_values_provided
+          else
+            all_dimensions[dimension_uri]
+          end
+
+        dimensions.merge!(dimension_uri => dimension_values)
       end
     end
 
     def all_dimensions
       all_dimensions = params[:all_dataset_dimensions]
-      all_dimensions.keys.inject({}) do |dimensions_map, dimension_uri|
+      all_dimensions.keys.reduce({}) do |dimensions_map, dimension_uri|
         dimensions_map[dimension_uri] = all_dimensions[dimension_uri].split(', ')
         dimensions_map
       end

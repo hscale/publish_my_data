@@ -65,15 +65,12 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions: [
-                {
-                  dimension_uri: "uri:dimension/1",
-                  dimension_values: [
-                    "http://example.com/dimension_value_1a",
-                    "http://example.com/dimension_value_1b"
-                  ]
-                }
-              ]
+              dimensions: {
+                "uri:dimension/1" => [
+                  "http://example.com/dimension_value_1a",
+                  "http://example.com/dimension_value_1b"
+                ]
+              }
             )
           end
 
@@ -118,15 +115,12 @@ module PublishMyData
                   {
                     dataset_uri:          'uri:dataset/1',
                     measure_property_uri: 'uri:measure-property/1',
-                    dimensions: [
-                      {
-                        dimension_uri: "uri:dimension/1",
-                        dimension_values: [
-                          "http://example.com/dimension_value_1a",
-                          "http://example.com/dimension_value_1b"
-                        ]
-                      }
-                    ]
+                    dimensions: {
+                      "uri:dimension/1" => [
+                        "http://example.com/dimension_value_1a",
+                        "http://example.com/dimension_value_1b"
+                      ]
+                    }
                   }
                 ]
               end
@@ -281,7 +275,7 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions: [ ]
+              dimensions: { }
             )
           end
 
@@ -295,8 +289,7 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "uri:dimension/1",
-              dimension_values: [
+              "uri:dimension/1" => [
                 "http://example.com/dimension_value_1a",
                 "http://example.com/dimension_value_1b"
               ]
@@ -307,7 +300,7 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_1 ]
+              dimensions:           dimension_1
             )
           end
 
@@ -329,15 +322,13 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "uri:dimension/1",
-              dimension_values: [ "http://example.com/dimension_value_1a" ]
+              "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
             }
           }
 
           let(:dimension_2) {
             {
-              dimension_uri: "uri:dimension/2",
-              dimension_values: [
+              "uri:dimension/2" => [
                 "http://example.com/dimension_value_2a",
                 "http://example.com/dimension_value_2b"
               ]
@@ -348,7 +339,7 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_1, dimension_2 ]
+              dimensions:           dimension_1.merge(dimension_2)
             )
           end
 
@@ -371,8 +362,7 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "uri:dimension/1",
-              dimension_values: [
+              "uri:dimension/1" => [
                 "http://example.com/dimension_value_1a",
                 "http://example.com/dimension_value_1b"
               ]
@@ -381,8 +371,7 @@ module PublishMyData
 
           let(:dimension_2) {
             {
-              dimension_uri: "uri:dimension/2",
-              dimension_values: [
+              "uri:dimension/2" => [
                 "http://example.com/dimension_value_2a",
                 "http://example.com/dimension_value_2b"
               ]
@@ -393,7 +382,7 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_1, dimension_2 ]
+              dimensions:           dimension_1.merge(dimension_2)
             )
           end
 
@@ -416,8 +405,7 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "uri:dimension/1",
-              dimension_values: [
+              "uri:dimension/1" => [
                 "http://example.com/dimension_value_1a",
                 "http://example.com/dimension_value_1b",
               ]
@@ -430,12 +418,12 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_1 ]
+              dimensions:           dimension_1
             )
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_1 ]
+              dimensions:           dimension_1
             )
           end
 
@@ -451,22 +439,19 @@ module PublishMyData
 
           let(:dimension_1) {
             {
-              dimension_uri: "uri:dimension/1",
-              dimension_values: [ "http://example.com/dimension_value_1a" ]
+              "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
             }
           }
 
           let(:dimension_2) {
             {
-              dimension_uri: "uri:dimension/2",
-              dimension_values: [ "http://example.com/dimension_value_2a" ]
+              "uri:dimension/2" => [ "http://example.com/dimension_value_2a" ]
             }
           }
 
           let(:dimension_3) {
             {
-              dimension_uri: "http://example.com/dimension_3",
-              dimension_values: [
+              "http://example.com/dimension_3" => [
                 "http://example.com/dimension_value_3a",
                 "http://example.com/dimension_value_3b"
               ]
@@ -477,12 +462,12 @@ module PublishMyData
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_1 ]
+              dimensions:           dimension_1
             )
             selector.build_fragment(
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1',
-              dimensions:           [ dimension_2, dimension_3 ]
+              dimensions:           dimension_2.merge(dimension_3)
             )
           end
 
@@ -507,15 +492,13 @@ module PublishMyData
 
         let(:dimension_1) {
           {
-            dimension_uri: "uri:dimension/1",
-            dimension_values: [ "http://example.com/dimension_value_1a" ]
+            "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
           }
         }
 
         let(:dimension_2) {
           {
-            dimension_uri: "uri:dimension/2",
-            dimension_values: [
+            "uri:dimension/2" => [
               "http://example.com/dimension_value_2a",
               "http://example.com/dimension_value_2b"
             ]
@@ -573,7 +556,7 @@ module PublishMyData
                 selector.build_fragment(
                   dataset_uri:          'uri:dataset/1',
                   measure_property_uri: 'uri:measure-property/1',
-                  dimensions:           [ dimension_1 ]
+                  dimensions:           dimension_1
                 )
               end
 
@@ -590,12 +573,12 @@ module PublishMyData
                 selector.build_fragment(
                   dataset_uri:          'uri:dataset/1',
                   measure_property_uri: 'uri:measure-property/1',
-                  dimensions:           [ dimension_1 ]
+                  dimensions:           dimension_1
                 )
                 selector.build_fragment(
                   dataset_uri:          'uri:dataset/1',
                   measure_property_uri: 'uri:measure-property/2',
-                  dimensions:           [ dimension_2 ]
+                  dimensions:           dimension_2
                 )
               end
 
@@ -619,26 +602,17 @@ module PublishMyData
           selector.build_fragment(
             dataset_uri:          'uri:dataset/1',
             measure_property_uri: 'uri:measure-property/1',
-            dimensions: [
-              {
-                dimension_uri: 'uri:dimension/1',
-                dimension_values: ['uri:dimension/1/val/1', 'uri:dimension/1/val/2']
-              },
-              {
-                dimension_uri: 'uri:dimension/2',
-                dimension_values: ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
-              }
-            ]
+            dimensions: {
+              'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
+              'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
+            }
           )
           selector.build_fragment(
             dataset_uri:          'uri:dataset/2',
             measure_property_uri: 'uri:measure-property/2',
-            dimensions: [
-              {
-                dimension_uri: 'uri:dimension/3',
-                dimension_values: ['uri:dimension/3/val/1']
-              }
-            ]
+            dimensions: {
+              'uri:dimension/3' => ['uri:dimension/3/val/1']
+            }
           )
         end
 
@@ -672,7 +646,7 @@ module PublishMyData
 
         let!(:fragment) {
           selector.build_fragment(
-            dataset_uri: 'uri:unused', measure_property_uri: 'uri:unused', dimensions: []
+            dataset_uri: 'uri:unused', measure_property_uri: 'uri:unused', dimensions: {}
           )
         }
 

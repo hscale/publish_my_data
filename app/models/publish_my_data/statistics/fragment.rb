@@ -21,11 +21,12 @@ module PublishMyData
         {
           dataset_uri:          @dataset_uri,
           measure_property_uri: @measure_property_uri,
-          dimensions:           simplified_dimensions
+          dimensions:           @dimensions
         }
       end
 
       # We want to use this structure everywhere
+      # TODO: delete me
       def simplified_dimensions
         @dimensions.reduce({}) { |dimensions, dimension|
           dimensions.merge!(
@@ -35,16 +36,11 @@ module PublishMyData
       end
 
       def values_for_row(options)
-        # [].inject(...) => nil below means we have to catch the empty case
+        # [].reduce(...) => nil below means we have to catch the empty case
         return [] if @dimensions.empty?
 
         # Yes, it works. Don't touch it.
-        @dimensions.map { |dimension|
-          dimension_uri = dimension.fetch(:dimension_uri)
-          dimension.fetch(:dimension_values).inject([]) { |coords, value|
-            coords << { dimension_uri => value }
-          }
-        }.inject(:product).
+        dimension_value_pairs.inject(:product).
           map { |maybe_already_flattened_product|
             if maybe_already_flattened_product.is_a?(Hash)
               maybe_already_flattened_product
@@ -71,16 +67,12 @@ module PublishMyData
       end
 
       def number_of_dimensions
-        @dimensions.length
+        @dimensions.keys.length
       end
 
       def dimension_value_labels
-        @dimensions.map.with_index { |dimension, level|
-          dimension.fetch(:dimension_values).map { |dimension_value|
-            # dimension_value.fetch(:dimension_value_label)
-            # TEMP HACK:
-            dimension_value
-          } * volume_at_level_above(level)
+        @dimensions.map.with_index { |(_dimension, values), level|
+          values * volume_at_level_above(level)
         }
       end
 
@@ -103,8 +95,8 @@ module PublishMyData
       end
 
       def volume_at_level(level)
-        @dimensions[0..level].inject(1) { |volume, dimension|
-          volume * dimension.fetch(:dimension_values).length
+        @dimensions.keys[0..level].inject(1) { |volume, dimension|
+          volume * @dimensions[dimension].length
         }
       end
 
@@ -121,6 +113,12 @@ module PublishMyData
       end
 
       private
+
+      def dimension_value_pairs
+        @dimensions.reduce([]) { |coords, (dimension_uri, dimension_values)|
+          coords << dimension_values.map { |value| {dimension_uri => value} }
+        }
+      end
 
       def bottom_level
         number_of_dimensions

@@ -8,7 +8,7 @@ module PublishMyData
           Fragment.new(
             dataset_uri:          'uri:dataset/1',
             measure_property_uri: 'uri:measure-property/1',
-            dimensions:           [ ]
+            dimensions:           { }
           )
         }
 
@@ -77,15 +77,9 @@ module PublishMyData
           Fragment.new(
             dataset_uri:          'uri:dataset/1',
             measure_property_uri: 'uri:measure-property/1',
-            # An array...
-            dimensions: [
-              # ... of hashes...
-              {
-                # ... of dimensions ...
-                dimension_uri: "uri:dimension/1",
-                dimension_values: [ "1a", "1b" ]
-              }
-            ]
+            dimensions: {
+              "uri:dimension/1" => [ "1a", "1b" ]
+            }
           )
         }
 
@@ -163,10 +157,6 @@ module PublishMyData
             )
           }
 
-          it "handles empty dimension value arrays" do
-            pending
-          end
-
           specify {
             expect(
               fragment.values_for_row(
@@ -184,20 +174,11 @@ module PublishMyData
           Fragment.new(
             dataset_uri:          'uri:dataset/1',
             measure_property_uri: 'uri:measure-property/1',
-            dimensions: [
-              {
-                dimension_uri: "1",
-                dimension_values: [ "1a", "1b" ]
-              },
-              {
-                dimension_uri: "2",
-                dimension_values: [ "2a", "2b", "2c" ]
-              },
-              {
-                dimension_uri: "3",
-                dimension_values: [ "3a", "3b", "3c", "3d" ]
-              }
-            ]
+            dimensions: {
+              "1" => [ "1a", "1b" ],
+              "2" => [ "2a", "2b", "2c" ],
+              "3" => [ "3a", "3b", "3c", "3d" ]
+            }
           )
         }
 
