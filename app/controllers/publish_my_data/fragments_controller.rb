@@ -46,7 +46,7 @@ module PublishMyData
     end
 
     def destroy
-      @selector.remove_fragment(params[:index].to_i)
+      @selector.remove_fragment(params[:id])
 
       if @selector.save
         redirect_to selector_path(@selector)

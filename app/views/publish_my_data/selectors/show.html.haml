@@ -18,16 +18,13 @@
           %thead
             %tr
               %td
-                - @selector.fragments.each_with_index do |fragment, index|
-                  %th.fragment-actions{ colspan: fragment.volume_of_selected_cube }
-                    /= fragment.dataset_uri
-                    = link_to selector_fragments_path(@selector, index: index), method: :delete, confirm: 'Are you sure?' do
-                      &times;
-            - @header_rows.each_with_index do |header_row, index|
+                - @selector.fragments.each do |fragment|
+                  %th.measure{ colspan: fragment.volume_of_selected_cube }= fragment.measure_label
+            - @selector.header_rows.each do |header_row|
               %tr
                 %td
                 - header_row.each do |header_column|
-                  %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values }= header_column.label
+                  %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values, class: dom_class_for_header_column(header_column) }= header_column.label
           %tbody
             - @table_rows.each_with_index do |row, index|
               %tr
@@ -37,7 +34,14 @@
                 - if @selector_empty && index == 0
                   %td.intro{rowspan: "#{ @table_rows.size + 1 }"}
                     %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
-        .foot &hellip;
+          %tfoot
+            %tr
+              %th &hellip;
+              - @selector.fragments.each_with_index do |fragment, index|
+                %th.fragment-actions{ 'colspan' => fragment.volume_of_selected_cube }
+                  = link_to selector_fragment_path(@selector, id: fragment.id), method: :delete, class: 'btn btn-remove-data', style: 'display: none;' do
+                    %i.icon-circled-minus
+                    Remove Data
       .actions
         = link_to datasets_selector_fragments_path(@selector), 'class' => 'btn btn-add-data', 'data-toggle' => 'modal', 'data-target' => '#add-data-modal' do
           %i.icon-circled-plus

@@ -6,7 +6,7 @@ module PublishMyData
       attr_reader :id, :dataset_uri
 
       def initialize(attributes)
-        @id                   = attributes.fetch(:id) { UUIDTools::UUID.random_create }
+        @id                   = attributes.fetch(:id) { UUIDTools::UUID.random_create.to_s }
         @dataset_uri          = attributes.fetch(:dataset_uri)
         @measure_property_uri = attributes.fetch(:measure_property_uri)
         @dimensions           = attributes.fetch(:dimensions)
@@ -100,6 +100,11 @@ module PublishMyData
         else
           volume_at_level(level - 1)
         end
+      end
+
+      # TODO: Implement
+      def measure_label
+        "Measure label goes here"
       end
 
       def save
