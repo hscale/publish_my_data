@@ -3,8 +3,6 @@ require 'sparql/client'
 module PublishMyData
   module Statistics
     class ObservationSource
-      REF_AREA = 'http://opendatacommunities.org/def/ontology/geography/refArea'
-
       class << self
         def measure_property_uri(dataset_uri)
           results = Tripod::SparqlClient::Query.select <<-SPARQL
@@ -40,8 +38,8 @@ module PublishMyData
         }
         query = RDF::Query.new(
           obs: {
-            uri(REF_AREA)             => uri(row_uri),
             uri(measure_property_uri) => :measure,
+            uri(@row_dimension) => uri(row_uri),
           }.merge(coordinate_clauses)
         )
 
