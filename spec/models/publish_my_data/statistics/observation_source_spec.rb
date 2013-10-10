@@ -223,6 +223,10 @@ module PublishMyData
         end
       end
 
+      it "has a Labeller" do
+        pending
+      end
+
       it "uses a graph block" do
         pending
       end
