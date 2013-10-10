@@ -1,9 +1,12 @@
+require 'uuidtools'
+
 module PublishMyData
   module Statistics
     class Fragment
-      attr_reader :selector, :dataset_uri
+      attr_reader :id, :dataset_uri
 
       def initialize(attributes)
+        @id                   = attributes.fetch(:id) { UUIDTools::UUID.random_create }
         @dataset_uri          = attributes.fetch(:dataset_uri)
         @measure_property_uri = attributes.fetch(:measure_property_uri)
         @dimensions           = attributes.fetch(:dimensions)
@@ -11,6 +14,7 @@ module PublishMyData
 
       def to_h
         {
+          id:                   @id,
           dataset_uri:          @dataset_uri,
           measure_property_uri: @measure_property_uri,
           dimensions:           @dimensions

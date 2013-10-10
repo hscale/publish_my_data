@@ -253,8 +253,8 @@ module PublishMyData
         fragment
       end
 
-      def remove_fragment(fragment_index)
-        @fragments.delete_at(fragment_index)
+      def remove_fragment(fragment_id)
+        @fragments.reject! { |fragment| fragment.id == fragment_id }
       end
 
       class Row

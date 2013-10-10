@@ -650,8 +650,8 @@ module PublishMyData
           )
         }
 
-        it 'should remove the fragment at the given index' do
-          selector.remove_fragment(0)
+        it 'should remove the fragment with the given identifier' do
+          selector.remove_fragment(fragment.id)
           selector.fragments.should_not include(fragment)
         end
       end
