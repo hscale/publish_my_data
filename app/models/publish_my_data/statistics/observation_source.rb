@@ -21,11 +21,22 @@ module PublishMyData
         end
       end
 
-      def initialize(query_options)
-        @row_dimension  = query_options.fetch(:row_dimension)
-        @row_uris       = query_options.fetch(:row_uris)
+      def initialize
+        @row_dimension = nil
+        @row_uris = [ ]
+        @datasets = [ ]
+      end
 
-        @datasets       = query_options.fetch(:datasets)
+      def row_uris_detected(row_dimension_uri, row_uris)
+        enforce_one_row_dimension(row_dimension_uri)
+        enforce_internal_graph_not_loaded
+        @row_dimension = row_dimension_uri
+        @row_uris.concat(row_uris)
+      end
+
+      def dataset_detected(dataset_description)
+        enforce_internal_graph_not_loaded
+        @datasets << dataset_description
       end
 
       def observation_value(description)
@@ -50,6 +61,26 @@ module PublishMyData
       end
 
       private
+
+      # Maybe it would be possible to support multiple row dimensions,
+      # but it wouldn't be easy and would affect the query we use
+      def enforce_one_row_dimension(row_dimension_uri)
+        if @row_dimension && @row_dimension != row_dimension_uri
+          raise ArgumentError.new(
+            "Only only row dimension type supported (given <#{row_dimension_uri}>, already using <#{@row_dimension}>)"
+          )
+        end
+      end
+
+      # There's no reason we couldn't detect rows, run a query, detect more rows etc,
+      # but currently the code doesn't support this, so let's make it obvious
+      def enforce_internal_graph_not_loaded
+        if @observation_graph
+          raise RuntimeError.new(
+            "The ObservationSource internal graph has already been loaded from the database"
+          )
+        end
+      end
 
       def observation_graph
         @observation_graph ||= begin

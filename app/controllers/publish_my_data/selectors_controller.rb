@@ -50,10 +50,14 @@ module PublishMyData
     def show
       @selector = Statistics::Selector.find(params[:id])
 
-      @observation_source = Statistics::ObservationSource.new(@selector.to_observation_query_options)
+      snapshot = Statistics::Snapshot.new
+      observation_source = Statistics::ObservationSource.new
 
-      @header_rows    = @selector.header_rows
-      @table_rows     = @selector.table_rows(@observation_source)
+      # :row_limit currently unused
+      @snapshot = @selector.take_snapshot(snapshot, observation_source, row_limit: 20)
+
+      @header_rows    = @snapshot.header_rows
+      @table_rows     = @selector.table_rows(observation_source)
       @selector_empty = @selector.fragments.empty?
     end
 

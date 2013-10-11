@@ -85,16 +85,6 @@ module PublishMyData
         end
       end
 
-      class HeaderColumn
-        attr_reader :label
-        attr_reader :number_of_encompassed_dimension_values
-
-        def initialize(attributes = {})
-          @label = attributes.fetch(:label, nil)
-          @number_of_encompassed_dimension_values = attributes.fetch(:number_of_encompassed_dimension_values, 1)
-        end
-      end
-
       # Persistence API
       class << self
         def create(attributes)
@@ -196,14 +186,6 @@ module PublishMyData
         }
       end
 
-      def to_observation_query_options
-        {
-          row_dimension: 'http://opendatacommunities.org/def/ontology/geography/refArea',
-          row_uris:      @row_uris,
-          datasets:      @fragments.map(&:to_observation_query_options)
-        }
-      end
-
       def save
         Selector.repository.store(self)
       end
@@ -216,35 +198,19 @@ module PublishMyData
         Selector.repository.persisted?(self)
       end
 
-      def header_rows(labeller = Labeller.new)
-        # This won't handle mismatched sizes yet
-        # Also hack the null case for now
-        number_of_rows = @fragments.map(&:number_of_dimensions).max || 0
+      # options = { row_limit: -1 }
+      def take_snapshot(snapshot, observation_source, options = { })
+        observation_source.row_uris_detected(
+          'http://opendatacommunities.org/def/ontology/geography/refArea',
+          @row_uris
+        )
 
-        bottom_up_header_rows = [ ]
-
-        number_of_rows.times do |row_index|
-          current_row = bottom_up_header_rows[row_index] = [ ]
-
-          @fragments.each do |fragment|
-            if fragment.number_of_dimensions <= row_index
-              current_row << HeaderColumn.new
-            else
-              index_from_end = -(row_index + 1)
-
-              columns_for_row = fragment.dimension_value_labels[index_from_end].map { |label|
-                HeaderColumn.new(
-                  label: labeller.label_for(label),
-                  number_of_encompassed_dimension_values: fragment.number_of_encompassed_dimension_values_at_level(index_from_end)
-                )
-              }
-
-              current_row.concat(columns_for_row)
-            end
-          end
+        @fragments.each do |fragment|
+          fragment.inform_observation_source(observation_source)
+          fragment.inform_snapshot(snapshot)
         end
 
-        bottom_up_header_rows.reverse
+        snapshot
       end
 
       def build_fragment(fragment_description)

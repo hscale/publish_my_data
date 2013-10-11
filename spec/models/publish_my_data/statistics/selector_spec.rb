@@ -250,239 +250,96 @@ module PublishMyData
         end
       end
 
-      describe "#header_rows" do
-        subject(:selector) { Selector.new(geography_type: 'unused') }
+      describe "#take_snapshot" do
+        let(:snapshot) {
+          double(Snapshot, dataset_detected: nil, dimension_detected: nil)
+        }
 
-        let(:labeller) { MockLabeller.new }
+        let(:observation_source) {
+          double(ObservationSource,
+            row_uris_detected: nil,
+            dataset_detected: nil
+          )
+        }
 
-        def labels_for(header_rows)
-          header_rows.map { |row|
-            row.map { |column| column.label }
-          }
+        subject(:selector) {
+          Selector.new(
+            geography_type: 'uri:geography-type/1',
+            row_uris:       ['uri:row/1', 'uri:row/2', 'uri:row/3']
+          )
+        }
+
+        before(:each) do
+          selector.build_fragment(
+            dataset_uri:          'uri:dataset/1',
+            measure_property_uri: 'uri:measure-property/1',
+            dimensions: {
+              'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
+              'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
+            }
+          )
+          selector.build_fragment(
+            dataset_uri:          'uri:dataset/2',
+            measure_property_uri: 'uri:measure-property/2',
+            dimensions: {
+              'uri:dimension/3' => ['uri:dimension/3/val/1']
+            }
+          )
         end
 
-        def widths_for(header_rows)
-          header_rows.map { |row|
-            row.map { |column| column.number_of_encompassed_dimension_values }
-          }
+        let!(:snapshot_result) { selector.take_snapshot(snapshot, observation_source) }
+
+        it "returns the snapshot" do
+          expect(snapshot_result).to be == snapshot
         end
 
-        context "empty" do
-          specify {
-            # Not actually sure what this should do yet
-            expect(labels_for(selector.header_rows(labeller))).to be == [ ]
-          }
+        it "primes the labeller" do
+          pending
         end
 
-        context "one fragment, no dimensions" do
-          let(:dataset) { double("dataset") }
+        describe "priming the observation source" do
+          it "notifies the observation source of the datasets" do
+            # Full interaction is specified in Fragment
+            expect(observation_source).to have_received(:dataset_detected).with(
+              hash_including(dataset_uri: 'uri:dataset/1')
+            )
 
-          before(:each) do
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions: { }
+            expect(observation_source).to have_received(:dataset_detected).with(
+              hash_including(dataset_uri: 'uri:dataset/2')
             )
           end
 
-          specify {
-            expect(labels_for(selector.header_rows(labeller))).to be == [ ]
-          }
+          describe "row construction" do
+            context "no row limit" do
+              it "builds the rows" do
+                expect(observation_source).to have_received(:row_uris_detected).with(
+                  'http://opendatacommunities.org/def/ontology/geography/refArea',
+                  ['uri:row/1', 'uri:row/2', 'uri:row/3']
+                )
+              end
+            end
+
+            context "row limit specified" do
+              it "builds the rows" do
+                pending
+              end
+            end
+          end
         end
 
-        context "one fragment, one dimension with two values" do
-          let(:dataset) { double("dataset") }
+        describe "priming the snapshot" do
+          it "informs the snapshot of the datasets" do
+            # Full interaction is specified in Fragment
+            # Not sure we need to pass the dataset URI but for now it will
+            # do as proof that we told the Fragment to inform the snapshot
+            expect(snapshot).to have_received(:dataset_detected).with(
+              hash_including(dataset_uri: 'uri:dataset/1')
+            )
 
-          let(:dimension_1) {
-            {
-              "uri:dimension/1" => [
-                "http://example.com/dimension_value_1a",
-                "http://example.com/dimension_value_1b"
-              ]
-            }
-          }
-
-          before(:each) do
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_1
+            expect(snapshot).to have_received(:dataset_detected).with(
+              hash_including(dataset_uri: 'uri:dataset/2')
             )
           end
-
-          specify {
-            expect(labels_for(selector.header_rows(labeller))).to be == [
-              [ "Dimension 1a", "Dimension 1b" ]
-            ]
-          }
-
-          specify {
-            expect(widths_for(selector.header_rows(labeller))).to be == [
-              [ 1, 1 ]
-            ]
-          }
-        end
-
-        context "one fragment, two dimensions of one and two values respectively" do
-          let(:dataset) { double("dataset") }
-
-          let(:dimension_1) {
-            {
-              "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
-            }
-          }
-
-          let(:dimension_2) {
-            {
-              "uri:dimension/2" => [
-                "http://example.com/dimension_value_2a",
-                "http://example.com/dimension_value_2b"
-              ]
-            }
-          }
-
-          before(:each) do
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_1.merge(dimension_2)
-            )
-          end
-
-          specify {
-            expect(labels_for(selector.header_rows(labeller))).to be == [
-              [ "Dimension 1a" ],
-              [ "Dimension 2a", "Dimension 2b" ]
-            ]
-          }
-
-          specify {
-            expect(widths_for(selector.header_rows(labeller))).to be == [
-              [ 2 ], [ 1, 1 ]
-            ]
-          }
-        end
-
-        context "one fragment, two dimensions both of two values" do
-          let(:dataset) { double("dataset") }
-
-          let(:dimension_1) {
-            {
-              "uri:dimension/1" => [
-                "http://example.com/dimension_value_1a",
-                "http://example.com/dimension_value_1b"
-              ]
-            }
-          }
-
-          let(:dimension_2) {
-            {
-              "uri:dimension/2" => [
-                "http://example.com/dimension_value_2a",
-                "http://example.com/dimension_value_2b"
-              ]
-            }
-          }
-
-          before(:each) do
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_1.merge(dimension_2)
-            )
-          end
-
-          specify {
-            expect(labels_for(selector.header_rows(labeller))).to be == [
-              [ "Dimension 1a", "Dimension 1b" ],
-              [ "Dimension 2a", "Dimension 2b", "Dimension 2a", "Dimension 2b" ]
-            ]
-          }
-
-          specify {
-            expect(widths_for(selector.header_rows(labeller))).to be == [
-              [ 2, 2 ], [ 1, 1, 1, 1 ]
-            ]
-          }
-        end
-
-        context "two fragments, two dimensions with two values each" do
-          let(:dataset) { double("dataset") }
-
-          let(:dimension_1) {
-            {
-              "uri:dimension/1" => [
-                "http://example.com/dimension_value_1a",
-                "http://example.com/dimension_value_1b",
-              ]
-            }
-          }
-
-          before(:each) do
-            # You wouldn't re-use a dimension across fragments for real,
-            # but just to create an example it's fine
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_1
-            )
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_1
-            )
-          end
-
-          specify {
-            expect(labels_for(selector.header_rows(labeller))).to be == [
-              [ "Dimension 1a", "Dimension 1b", "Dimension 1a", "Dimension 1b" ]
-            ]
-          }
-        end
-
-        context "two fragments, with one and two dimensions respectively" do
-          let(:dataset) { double("dataset") }
-
-          let(:dimension_1) {
-            {
-              "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
-            }
-          }
-
-          let(:dimension_2) {
-            {
-              "uri:dimension/2" => [ "http://example.com/dimension_value_2a" ]
-            }
-          }
-
-          let(:dimension_3) {
-            {
-              "http://example.com/dimension_3" => [
-                "http://example.com/dimension_value_3a",
-                "http://example.com/dimension_value_3b"
-              ]
-            }
-          }
-
-          before(:each) do
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_1
-            )
-            selector.build_fragment(
-              dataset_uri:          'uri:dataset/1',
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions:           dimension_2.merge(dimension_3)
-            )
-          end
-
-          specify {
-            expect(labels_for(selector.header_rows(labeller))).to be == [
-              [ nil, "Dimension 2a" ],
-              [ "Dimension 1a", "Dimension 3a", "Dimension 3b" ]
-            ]
-          }
         end
       end
 
@@ -593,57 +450,6 @@ module PublishMyData
               end
             end
           end
-        end
-      end
-
-      describe "#to_observation_query_options" do
-        subject(:selector) {
-          Selector.new(
-            geography_type: 'uri:geography-type/1',
-            row_uris:       ['uri:row/1', 'uri:row/2']
-          )
-        }
-
-        before(:each) do
-          selector.build_fragment(
-            dataset_uri:          'uri:dataset/1',
-            measure_property_uri: 'uri:measure-property/1',
-            dimensions: {
-              'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
-              'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
-            }
-          )
-          selector.build_fragment(
-            dataset_uri:          'uri:dataset/2',
-            measure_property_uri: 'uri:measure-property/2',
-            dimensions: {
-              'uri:dimension/3' => ['uri:dimension/3/val/1']
-            }
-          )
-        end
-
-        it "returns all the data needed for an ObservationSource" do
-          expect(selector.to_observation_query_options).to be == {
-            row_dimension: 'http://opendatacommunities.org/def/ontology/geography/refArea',
-            row_uris: ['uri:row/1', 'uri:row/2'],
-            datasets: [
-              {
-                dataset_uri: 'uri:dataset/1' ,
-                measure_property_uri: 'uri:measure-property/1',
-                dimensions: {
-                  'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
-                  'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
-                }
-              },
-              {
-                dataset_uri: 'uri:dataset/2' ,
-                measure_property_uri: 'uri:measure-property/2',
-                dimensions: {
-                  'uri:dimension/3' => ['uri:dimension/3/val/1']
-                }
-              }
-            ]
-          }
         end
       end
 

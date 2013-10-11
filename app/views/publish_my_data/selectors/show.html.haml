@@ -18,13 +18,14 @@
           %thead
             %tr
               %td
+                -# TODO: header row type for this
                 - @selector.fragments.each do |fragment|
                   %th.measure{ colspan: fragment.volume_of_selected_cube, class: dom_class_for_fragment(fragment) }= fragment.measure_label
-            - @selector.header_rows.each do |header_row|
+            - @header_rows.each do |header_row|
               %tr
                 %td
                 - header_row.each do |header_column|
-                  %th.hardwrap{ colspan: header_column.number_of_encompassed_dimension_values, class: dom_class_for_header_column(header_column) }= header_column.label
+                  %th.hardwrap{ colspan: header_column.width, class: dom_class_for_header_column(header_column) }= header_column.label
           %tbody
             - @table_rows.each_with_index do |row, index|
               %tr

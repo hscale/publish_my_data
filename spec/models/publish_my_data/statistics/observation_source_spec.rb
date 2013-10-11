@@ -4,27 +4,27 @@ module PublishMyData
   module Statistics
     describe ObservationSource do
       subject(:source) {
-        ObservationSource.new(
-          row_dimension: 'http://opendatacommunities.org/def/ontology/geography/refArea',
-          row_uris: ['uri:row/1', 'uri:row/2'],
-          datasets: [
-            {
-              dataset_uri: 'uri:pmd/dataset/1' ,
-              measure_property_uri: 'uri:measure-property/1',
-              dimensions: {
-                'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
-                'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
-              }
-            },
-            {
-              dataset_uri: 'uri:pmd/dataset/2' ,
-              measure_property_uri: 'uri:measure-property/2',
-              dimensions: {
-                'uri:dimension/3' => ['uri:dimension/3/val/1']
-              }
+        ObservationSource.new.tap do |source|
+          source.row_uris_detected(
+            'http://opendatacommunities.org/def/ontology/geography/refArea',
+            ['uri:row/1', 'uri:row/2']
+          )
+          source.dataset_detected(
+            dataset_uri: 'uri:pmd/dataset/1' ,
+            measure_property_uri: 'uri:measure-property/1',
+            dimensions: {
+              'uri:dimension/1' => ['uri:dimension/1/val/1', 'uri:dimension/1/val/2'],
+              'uri:dimension/2' => ['uri:dimension/2/val/1', 'uri:dimension/2/val/2']
             }
-          ]
-        )
+          )
+          source.dataset_detected(
+            dataset_uri: 'uri:pmd/dataset/2' ,
+            measure_property_uri: 'uri:measure-property/2',
+            dimensions: {
+              'uri:dimension/3' => ['uri:dimension/3/val/1']
+            }
+          )
+        end
       }
 
       def insert_statements_into_graph(data, graph_uri)

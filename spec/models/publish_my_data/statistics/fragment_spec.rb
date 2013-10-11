@@ -43,34 +43,6 @@ module PublishMyData
           end
         end
 
-        describe "#volume_at_level" do
-          describe "positive indexing" do
-            example "level 0" do
-              expect(fragment.volume_at_level(0)).to be == 1
-            end
-          end
-
-          describe "negative indexing" do
-            example "level -1" do
-              expect(fragment.volume_at_level(-1)).to be == 1
-            end
-          end
-        end
-
-        describe "#volume_at_level_above" do
-          describe "positive indexing" do
-            example "above level 0" do
-              expect(fragment.volume_at_level_above(0)).to be == 1
-            end
-          end
-
-          describe "negative indexing" do
-            example "above level -1" do
-              expect(fragment.volume_at_level_above(-1)).to be == 1
-            end
-          end
-        end
-
         describe "#values_for_row" do
           let(:observation_source) { :unused }
 
@@ -92,34 +64,36 @@ module PublishMyData
             dataset_uri:          'uri:dataset/1',
             measure_property_uri: 'uri:measure-property/1',
             dimensions: {
-              "uri:dimension/1" => [ "1a", "1b" ]
+              "uri:dimension/1" => [ 'uri:1/a', 'uri:1/b' ]
             }
           )
         }
 
         # Currently this is the only example of this method
-        describe "#to_observation_query_options" do
-          specify {
-            expect(fragment.to_observation_query_options).to be == {
+        # #inform_snapshot is in a different block
+        describe "#inform_observation_source" do
+          let(:observation_source) {
+            double(ObservationSource,
+              row_uris_detected:  nil,
+              dataset_detected:   nil
+            )
+          }
+
+          it "notifies the observation source of the dataset" do
+            fragment.inform_observation_source(observation_source)
+
+            expect(observation_source).to have_received(:dataset_detected).with(
               dataset_uri: 'uri:dataset/1' ,
               measure_property_uri: 'uri:measure-property/1',
               dimensions: {
-                'uri:dimension/1' => ['1a', '1b']
+                'uri:dimension/1' => ['uri:1/a', 'uri:1/b']
               }
-            }
-          }
+            )
+          end
         end
 
         its(:number_of_dimensions) { should be == 1 }
         its(:volume_of_selected_cube) { should be == 2 }
-
-        describe "#dimension_value_labels" do
-          specify {
-            expect(fragment.dimension_value_labels).to be == [
-              [ "1a", "1b" ]
-            ]
-          }
-        end
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do
@@ -135,26 +109,6 @@ module PublishMyData
           end
         end
 
-        describe "#volume_at_level" do
-          example "level 0" do
-            expect(fragment.volume_at_level(0)).to be == 2
-          end
-        end
-
-        describe "#volume_at_level_above" do
-          describe "positive indexing" do
-            example "above level 0" do
-              expect(fragment.volume_at_level_above(0)).to be == 1
-            end
-          end
-
-          describe "negative indexing" do
-            example "above level -1" do
-              expect(fragment.volume_at_level_above(-1)).to be == 1
-            end
-          end
-        end
-
         describe "#values_for_row" do
           let(:observation_source) {
             MockObservationSource.new(
@@ -163,7 +117,7 @@ module PublishMyData
                 "uri:dataset/1" => {
                   "uri:row/1" => {
                     "uri:dimension/1" => {
-                      "1a" => 1, "1b" => 2
+                      'uri:1/a' => 1, 'uri:1/b' => 2
                     }
                   }
                 }
@@ -189,104 +143,80 @@ module PublishMyData
             dataset_uri:          'uri:dataset/1',
             measure_property_uri: 'uri:measure-property/1',
             dimensions: {
-              "1" => [ "1a", "1b" ],
-              "2" => [ "2a", "2b", "2c" ],
-              "3" => [ "3a", "3b", "3c", "3d" ]
+              'uri:dimension/1' => [ 'uri:1/a', 'uri:1/b' ],
+              'uri:dimension/2' => [ 'uri:2/a', 'uri:2/b', 'uri:2/c' ],
+              'uri:dimension/3' => [ 'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d' ]
             }
           )
         }
 
-        its(:number_of_dimensions) { should be == 3 }
-
-        its(:volume_of_selected_cube) { should be == 24 }
-
-        describe "#volume_at_level" do
-          describe "positive indexing" do
-            example "level 0" do
-              expect(fragment.volume_at_level(0)).to be == 2
-            end
-
-            example "level 1" do
-              expect(fragment.volume_at_level(1)).to be == 6
-            end
-
-            example "level 2" do
-              expect(fragment.volume_at_level(2)).to be == 24
-            end
-          end
-
-          describe "negative indexing (-1 == 3)" do
-            example "level -4" do
-              expect(fragment.volume_at_level(-4)).to be == 1
-            end
-
-            example "level -3" do
-              expect(fragment.volume_at_level(-3)).to be == fragment.volume_at_level(0)
-            end
-
-            example "level -2" do
-              expect(fragment.volume_at_level(-2)).to be == fragment.volume_at_level(1)
-            end
-
-            example "level -1" do
-              expect(fragment.volume_at_level(-1)).to be == fragment.volume_at_level(2)
-            end
-          end
-        end
-
-        describe "#volume_at_level_above" do
-          describe "positive indexing" do
-            example "above level 0" do
-              expect(fragment.volume_at_level_above(0)).to be == 1
-            end
-
-            example "above level 1" do
-              expect(fragment.volume_at_level_above(1)).to be == fragment.volume_at_level(0)
-            end
-
-            example "above level 2" do
-              expect(fragment.volume_at_level_above(2)).to be == fragment.volume_at_level(1)
-            end
-
-            example "above level 3" do
-              expect(fragment.volume_at_level_above(3)).to be == fragment.volume_at_level(2)
-            end
-          end
-
-          describe "negative indexing" do
-            example "above level -3" do
-              expect(fragment.volume_at_level_above(-3)).to be == 1
-            end
-
-            example "above level -2" do
-              expect(fragment.volume_at_level_above(-2)).to be == fragment.volume_at_level(0)
-            end
-
-            example "above level -1" do
-              expect(fragment.volume_at_level_above(-1)).to be == fragment.volume_at_level(1)
-            end
-          end
-        end
-
-        describe "#dimension_value_labels" do
-          specify {
-            expect(fragment.dimension_value_labels).to be == [
-              [ "1a", "1b" ],
-              [
-                "2a", "2b", "2c",
-                "2a", "2b", "2c"
-              ],
-              [
-                "3a", "3b", "3c", "3d",
-                "3a", "3b", "3c", "3d",
-                "3a", "3b", "3c", "3d",
-                "3a", "3b", "3c", "3d",
-                "3a", "3b", "3c", "3d",
-                "3a", "3b", "3c", "3d"
-              ]
-            ]
+        # Ditto - maybe we should break these methods out into a
+        # content-independent example group
+        describe "#inform_snapshot" do
+          let(:snapshot) {
+            double(Snapshot, dataset_detected: nil, dimension_detected: nil)
           }
+
+          before(:each) do
+            fragment.inform_snapshot(snapshot)
+          end
+
+          it "notifies the snapshot of the dataset" do
+            # I'm guessing we need the measure property URI here
+            # (we do need it somewhere though)
+            expect(snapshot).to have_received(:dataset_detected).with(
+              dataset_uri: 'uri:dataset/1' ,
+              measure_property_uri: 'uri:measure-property/1'
+            )
+          end
+
+          it "notifies the snapshot of each dimension (header row)" do
+            expect(snapshot).to have_received(:dimension_detected).with(
+              dimension_uri: 'uri:dimension/1',
+              column_width: 12,
+              column_uris: ['uri:1/a', 'uri:1/b']
+            )
+            expect(snapshot).to have_received(:dimension_detected).with(
+              dimension_uri: 'uri:dimension/2',
+              column_width: 4,
+              column_uris: [
+                'uri:2/a', 'uri:2/b', 'uri:2/c',
+                'uri:2/a', 'uri:2/b', 'uri:2/c'
+              ]
+            )
+            expect(snapshot).to have_received(:dimension_detected).with(
+              dimension_uri: 'uri:dimension/3',
+              column_width: 1,
+              column_uris: [
+                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
+                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
+                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
+                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
+                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
+                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d'
+              ]
+            )
+          end
+
+          it "notifies the snapshot of the dimension rows from the bottom up" do
+            # When spies support ordering, let's prove that it works
+            # https://github.com/rspec/rspec-mocks/issues/430
+            # (I'm not messing up the rest of the code)
+            expect(snapshot).to have_received(:dimension_detected).with(
+              hash_including(dimension_uri: 'uri:dimension/3')
+            )#.ordered
+            expect(snapshot).to have_received(:dimension_detected).with(
+              hash_including(dimension_uri: 'uri:dimension/2')
+            )#.ordered
+            expect(snapshot).to have_received(:dimension_detected).with(
+              hash_including(dimension_uri: 'uri:dimension/1')
+            )#.ordered
+          end
         end
+
+
+        its(:number_of_dimensions) { should be == 3 }
+        its(:volume_of_selected_cube) { should be == 24 }
 
         describe "#number_of_encompassed_dimension_values_at_level" do
           describe "positive indexing" do
@@ -332,19 +262,19 @@ module PublishMyData
               observation_data: {
                 "uri:dataset/1" => {
                   "uri:row/1" => {
-                    "1" => {
-                      "1a" => {
-                        "2" => {
-                          "2a" => { "3" => { "3a" => 1, "3b" =>  2, "3c" =>  3, "3d" =>  4 } },
-                          "2b" => { "3" => { "3a" => 5, "3b" =>  6, "3c" =>  7, "3d" =>  8 } },
-                          "2c" => { "3" => { "3a" => 9, "3b" => 10, "3c" => 11, "3d" => 12 } }
+                    'uri:dimension/1' => {
+                      'uri:1/a' => {
+                        'uri:dimension/2' => {
+                          'uri:2/a' => { 'uri:dimension/3' => { 'uri:3/a' => 1, 'uri:3/b' =>  2, 'uri:3/c' =>  3, 'uri:3/d' =>  4 } },
+                          'uri:2/b' => { 'uri:dimension/3' => { 'uri:3/a' => 5, 'uri:3/b' =>  6, 'uri:3/c' =>  7, 'uri:3/d' =>  8 } },
+                          'uri:2/c' => { 'uri:dimension/3' => { 'uri:3/a' => 9, 'uri:3/b' => 10, 'uri:3/c' => 11, 'uri:3/d' => 12 } }
                         }
                       },
-                      "1b" => {
-                        "2" => {
-                          "2a" => { "3" => { "3a" => 13, "3b" => 14, "3c" => 15, "3d" => 16 } },
-                          "2b" => { "3" => { "3a" => 17, "3b" => 18, "3c" => 19, "3d" => 20 } },
-                          "2c" => { "3" => { "3a" => 21, "3b" => 22, "3c" => 23, "3d" => 24 } }
+                      'uri:1/b' => {
+                        'uri:dimension/2' => {
+                          'uri:2/a' => { 'uri:dimension/3' => { 'uri:3/a' => 13, 'uri:3/b' => 14, 'uri:3/c' => 15, 'uri:3/d' => 16 } },
+                          'uri:2/b' => { 'uri:dimension/3' => { 'uri:3/a' => 17, 'uri:3/b' => 18, 'uri:3/c' => 19, 'uri:3/d' => 20 } },
+                          'uri:2/c' => { 'uri:dimension/3' => { 'uri:3/a' => 21, 'uri:3/b' => 22, 'uri:3/c' => 23, 'uri:3/d' => 24 } }
                         }
                       }
                     }

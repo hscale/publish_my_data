@@ -21,12 +21,27 @@ module PublishMyData
         }
       end
 
-      def to_observation_query_options
-        {
+      def inform_observation_source(observation_source)
+        observation_source.dataset_detected(
           dataset_uri:          @dataset_uri,
           measure_property_uri: @measure_property_uri,
           dimensions:           @dimensions
-        }
+        )
+      end
+
+      def inform_snapshot(snapshot)
+        snapshot.dataset_detected(
+          dataset_uri:          @dataset_uri,
+          measure_property_uri: @measure_property_uri
+        )
+
+        each_dimension_bottom_up_with_level do |(dimension_uri, values), level|
+          snapshot.dimension_detected(
+            dimension_uri:  dimension_uri,
+            column_width:   number_of_encompassed_dimension_values_at_level(level),
+            column_uris:    values * volume_at_level_above(level)
+          )
+        end
       end
 
       def values_for_row(options)
@@ -60,28 +75,36 @@ module PublishMyData
           }
       end
 
-      def number_of_dimensions
-        @dimensions.keys.length
-      end
-
-      def dimension_value_labels
-        @dimensions.map.with_index { |(_dimension, values), level|
-          values * volume_at_level_above(level)
-        }
-      end
-
-      def number_of_dimensions
-        @dimensions.length
-      end
-
       def number_of_encompassed_dimension_values_at_level(level)
         if number_of_dimensions == 0
           # I couldn't figure out how to remove this special case.
-          #
           0
         else
           volume_of_selected_cube / volume_at_level(level)
         end
+      end
+
+      # TODO: Implement
+      def measure_label
+        "Measure label goes here"
+      end
+
+      def save
+        true
+      end
+
+      private
+
+      # Candidate for the prize for "most specific enumeration method"
+      def each_dimension_bottom_up_with_level(&block)
+        # Watch out as there's no spec for the use of reverse here
+        @dimensions.map.with_index.to_a.reverse.each(&block)
+      end
+
+      def dimension_value_pairs
+        @dimensions.reduce([]) { |coords, (dimension_uri, dimension_values)|
+          coords << dimension_values.map { |value| {dimension_uri => value} }
+        }
       end
 
       def volume_of_selected_cube
@@ -102,25 +125,12 @@ module PublishMyData
         end
       end
 
-      # TODO: Implement
-      def measure_label
-        "Measure label goes here"
-      end
-
-      def save
-        true
-      end
-
-      private
-
-      def dimension_value_pairs
-        @dimensions.reduce([]) { |coords, (dimension_uri, dimension_values)|
-          coords << dimension_values.map { |value| {dimension_uri => value} }
-        }
-      end
-
       def bottom_level
         number_of_dimensions
+      end
+
+      def number_of_dimensions
+        @dimensions.length
       end
     end
   end
