@@ -93,6 +93,11 @@ module PublishMyData
         true
       end
 
+      # Only still public because of the show page
+      def volume_of_selected_cube
+        volume_at_level(bottom_level)
+      end
+
       private
 
       # Candidate for the prize for "most specific enumeration method"
@@ -105,10 +110,6 @@ module PublishMyData
         @dimensions.reduce([]) { |coords, (dimension_uri, dimension_values)|
           coords << dimension_values.map { |value| {dimension_uri => value} }
         }
-      end
-
-      def volume_of_selected_cube
-        volume_at_level(bottom_level)
       end
 
       def volume_at_level(level)

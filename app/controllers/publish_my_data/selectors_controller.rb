@@ -53,7 +53,6 @@ module PublishMyData
       snapshot = Statistics::Snapshot.new
       observation_source = Statistics::ObservationSource.new
 
-      # :row_limit currently unused
       @snapshot = @selector.take_snapshot(snapshot, observation_source, row_limit: 20)
 
       @header_rows    = @snapshot.header_rows

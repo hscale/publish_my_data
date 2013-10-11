@@ -287,63 +287,75 @@ module PublishMyData
           )
         end
 
-        let!(:snapshot_result) { selector.take_snapshot(snapshot, observation_source) }
+        context "no row limit (usual case)" do
+          let!(:snapshot_result) { selector.take_snapshot(snapshot, observation_source) }
 
-        it "returns the snapshot" do
-          expect(snapshot_result).to be == snapshot
-        end
-
-        it "primes the labeller" do
-          pending
-        end
-
-        describe "priming the observation source" do
-          it "notifies the observation source of the datasets" do
-            # Full interaction is specified in Fragment
-            expect(observation_source).to have_received(:dataset_detected).with(
-              hash_including(dataset_uri: 'uri:dataset/1')
-            )
-
-            expect(observation_source).to have_received(:dataset_detected).with(
-              hash_including(dataset_uri: 'uri:dataset/2')
-            )
+          it "returns the snapshot" do
+            expect(snapshot_result).to be == snapshot
           end
 
-          describe "row construction" do
-            context "no row limit" do
-              it "builds the rows" do
-                expect(observation_source).to have_received(:row_uris_detected).with(
-                  'http://opendatacommunities.org/def/ontology/geography/refArea',
-                  ['uri:row/1', 'uri:row/2', 'uri:row/3']
-                )
-              end
+          it "primes the labeller" do
+            pending
+          end
+
+          describe "priming the observation source" do
+            it "notifies the observation source of the datasets" do
+              # Full interaction is specified in Fragment
+              expect(observation_source).to have_received(:dataset_detected).with(
+                hash_including(dataset_uri: 'uri:dataset/1')
+              )
+
+              expect(observation_source).to have_received(:dataset_detected).with(
+                hash_including(dataset_uri: 'uri:dataset/2')
+              )
             end
 
-            context "row limit specified" do
-              it "builds the rows" do
-                pending
-              end
+            it "notifies the observation source of the rows" do
+              expect(observation_source).to have_received(:row_uris_detected).with(
+                'http://opendatacommunities.org/def/ontology/geography/refArea',
+                ['uri:row/1', 'uri:row/2', 'uri:row/3']
+              )
+            end
+          end
+
+          describe "priming the snapshot" do
+            it "informs the snapshot of the datasets" do
+              # Full interaction is specified in Fragment
+              # Not sure we need to pass the dataset URI but for now it will
+              # do as proof that we told the Fragment to inform the snapshot
+              expect(snapshot).to have_received(:dataset_detected).with(
+                hash_including(dataset_uri: 'uri:dataset/1')
+              )
+
+              expect(snapshot).to have_received(:dataset_detected).with(
+                hash_including(dataset_uri: 'uri:dataset/2')
+              )
             end
           end
         end
 
-        describe "priming the snapshot" do
-          it "informs the snapshot of the datasets" do
-            # Full interaction is specified in Fragment
-            # Not sure we need to pass the dataset URI but for now it will
-            # do as proof that we told the Fragment to inform the snapshot
-            expect(snapshot).to have_received(:dataset_detected).with(
-              hash_including(dataset_uri: 'uri:dataset/1')
-            )
+        context "row limit (for preview, only one interesting deviation from above)" do
+          let!(:snapshot_result) {
+            selector.take_snapshot(snapshot, observation_source, row_limit: 2)
+          }
 
-            expect(snapshot).to have_received(:dataset_detected).with(
-              hash_including(dataset_uri: 'uri:dataset/2')
-            )
+          describe "priming the observation source" do
+            it "notifies the observation source of the rows" do
+              expect(observation_source).to have_received(:row_uris_detected).with(
+                'http://opendatacommunities.org/def/ontology/geography/refArea',
+                ['uri:row/1', 'uri:row/2']
+              )
+            end
           end
+
         end
       end
 
       describe "#table_rows" do
+        it "needs row limiting too" do
+          pending "when we move this method onto the snapshot"
+        end
+
         subject(:selector) {
           Selector.new(
             geography_type: "uri:statistical-geography",

@@ -198,11 +198,12 @@ module PublishMyData
         Selector.repository.persisted?(self)
       end
 
-      # options = { row_limit: -1 }
-      def take_snapshot(snapshot, observation_source, options = { })
+      def take_snapshot(snapshot, observation_source, options = {})
+        row_limit = options.fetch(:row_limit, 0) - 1
+
         observation_source.row_uris_detected(
           'http://opendatacommunities.org/def/ontology/geography/refArea',
-          @row_uris
+          @row_uris[0..row_limit]
         )
 
         @fragments.each do |fragment|
