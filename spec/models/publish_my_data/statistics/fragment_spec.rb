@@ -214,6 +214,26 @@ module PublishMyData
           end
         end
 
+        describe "#inform_labeller" do
+          let(:labeller) { double(Labeller, resource_detected: nil) }
+
+          before(:each) do
+            fragment.inform_labeller(labeller)
+          end
+
+          %w[
+            uri:dataset/1
+            uri:measure-property/1
+            uri:dimension/1
+            uri:1/a uri:1/b
+            uri:2/a uri:2/b uri:2/c
+            uri:3/a uri:3/b uri:3/c uri:3/d
+          ].each do |resource_uri|
+            specify {
+              expect(labeller).to have_received(:resource_detected).with(resource_uri)
+            }
+          end
+        end
 
         its(:number_of_dimensions) { should be == 3 }
         its(:volume_of_selected_cube) { should be == 24 }

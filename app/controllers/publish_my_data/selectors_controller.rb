@@ -52,16 +52,20 @@ module PublishMyData
 
       snapshot = Statistics::Snapshot.new
       observation_source = Statistics::ObservationSource.new
+      labeller = Statistics::Labeller.new
 
-      @snapshot = @selector.take_snapshot(snapshot, observation_source, row_limit: 20)
+      @snapshot = @selector.take_snapshot(
+        snapshot, observation_source, labeller, row_limit: 20
+      )
 
-      @header_rows    = @snapshot.header_rows
-      @table_rows     = @selector.table_rows(observation_source)
+      @header_rows    = @snapshot.header_rows(labeller)
+      @table_rows     = @selector.table_rows(observation_source, labeller)
       @selector_empty = @selector.fragments.empty?
     end
 
     private
 
+    # TODO: delete me
     def row_uris
       Resource.find_by_sparql("
         SELECT distinct ?uri

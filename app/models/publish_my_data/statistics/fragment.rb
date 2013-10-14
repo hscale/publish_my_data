@@ -44,6 +44,12 @@ module PublishMyData
         end
       end
 
+      def inform_labeller(labeller)
+        labellable_resource_uris.each do |resource_uri|
+          labeller.resource_detected(resource_uri)
+        end
+      end
+
       def values_for_row(options)
         # [].reduce(...) => nil below means we have to catch the empty case
         return [] if @dimensions.empty?
@@ -132,6 +138,17 @@ module PublishMyData
 
       def number_of_dimensions
         @dimensions.length
+      end
+
+      def labellable_resource_uris
+        [
+          @dataset_uri,
+          @measure_property_uri
+        ].concat(
+          @dimensions.keys
+        ).concat(
+          @dimensions.values
+        ).flatten
       end
     end
   end

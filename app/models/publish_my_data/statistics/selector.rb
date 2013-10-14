@@ -75,16 +75,6 @@ module PublishMyData
         end
       end
 
-      class Labeller
-        def label_for(uri)
-          if resource = Resource.find(uri)
-            resource.label || uri
-          else
-            uri
-          end
-        end
-      end
-
       # Persistence API
       class << self
         def create(attributes)
@@ -198,19 +188,26 @@ module PublishMyData
         Selector.repository.persisted?(self)
       end
 
-      def take_snapshot(snapshot, observation_source, options = {})
-        row_limit = options.fetch(:row_limit, 0) - 1
+      def take_snapshot(snapshot, observation_source, labeller, options = {})
+        row_uris = rows_uris_for_snapshot(options)
 
         observation_source.row_uris_detected(
+          # The current version of the Stats Selector hard-codes this
           'http://opendatacommunities.org/def/ontology/geography/refArea',
-          @row_uris[0..row_limit]
+          row_uris
         )
+        row_uris.each do |row_uri|
+          labeller.resource_detected(row_uri)
+        end
 
         @fragments.each do |fragment|
           fragment.inform_observation_source(observation_source)
           fragment.inform_snapshot(snapshot)
+          fragment.inform_labeller(labeller)
         end
 
+        # We could actually treat this as a command method and
+        # return nil if we wanted, the snapshot was given to us
         snapshot
       end
 
@@ -248,7 +245,7 @@ module PublishMyData
         end
       end
 
-      def table_rows(observation_source, labeller = Labeller.new)
+      def table_rows(observation_source, labeller)
         @row_uris.map { |row_uri|
           Row.new(
             observation_source:   observation_source,
@@ -257,6 +254,13 @@ module PublishMyData
             labeller:             labeller
           )
         }
+      end
+
+      private
+
+      def rows_uris_for_snapshot(options)
+        row_limit = options.fetch(:row_limit, 0) - 1
+        @row_uris[0..row_limit]
       end
     end
   end

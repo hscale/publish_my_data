@@ -262,6 +262,8 @@ module PublishMyData
           )
         }
 
+        let(:labeller) { double(Labeller, resource_detected: nil) }
+
         subject(:selector) {
           Selector.new(
             geography_type: 'uri:geography-type/1',
@@ -288,14 +290,20 @@ module PublishMyData
         end
 
         context "no row limit (usual case)" do
-          let!(:snapshot_result) { selector.take_snapshot(snapshot, observation_source) }
+          let!(:snapshot_result) {
+            selector.take_snapshot(snapshot, observation_source, labeller)
+          }
 
           it "returns the snapshot" do
             expect(snapshot_result).to be == snapshot
           end
 
-          it "primes the labeller" do
-            pending
+          describe "priming the labeller" do
+            %w[ uri:row/1 uri:row/2 uri:row/3 ].each do |resource_uri|
+              specify {
+                expect(labeller).to have_received(:resource_detected).with(resource_uri)
+              }
+            end
           end
 
           describe "priming the observation source" do
@@ -336,8 +344,27 @@ module PublishMyData
 
         context "row limit (for preview, only one interesting deviation from above)" do
           let!(:snapshot_result) {
-            selector.take_snapshot(snapshot, observation_source, row_limit: 2)
+            selector.take_snapshot(snapshot, observation_source, labeller, row_limit: 2)
           }
+
+          describe "priming the labeller" do
+            it "fetches labels for rows in the snapshot" do
+              expect(labeller).to have_received(:resource_detected).with('uri:row/1')
+              expect(labeller).to have_received(:resource_detected).with('uri:row/2')
+            end
+
+            # Full interaction is specified in Fragment
+            it "tells the fragments to inform the labeller of their resources" do
+              expect(labeller).to have_received(:resource_detected).with('uri:dataset/1')
+              expect(labeller).to have_received(:resource_detected).with('uri:dataset/2')
+            end
+
+            # This only saves us a trivial amount of database query time but
+            # seems more correct somehow...
+            it "doesn't fetch labels for rows not in the snapshot" do
+              expect(labeller).to_not have_received(:resource_detected).with('uri:row/3')
+            end
+          end
 
           describe "priming the observation source" do
             it "notifies the observation source of the rows" do
@@ -347,7 +374,6 @@ module PublishMyData
               )
             end
           end
-
         end
       end
 
