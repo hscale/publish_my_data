@@ -1,124 +1,10 @@
 require 'uuidtools'
 require 'set'
-# require 'yaml'
 
 module PublishMyData
   module Statistics
     class Selector
-      extend ActiveModel::Naming
-
-      class InvalidIdError < ArgumentError; end
-
-      class FilesystemRepository
-        def initialize(options)
-          @path = options.fetch(:path) {
-            raise "Selector::FilesystemRepository must be configured with :path"
-          }
-        end
-
-        def find(id)
-          data = unmarshal_selector(data_for(id))
-          Selector.from_hash(data)
-        rescue Errno::ENOENT
-          nil
-        end
-
-        def store(selector)
-          FileUtils.mkdir_p(@path)
-          File.open(filename_for_id(selector.id), "w") do |file|
-            file << YAML.dump(marshal_selector(selector))
-          end
-        end
-
-        def delete(selector)
-          if persisted?(selector)
-            FileUtils.rm(filename_for_id(selector.id))
-          end
-        end
-
-        def persisted?(selector)
-          File.file?(filename_for_id(selector.id))
-        end
-
-        def data_for(id)
-          YAML.load_file(filename_for_id(id))
-        end
-
-        private
-
-        def filename_for_id(id)
-          "#{@path}/#{ensure_uuid(id)}.yml"
-        end
-
-        def ensure_uuid(maybe_uuid)
-          if maybe_uuid.is_a?(UUIDTools::UUID)
-            maybe_uuid
-          else
-            begin
-              UUIDTools::UUID.parse(maybe_uuid)
-            rescue ArgumentError
-              raise InvalidIdError.new("Invalid Selector id: #{maybe_uuid.inspect} (not a UUID)")
-            end
-          end
-        end
-
-        def marshal_selector(selector)
-          selector.to_h.tap do |data|
-            data[:version]  = 1
-            data[:id]       = data[:id].to_s
-          end
-        end
-
-        def unmarshal_selector(data)
-          data[:id] = UUIDTools::UUID.parse(data[:id])
-          data
-        end
-      end
-
-      # Persistence API
-      class << self
-        def create(attributes)
-          selector = new(attributes)
-          selector.save
-          selector
-        end
-
-        def find(id)
-          repository.find(id)
-        end
-
-        def repository
-          @repository ||= new_repository
-        end
-
-        def from_hash(data)
-          new(
-            id:             data.fetch(:id),
-            geography_type: data.fetch(:geography_type),
-            row_uris:       data.fetch(:row_uris)
-          ).tap do |reloaded_selector|
-            data.fetch(:fragments).each do |fragment_data|
-              reloaded_selector.build_fragment(fragment_data)
-            end
-          end
-        end
-
-        private
-
-        def new_repository
-          config = PublishMyData.stats_selector
-
-          repository_class =
-            case config.fetch(:persistence_type)
-            when :filesystem
-              FilesystemRepository
-            else
-              raise "Unknown Selector persistence_type: #{persistence_type_name}"
-            end
-
-          repository_class.new(config.fetch(:persistence_options))
-        end
-      end
+      include Statistics::Persistence::ActiveModelInterface
 
       attr_accessor :geography_type
       attr_reader   :fragments
@@ -131,42 +17,6 @@ module PublishMyData
         @fragments = [ ]
       end
 
-      def id
-        @id
-      end
-
-      def to_key
-        [ @id ] if persisted?
-      end
-
-      def to_param
-        @id.to_s if persisted?
-      end
-
-      def valid?
-        true
-      end
-
-      # To satisfy ActiveModel - we don't have any errors yet
-      class Errors
-        def [](key)
-          [ ]
-        end
-
-        def full_messages
-          [ ]
-        end
-      end
-
-      def errors
-        Errors.new
-      end
-
-      # ActiveModel makes us do this
-      def to_partial_path
-        "Because it's obviously the domain model's responsibility to determine where the view templates live"
-      end
-
       def to_h
         {
           id:             @id,
@@ -174,18 +24,6 @@ module PublishMyData
           geography_type: @geography_type,
           row_uris:       @row_uris
         }
-      end
-
-      def save
-        Selector.repository.store(self)
-      end
-
-      def destroy
-        Selector.repository.delete(self)
-      end
-
-      def persisted?
-        Selector.repository.persisted?(self)
       end
 
       def take_snapshot(snapshot, observation_source, labeller, options = {})
