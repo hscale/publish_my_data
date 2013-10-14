@@ -95,7 +95,9 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
       visit "/selectors/#{selector.id}"
-      page.save_screenshot('wtf.png')
+      # Commenting this out so it isn't generated when we run unrelated tests
+      # (I don't know if this is supposed to still be here or not - Ash)
+      # page.save_screenshot('wtf.png')
       find('.btn-add-data').trigger(:click)
       select dataset.title, from: 'dataset_uri'
       click_on 'Select Dataset'
@@ -130,7 +132,9 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
       visit "/selectors/#{selector.id}"
-      page.save_screenshot('wtf.png')
+      # Commenting this out so it isn't generated when we run unrelated tests
+      # (I don't know if this is supposed to still be here or not - Ash)
+      # page.save_screenshot('wtf.png')
       find('.btn-add-data').trigger(:click)
       select dataset.title, from: 'dataset_uri'
       click_on 'Select Dataset'
@@ -176,7 +180,7 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
       selector.build_fragment(
-        dataset_uri: dataset.uri, 
+        dataset_uri: dataset.uri,
         dimensions: {
           'http://opendatacommunities.org/def/ontology/time/refPeriod' => ['http://reference.data.gov.uk/id/quarter/2013-Q1'],
           'http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/ethnicity' => ['http://opendatacommunities.org/def/concept/general-concepts/ethnicity/mixed']
