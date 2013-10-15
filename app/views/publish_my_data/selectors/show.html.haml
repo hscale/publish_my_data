@@ -21,19 +21,19 @@
                 -# TODO: header row type for this
                 - @selector.fragments.each do |fragment|
                   %th.measure{ colspan: fragment.volume_of_selected_cube, class: dom_class_for_fragment(fragment) }= fragment.measure_label
-            - @header_rows.each do |header_row|
+            - @snapshot.header_rows.each do |header_row|
               %tr
                 %td
                 - header_row.each do |header_column|
                   %th.hardwrap{ colspan: header_column.width, class: dom_class_for_header_column(header_column) }= header_column.label
           %tbody
-            - @table_rows.each_with_index do |row, index|
+            - @snapshot.table_rows.each.with_index do |row, index|
               %tr
                 %th= row.label
                 - row.values.each do |value|
                   %td{ class: dom_class_for_row_value(value) }= value
-                - if @selector_empty && index == 0
-                  %td.intro{rowspan: "#{ @table_rows.size + 1 }"}
+                - if @selector.empty? && index == 0
+                  %td.intro{rowspan: "#{ @snapshot.table_rows.size + 1 }"}
                     %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.
           %tfoot
             %tr

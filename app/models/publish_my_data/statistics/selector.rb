@@ -17,6 +17,10 @@ module PublishMyData
         @fragments = [ ]
       end
 
+      def empty?
+        @fragments.empty?
+      end
+
       def to_h
         {
           id:             @id,

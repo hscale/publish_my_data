@@ -28,6 +28,29 @@ module PublishMyData
         end
       end
 
+      describe "#empty?" do
+        subject(:selector) { Selector.new(geography_type: 'unused') }
+
+        context "new" do
+          its(:empty?) { should be_true}
+        end
+
+        context "with a fragment" do
+          before(:each) do
+            # Note that while the fragment has no dimensions, we still
+            # consider the selector non-empty here, as we enforce through
+            # the UI that fragments must have values for the dimensions
+            selector.build_fragment(
+              dataset_uri:          'uri:dataset/1',
+              measure_property_uri: 'uri:measure-property/1',
+              dimensions: { }
+            )
+          end
+
+          its(:empty?) { should be_false }
+        end
+      end
+
       # See also the lint check above
       describe "ActiveModel" do
         describe "#to_key" do

@@ -50,10 +50,6 @@ module PublishMyData
     def show
       @selector = Statistics::Selector.find(params[:id])
       @snapshot = @selector.build_snapshot(row_limit: 20)
-
-      @header_rows    = @snapshot.header_rows
-      @table_rows     = @snapshot.table_rows
-      @selector_empty = @selector.fragments.empty?
     end
 
     private
