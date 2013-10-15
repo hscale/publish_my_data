@@ -7,7 +7,10 @@ module PublishMyData
     # nesting of dimensions, and table rows with the data cube coordinates for
     # each observation.
     class Snapshot
-      def initialize
+      def initialize(dependencies)
+        @observation_source = dependencies.fetch(:observation_source)
+        @labeller           = dependencies.fetch(:labeller)
+
         # Derived structure
         @header_rows = HeaderRowSet.new
         @datasets       = [ ]
@@ -54,18 +57,18 @@ module PublishMyData
         @body_row_uris.concat(row_uris)
       end
 
-      def header_rows(labeller)
+      def header_rows
         dataset_completed
-        @header_rows.label_columns(labeller)
+        @header_rows.label_columns(@labeller)
         @header_rows.to_a
       end
 
-      def table_rows(observation_source, labeller)
+      def table_rows
         @body_row_uris.map { |row_uri|
           TableRow.new(
-            observation_source:   observation_source,
+            observation_source:   @observation_source,
             row_uri:              row_uri,
-            labeller:             labeller,
+            labeller:             @labeller,
             dataset_descriptions: @datasets
           )
         }

@@ -3,33 +3,38 @@ require 'spec_helper'
 module PublishMyData
   module Statistics
     describe Snapshot do
-      subject(:snapshot) { Snapshot.new }
+      # Where's also a mock labeller in the Selector spec too
+      # (we need to merge these)
+      class MockLabeller
+        TEST_LABELS = {
+          'uri:dim/1/a' => "Dimension 1a",
+          'uri:dim/1/b' => "Dimension 1b",
+          'uri:dim/2/a' => "Dimension 2a",
+          'uri:dim/2/b' => "Dimension 2b",
+          'uri:dim/3/a' => "Dimension 3a",
+          'uri:dim/3/b' => "Dimension 3b",
+          'uri:dim/4/a' => "Dimension 4a",
+          'uri:dim/4/b' => "Dimension 4b",
+          'uri:dim/5/a' => "Dimension 5a",
+          'uri:dim/5/b' => "Dimension 5b",
+          'uri:dim/6/a' => "Dimension 6a"
+        }.freeze
+
+        def label_for(uri)
+          TEST_LABELS.fetch(uri, "<label not found>")
+        end
+      end
+
+      let(:observation_source) { double(ObservationSource) }
+      let(:labeller) { MockLabeller.new }
+
+      subject(:snapshot) {
+        Snapshot.new(observation_source: observation_source, labeller: labeller)
+      }
 
       describe "#header_rows" do
         it "lazily labels its own rows" do
           pending "if this is better than using #label_columns"
-        end
-
-        # Where's also a mock labeller in the Selector spec too
-        # (we need to merge these)
-        class MockLabeller
-          TEST_LABELS = {
-            'uri:dim/1/a' => "Dimension 1a",
-            'uri:dim/1/b' => "Dimension 1b",
-            'uri:dim/2/a' => "Dimension 2a",
-            'uri:dim/2/b' => "Dimension 2b",
-            'uri:dim/3/a' => "Dimension 3a",
-            'uri:dim/3/b' => "Dimension 3b",
-            'uri:dim/4/a' => "Dimension 4a",
-            'uri:dim/4/b' => "Dimension 4b",
-            'uri:dim/5/a' => "Dimension 5a",
-            'uri:dim/5/b' => "Dimension 5b",
-            'uri:dim/6/a' => "Dimension 6a"
-          }.freeze
-
-          def label_for(uri)
-            TEST_LABELS.fetch(uri, "<label not found>")
-          end
         end
 
         let(:labeller) { MockLabeller.new }
@@ -53,7 +58,7 @@ module PublishMyData
 
           specify {
             # Not actually sure what this should do yet
-            expect(labels_for(snapshot.header_rows(labeller))).to be == []
+            expect(labels_for(snapshot.header_rows)).to be == []
           }
         end
 
@@ -66,7 +71,7 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == []
+            expect(labels_for(snapshot.header_rows)).to be == []
           }
         end
 
@@ -84,13 +89,13 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ "Dimension 1a", "Dimension 1b" ]
             ]
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 1 ]
             ]
           }
@@ -115,14 +120,14 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ "Dimension 1a" ],
               [ "Dimension 2a", "Dimension 2b" ]
             ]
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 2 ], [ 1, 1 ]
             ]
           }
@@ -147,14 +152,14 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ "Dimension 1a", "Dimension 1b" ],
               [ "Dimension 2a", "Dimension 2b", "Dimension 2a", "Dimension 2b" ]
             ]
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 2, 2 ], [ 1, 1, 1, 1 ]
             ]
           }
@@ -183,13 +188,13 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ "Dimension 1a", "Dimension 1b", "Dimension 2a", "Dimension 2b" ]
             ]
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 1, 1, 1 ]
             ]
           }
@@ -226,14 +231,14 @@ module PublishMyData
           # but that would be harder to implement (we'd need to remember
           # the widths of the datasets)
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ nil, nil, "Dimension 2a" ],
               [ "Dimension 1a", "Dimension 1b", "Dimension 3a", "Dimension 3b" ]
             ]
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 1, 2 ],
               [ 1, 1, 1, 1 ]
             ]
@@ -282,7 +287,7 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ nil, nil, "Dimension 2a", nil, nil ],
               [ nil, nil, "Dimension 3a", nil, nil ],
               [ "Dimension 1a", "Dimension 1b", "Dimension 4a", "Dimension 4b", "Dimension 5a", "Dimension 5b" ]
@@ -290,7 +295,7 @@ module PublishMyData
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 1, 2, 1, 1 ],
               [ 1, 1, 2, 1, 1 ],
               [ 1, 1, 1, 1, 1, 1 ]
@@ -345,7 +350,7 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [
+            expect(labels_for(snapshot.header_rows)).to be == [
               [ nil, nil, nil, "Dimension 4a" ],
               [ "Dimension 1a", nil, nil, "Dimension 5a" ],
               [ "Dimension 2a", "Dimension 3a", "Dimension 3b", "Dimension 6a" ]
@@ -353,7 +358,7 @@ module PublishMyData
           }
 
           specify {
-            expect(widths_for(snapshot.header_rows(labeller))).to be == [
+            expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 1, 1, 1 ],
               [ 1, 1, 1, 1 ],
               [ 1, 1, 1, 1 ]
@@ -363,9 +368,6 @@ module PublishMyData
       end
 
       describe "#table_rows" do
-        let(:observation_source) { double(ObservationSource) }
-        let(:labeller) { double(Labeller) }
-
         it "doesn't need the observation source and labeller passing to it" do
           pending
         end
@@ -381,8 +383,6 @@ module PublishMyData
               row_uris:       [ "uri:row_1" ]
             )
           }
-
-          let(:labeller) { MockLabeller.new }
 
           let(:dimension_1) {
             {
@@ -453,7 +453,7 @@ module PublishMyData
           end
 
           def row_converted_to_hash(index)
-            snapshot.table_rows(observation_source, labeller)[index].to_h
+            snapshot.table_rows[index].to_h
           end
 
           it "prepares the first row correctly (cell_coordinate ordering is really important)" do

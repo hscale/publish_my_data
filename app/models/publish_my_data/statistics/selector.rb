@@ -26,6 +26,19 @@ module PublishMyData
         }
       end
 
+      # Convenience method to take a snapshot with all necessary dependencies.
+      # If we had an Application Service layer, this would probably live there.
+      def build_snapshot(options)
+        observation_source  = Statistics::ObservationSource.new
+        labeller            = Statistics::Labeller.new
+
+        snapshot = Statistics::Snapshot.new(
+          observation_source: observation_source, labeller: labeller
+        )
+        take_snapshot(snapshot, observation_source, labeller, options)
+        snapshot
+      end
+
       def take_snapshot(snapshot, observation_source, labeller, options = {})
         row_uris = rows_uris_for_snapshot(options)
 
@@ -45,9 +58,7 @@ module PublishMyData
           fragment.inform_labeller(labeller)
         end
 
-        # We could actually treat this as a command method and
-        # return nil if we wanted, the snapshot was given to us
-        snapshot
+        nil
       end
 
       def build_fragment(fragment_description)

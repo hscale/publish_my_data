@@ -120,8 +120,8 @@ module PublishMyData
             selector.take_snapshot(snapshot, observation_source, labeller)
           }
 
-          it "returns the snapshot" do
-            expect(snapshot_result).to be == snapshot
+          it "returns nil, as this is a command method that mutates the snapshot" do
+            expect(snapshot_result).to be_nil
           end
 
           describe "priming the labeller" do

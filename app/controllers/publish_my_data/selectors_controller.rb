@@ -49,17 +49,10 @@ module PublishMyData
 
     def show
       @selector = Statistics::Selector.find(params[:id])
+      @snapshot = @selector.build_snapshot(row_limit: 20)
 
-      snapshot = Statistics::Snapshot.new
-      observation_source = Statistics::ObservationSource.new
-      labeller = Statistics::Labeller.new
-
-      @snapshot = @selector.take_snapshot(
-        snapshot, observation_source, labeller, row_limit: 20
-      )
-
-      @header_rows    = @snapshot.header_rows(labeller)
-      @table_rows     = @snapshot.table_rows(observation_source, labeller)
+      @header_rows    = @snapshot.header_rows
+      @table_rows     = @snapshot.table_rows
       @selector_empty = @selector.fragments.empty?
     end
 
