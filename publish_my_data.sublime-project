@@ -5,7 +5,8 @@
 			"path": ".",
 			"folder_exclude_patterns": [
 				"tmp",
-				"log"
+				"log",
+				".sass-cache"
 			],
 			"file_exclude_patterns": [
 				"*.sublime-workspace"
