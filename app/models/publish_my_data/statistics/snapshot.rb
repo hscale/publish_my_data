@@ -27,17 +27,19 @@ module PublishMyData
         # Transient builder state
         @current_row_index                = 0
         @completed_width                  = 0
+        # The next two are a candidate for merging
+        @current_dataset_header_rows      = [ ]
         @current_dataset_cell_coordinates = nil
       end
 
       def dataset_detected(description)
+        dataset_completed
+
         dataset_uri           = description.fetch(:dataset_uri)
         measure_property_uri  = description.fetch(:measure_property_uri)
 
         move_to_first_row
-        remember_completed_width
-        # We reconstruct the hash that's passed in to enforce the keys
-        # and allow us to mutate it internally
+
         create_new_dataset_structure(
           dataset_uri: dataset_uri, measure_property_uri: measure_property_uri
         )
@@ -47,12 +49,11 @@ module PublishMyData
       # rows when we're asked to give back the labelled rows, but I've left it
       # public as it it's symmetric with #dataset_detected
       def dataset_completed
-        return if @header_rows.empty?
-        remember_completed_width
-
-        @header_rows.each.with_index do |row, index|
-          pad_row_to_end(index)
-        end
+        return if no_dataset_in_progress?
+        concat_current_dataset_onto_header_rows
+        remember_completed_header_width
+        pad_header_rows_to_completed_width
+        clear_dataset_in_progress
       end
 
       # Be sure to call this with the lowest dimension first
@@ -88,15 +89,38 @@ module PublishMyData
 
       private
 
-      def update_header_based_on_dimension(dimension_uri, column_width, column_uris)
-        ensure_row
-        pad_current_row_to_end
+      def no_dataset_in_progress?
+        @current_dataset_header_rows.empty?
+      end
 
-        column_uris.each do |column_uri|
-          current_row << HeaderColumn.new(uri: column_uri, width: column_width)
+      def concat_current_dataset_onto_header_rows
+        @current_dataset_header_rows.each do |row|
+          ensure_header_row
+          pad_current_header_row_to_end
+          current_row.concat(row)
+          move_to_next_header_row
         end
+      end
 
-        move_to_next_row
+      def pad_header_rows_to_completed_width
+        @header_rows.each.with_index do |row, index|
+          pad_row_to_end(index)
+        end
+      end
+
+      def clear_dataset_in_progress
+        @current_dataset_header_rows = [ ]
+      end
+
+      def update_header_based_on_dimension(dimension_uri, column_width, column_uris)
+        new_row = column_uris.map { |column_uri|
+          HeaderColumn.new(uri: column_uri, width: column_width)
+        }
+        number_of_columns_in_new_dimension = column_uris.length
+        @current_dataset_header_rows.each do |row|
+          row.replace(row * number_of_columns_in_new_dimension)
+        end
+        @current_dataset_header_rows << new_row
       end
 
       def update_body_based_on_dimension(dimension_uri, column_width, column_uris)
@@ -121,7 +145,7 @@ module PublishMyData
         description[:cell_coordinates] = @current_dataset_cell_coordinates
       end
 
-      def ensure_row
+      def ensure_header_row
         if current_row.nil?
           start_new_row
           pad_row_from_start
@@ -145,7 +169,7 @@ module PublishMyData
         @header_rows[index].map(&:width).reduce(0, :+)
       end
 
-      def pad_current_row_to_end
+      def pad_current_header_row_to_end
         pad_row_to_end(@current_row_index)
       end
 
@@ -163,14 +187,14 @@ module PublishMyData
 
       def move_to_first_row
         @current_row_index = 0
-        ensure_row
+        ensure_header_row
       end
 
-      def remember_completed_width
+      def remember_completed_header_width
         @completed_width = row_width(0)
       end
 
-      def move_to_next_row
+      def move_to_next_header_row
         @current_row_index += 1
       end
 
