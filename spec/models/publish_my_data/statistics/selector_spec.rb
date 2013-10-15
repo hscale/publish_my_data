@@ -72,17 +72,23 @@ module PublishMyData
 
       describe "#take_snapshot" do
         let(:snapshot) {
-          double(Snapshot, dataset_detected: nil, dimension_detected: nil)
+          double(Snapshot,
+            dataset_detected:   nil,
+            dimension_detected: nil,
+            row_uris_detected:  nil
+          )
         }
 
         let(:observation_source) {
           double(ObservationSource,
             row_uris_detected: nil,
-            dataset_detected: nil
+            dataset_detected:   nil
           )
         }
 
-        let(:labeller) { double(Labeller, resource_detected: nil) }
+        let(:labeller) {
+          double(Labeller, resource_detected: nil)
+        }
 
         subject(:selector) {
           Selector.new(
@@ -159,6 +165,12 @@ module PublishMyData
                 hash_including(dataset_uri: 'uri:dataset/2')
               )
             end
+
+            it "informs the snapshot of the rows" do
+              expect(snapshot).to have_received(:row_uris_detected).with(
+                ['uri:row/1', 'uri:row/2', 'uri:row/3']
+              )
+            end
           end
         end
 
@@ -194,118 +206,12 @@ module PublishMyData
               )
             end
           end
-        end
-      end
 
-      describe "#table_rows" do
-        it "needs row limiting too" do
-          pending "when we move this method onto the snapshot"
-        end
-
-        subject(:selector) {
-          Selector.new(
-            geography_type: "uri:statistical-geography",
-            row_uris:       [ "uri:row_1" ]
-          )
-        }
-
-        let(:labeller) { MockLabeller.new }
-
-        let(:dimension_1) {
-          {
-            "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
-          }
-        }
-
-        let(:dimension_2) {
-          {
-            "uri:dimension/2" => [
-              "http://example.com/dimension_value_2a",
-              "http://example.com/dimension_value_2b"
-            ]
-          }
-        }
-
-        describe "Row construction" do
-          let(:observation_source) {
-            double(ObservationSource)
-          }
-
-          before(:each) do
-            Selector::Row.stub(:new)
-          end
-
-          specify do
-            selector.table_rows(observation_source, labeller)
-            expect(Selector::Row).to have_received(:new).with(
-              hash_including(
-                observation_source:   observation_source,
-                row_uri:              'uri:row_1'
+          describe "priming the snapshot" do
+            it "informs the snapshot of the rows" do
+              expect(snapshot).to have_received(:row_uris_detected).with(
+                ['uri:row/1', 'uri:row/2']
               )
-            )
-          end
-        end
-
-        describe Selector::Row do
-          # We're also testing the construction process here, for now
-          let(:row) { selector.table_rows(observation_source, labeller).first }
-
-          describe "#values" do
-            let(:observation_source) {
-              # Currently almost the same as the data in the Fragment spec
-              MockObservationSource.new(
-                measure_property_uris: %w[ uri:measure-property/1 uri:measure-property/2 ],
-                observation_data: {
-                  "uri:dataset/1" => {
-                    "uri:row_1" => {
-                      "uri:dimension/1" => {
-                        "http://example.com/dimension_value_1a" => 1
-                      },
-                      "uri:dimension/2" => {
-                        "http://example.com/dimension_value_2a" => 2,
-                        "http://example.com/dimension_value_2b" => 3
-                      }
-                    }
-                  }
-                }
-              )
-            }
-
-            context "one fragment" do
-              before(:each) do
-                # We demonstrate how multiple dimensions work in the Fragment spec
-                selector.build_fragment(
-                  dataset_uri:          'uri:dataset/1',
-                  measure_property_uri: 'uri:measure-property/1',
-                  dimensions:           dimension_1
-                )
-              end
-
-              it "returns the correct values" do
-                expect(row.values).to be == [1]
-              end
-            end
-
-            context "two fragments" do
-              before(:each) do
-                # We demonstrate how multiple dimensions work in the Fragment spec
-                # This hackily re-uses datasets across fragments to avoid adding
-                # more data to the observation source
-                selector.build_fragment(
-                  dataset_uri:          'uri:dataset/1',
-                  measure_property_uri: 'uri:measure-property/1',
-                  dimensions:           dimension_1
-                )
-                selector.build_fragment(
-                  dataset_uri:          'uri:dataset/1',
-                  measure_property_uri: 'uri:measure-property/2',
-                  dimensions:           dimension_2
-                )
-              end
-
-              it "returns the correct values" do
-                expect(row.values).to be == [1, 2, 3]
-              end
             end
           end
         end

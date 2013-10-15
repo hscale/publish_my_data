@@ -34,6 +34,7 @@ module PublishMyData
           'http://opendatacommunities.org/def/ontology/geography/refArea',
           row_uris
         )
+        snapshot.row_uris_detected(row_uris)
         row_uris.each do |row_uri|
           labeller.resource_detected(row_uri)
         end
@@ -57,41 +58,6 @@ module PublishMyData
 
       def remove_fragment(fragment_id)
         @fragments.reject! { |fragment| fragment.id == fragment_id }
-      end
-
-      class Row
-        def initialize(attributes)
-          @observation_source   = attributes.fetch(:observation_source)
-          @row_uri              = attributes.fetch(:row_uri)
-          @fragments            = attributes.fetch(:fragments)
-          @labeller             = attributes.fetch(:labeller)
-        end
-
-        def label
-          @labeller.label_for(@row_uri)
-        end
-
-        def values
-          @fragments.inject([]) { |values, fragment|
-            values.concat(
-              fragment.values_for_row(
-                row_uri:              @row_uri,
-                observation_source:   @observation_source
-              )
-            )
-          }
-        end
-      end
-
-      def table_rows(observation_source, labeller)
-        @row_uris.map { |row_uri|
-          Row.new(
-            observation_source:   observation_source,
-            row_uri:              row_uri,
-            fragments:            @fragments,
-            labeller:             labeller
-          )
-        }
       end
 
       private

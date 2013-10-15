@@ -39,7 +39,7 @@ module PublishMyData
           snapshot.dimension_detected(
             dimension_uri:  dimension_uri,
             column_width:   number_of_encompassed_dimension_values_at_level(level),
-            column_uris:    values * volume_at_level_above(level)
+            column_uris:    values
           )
         end
       end
@@ -50,41 +50,9 @@ module PublishMyData
         end
       end
 
-      def values_for_row(options)
-        # [].reduce(...) => nil below means we have to catch the empty case
-        return [] if @dimensions.empty?
-
-        # Yes, it works. Don't touch it.
-        dimension_value_pairs.inject(:product).
-          map { |maybe_already_flattened_product|
-            if maybe_already_flattened_product.is_a?(Hash)
-              maybe_already_flattened_product
-            else
-              maybe_already_flattened_product.flatten
-            end
-          }.
-          map { |maybe_already_merged_product|
-            if maybe_already_merged_product.is_a?(Hash)
-              maybe_already_merged_product
-            else
-              maybe_already_merged_product.inject(:merge)
-            end
-          }.
-          map { |cell_coordinates|
-            # This will be much nicer when we switch to Ruby 2 and can use kwargs
-            options.fetch(:observation_source).observation_value(
-              dataset_uri:          @dataset_uri,
-              measure_property_uri: @measure_property_uri,
-              row_uri:              options.fetch(:row_uri),
-              cell_coordinates:     cell_coordinates
-            )
-          }
-      end
-
       def number_of_encompassed_dimension_values_at_level(level)
         if number_of_dimensions == 0
-          # I couldn't figure out how to remove this special case.
-          0
+          0 # Special case as the main algorithm starts Enumerable#reduce with 1
         else
           volume_of_selected_cube / volume_at_level(level)
         end
@@ -119,7 +87,7 @@ module PublishMyData
       end
 
       def volume_at_level(level)
-        @dimensions.keys[0..level].inject(1) { |volume, dimension|
+        @dimensions.keys[0..level].reduce(1) { |volume, dimension|
           volume * @dimensions[dimension].length
         }
       end

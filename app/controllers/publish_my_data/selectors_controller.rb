@@ -59,7 +59,7 @@ module PublishMyData
       )
 
       @header_rows    = @snapshot.header_rows(labeller)
-      @table_rows     = @selector.table_rows(observation_source, labeller)
+      @table_rows     = @snapshot.table_rows(observation_source, labeller)
       @selector_empty = @selector.fragments.empty?
     end
 

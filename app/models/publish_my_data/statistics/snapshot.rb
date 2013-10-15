@@ -19,41 +19,78 @@ module PublishMyData
       end
 
       def initialize
-        @rows               = [ ]
-        @current_row_index  = 0
-        @completed_width    = 0
+        # Derived structure
+        @header_rows    = [ ]
+        @datasets       = [ ]
+        @body_row_uris  = [ ]
+
+        # Transient builder state
+        @current_row_index                = 0
+        @completed_width                  = 0
+        @current_dataset_cell_coordinates = nil
       end
 
       def dataset_detected(description)
-        # We get these, I assume we will need it at some point...
-        # dataset_uri           = description.fetch(:dataset_uri),
-        # measure_property_uri  = description.fetch(:measure_property_uri)
+        dataset_uri           = description.fetch(:dataset_uri)
+        measure_property_uri  = description.fetch(:measure_property_uri)
 
         move_to_first_row
         remember_completed_width
+        # We reconstruct the hash that's passed in to enforce the keys
+        # and allow us to mutate it internally
+        create_new_dataset_structure(
+          dataset_uri: dataset_uri, measure_property_uri: measure_property_uri
+        )
       end
 
       # An idempotent event handler written initially to lazily pad the end of
       # rows when we're asked to give back the labelled rows, but I've left it
-      # public as it it's symettric with #dataset_detected
+      # public as it it's symmetric with #dataset_detected
       def dataset_completed
-        return if @rows.empty?
+        return if @header_rows.empty?
         remember_completed_width
 
-        @rows.each.with_index do |row, index|
+        @header_rows.each.with_index do |row, index|
           pad_row_to_end(index)
         end
       end
 
       # Be sure to call this with the lowest dimension first
       def dimension_detected(description)
-        ensure_row
-        pad_current_row_to_end
-
-        # We get the first one, I assume we will need it at some point...
-        # dimension_uri = description.fetch(:dimension_uri)
+        dimension_uri = description.fetch(:dimension_uri)
         column_width  = description.fetch(:column_width)
         column_uris   = description.fetch(:column_uris)
+
+        update_header_based_on_dimension(dimension_uri, column_width, column_uris)
+        update_body_based_on_dimension(dimension_uri, column_width, column_uris)
+      end
+
+      def row_uris_detected(row_uris)
+        @body_row_uris.concat(row_uris)
+      end
+
+      def header_rows(labeller)
+        dataset_completed
+        label_columns(labeller)
+        @header_rows.reverse
+      end
+
+      def table_rows(observation_source, labeller)
+        @body_row_uris.map { |row_uri|
+          TableRow.new(
+            observation_source:   observation_source,
+            row_uri:              row_uri,
+            labeller:             labeller,
+            dataset_descriptions: @datasets
+          )
+        }
+      end
+
+      private
+
+      def update_header_based_on_dimension(dimension_uri, column_width, column_uris)
+        ensure_row
+        pad_current_row_to_end
 
         column_uris.each do |column_uri|
           current_row << HeaderColumn.new(uri: column_uri, width: column_width)
@@ -62,13 +99,27 @@ module PublishMyData
         move_to_next_row
       end
 
-      def header_rows(labeller = Selector::Labeller.new)
-        dataset_completed
-        label_columns(labeller)
-        @rows.reverse
+      def update_body_based_on_dimension(dimension_uri, column_width, column_uris)
+        new_dimension = column_uris.map { |uri| {dimension_uri => uri} }
+
+        new_values =
+          if @current_dataset_cell_coordinates.empty?
+            new_dimension
+          else
+            new_dimension.product(@current_dataset_cell_coordinates).
+              map { |product|
+                product.inject({}, :merge)
+              }
+          end
+
+        @current_dataset_cell_coordinates.replace(new_values)
       end
 
-      private
+      def create_new_dataset_structure(description)
+        @datasets << description
+        @current_dataset_cell_coordinates = [ ]
+        description[:cell_coordinates] = @current_dataset_cell_coordinates
+      end
 
       def ensure_row
         if current_row.nil?
@@ -78,7 +129,7 @@ module PublishMyData
       end
 
       def start_new_row
-        @rows << []
+        @header_rows << []
       end
 
       def pad_row_from_start
@@ -90,8 +141,8 @@ module PublishMyData
       end
 
       def row_width(index)
-        return if @rows.empty?
-        @rows[index].map(&:width).reduce(0, :+)
+        return if @header_rows.empty?
+        @header_rows[index].map(&:width).reduce(0, :+)
       end
 
       def pad_current_row_to_end
@@ -102,12 +153,12 @@ module PublishMyData
         width_of_void = @completed_width - row_width(index)
 
         width_of_void.times do
-          @rows[index] << HeaderColumn.new
+          @header_rows[index] << HeaderColumn.new
         end
       end
 
       def current_row
-        @rows[@current_row_index]
+        @header_rows[@current_row_index]
       end
 
       def move_to_first_row
@@ -124,7 +175,7 @@ module PublishMyData
       end
 
       def label_columns(labeller)
-        @rows.each do |row|
+        @header_rows.each do |row|
           row.each do |column|
             column.read_label(labeller)
           end

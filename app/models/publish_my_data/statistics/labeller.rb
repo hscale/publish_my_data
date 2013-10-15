@@ -10,7 +10,6 @@ module PublishMyData
       end
 
       def resource_detected(resource_uri)
-        Rails.logger.info "DETECTED: #{resource_uri}"
         @resource_uris << resource_uri
       end
 

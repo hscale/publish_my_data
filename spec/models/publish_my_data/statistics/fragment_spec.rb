@@ -42,20 +42,6 @@ module PublishMyData
             end
           end
         end
-
-        describe "#values_for_row" do
-          let(:observation_source) { :unused }
-
-          specify {
-            expect(
-              fragment.values_for_row(
-                row_uri:              "uri:unused-resource",
-                measure_property_uri: "uri:unused-measure-property",
-                observation_source:   observation_source
-              )
-            ).to be == []
-          }
-        end
       end
 
       context "with one dimension" do
@@ -108,33 +94,6 @@ module PublishMyData
             end
           end
         end
-
-        describe "#values_for_row" do
-          let(:observation_source) {
-            MockObservationSource.new(
-              measure_property_uris: [ "uri:measure-property/1" ],
-              observation_data: {
-                "uri:dataset/1" => {
-                  "uri:row/1" => {
-                    "uri:dimension/1" => {
-                      'uri:1/a' => 1, 'uri:1/b' => 2
-                    }
-                  }
-                }
-              }
-            )
-          }
-
-          specify {
-            expect(
-              fragment.values_for_row(
-                row_uri:              "uri:row/1",
-                measure_property_uri: "uri:measure-property/1",
-                observation_source:   observation_source
-              )
-            ).to be == [1, 2]
-          }
-        end
       end
 
       context "three dimensions" do
@@ -179,22 +138,12 @@ module PublishMyData
             expect(snapshot).to have_received(:dimension_detected).with(
               dimension_uri: 'uri:dimension/2',
               column_width: 4,
-              column_uris: [
-                'uri:2/a', 'uri:2/b', 'uri:2/c',
-                'uri:2/a', 'uri:2/b', 'uri:2/c'
-              ]
+              column_uris: ['uri:2/a', 'uri:2/b', 'uri:2/c']
             )
             expect(snapshot).to have_received(:dimension_detected).with(
               dimension_uri: 'uri:dimension/3',
               column_width: 1,
-              column_uris: [
-                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
-                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
-                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
-                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
-                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d',
-                'uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d'
-              ]
+              column_uris: ['uri:3/a', 'uri:3/b', 'uri:3/c', 'uri:3/d']
             )
           end
 
@@ -272,49 +221,6 @@ module PublishMyData
               ).to be == fragment.number_of_encompassed_dimension_values_at_level(2)
             end
           end
-        end
-
-        describe "#values_for_row" do
-          # I probably should have made a simpler 3-dimensional example context for this :-S
-          let(:observation_source) {
-            MockObservationSource.new(
-              measure_property_uris: ["uri:measure-property/1"],
-              observation_data: {
-                "uri:dataset/1" => {
-                  "uri:row/1" => {
-                    'uri:dimension/1' => {
-                      'uri:1/a' => {
-                        'uri:dimension/2' => {
-                          'uri:2/a' => { 'uri:dimension/3' => { 'uri:3/a' => 1, 'uri:3/b' =>  2, 'uri:3/c' =>  3, 'uri:3/d' =>  4 } },
-                          'uri:2/b' => { 'uri:dimension/3' => { 'uri:3/a' => 5, 'uri:3/b' =>  6, 'uri:3/c' =>  7, 'uri:3/d' =>  8 } },
-                          'uri:2/c' => { 'uri:dimension/3' => { 'uri:3/a' => 9, 'uri:3/b' => 10, 'uri:3/c' => 11, 'uri:3/d' => 12 } }
-                        }
-                      },
-                      'uri:1/b' => {
-                        'uri:dimension/2' => {
-                          'uri:2/a' => { 'uri:dimension/3' => { 'uri:3/a' => 13, 'uri:3/b' => 14, 'uri:3/c' => 15, 'uri:3/d' => 16 } },
-                          'uri:2/b' => { 'uri:dimension/3' => { 'uri:3/a' => 17, 'uri:3/b' => 18, 'uri:3/c' => 19, 'uri:3/d' => 20 } },
-                          'uri:2/c' => { 'uri:dimension/3' => { 'uri:3/a' => 21, 'uri:3/b' => 22, 'uri:3/c' => 23, 'uri:3/d' => 24 } }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            )
-          }
-
-          specify {
-            expect(
-              fragment.values_for_row(
-                row_uri:              "uri:row/1",
-                measure_property_uri: "uri:measure-property/1",
-                observation_source:   observation_source
-              )
-            ).to be == [
-              1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
-            ]
-          }
         end
       end
     end

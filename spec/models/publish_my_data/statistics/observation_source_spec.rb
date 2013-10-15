@@ -226,11 +226,6 @@ module PublishMyData
       it "uses a graph block" do
         pending
       end
-
-      it "limits the rows" do
-        pending
-      end
-
       it "chunks the results" do
         pending
       end
