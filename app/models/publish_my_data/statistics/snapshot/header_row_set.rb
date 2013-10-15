@@ -32,7 +32,6 @@ module PublishMyData
           ensure_header_row
         end
 
-        # TODO: kill me
         def pad_header_rows_to_completed_width
           @rows.each.with_index do |row, index|
             pad_row_to_end(index)
