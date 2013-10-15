@@ -66,7 +66,7 @@ module PublishMyData
           end
 
           specify {
-            expect(labels_for(snapshot.header_rows(labeller))).to be == [[]]
+            expect(labels_for(snapshot.header_rows(labeller))).to be == []
           }
         end
 
