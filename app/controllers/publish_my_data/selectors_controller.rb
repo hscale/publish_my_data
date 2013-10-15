@@ -65,17 +65,6 @@ module PublishMyData
 
     private
 
-    # TODO: delete me
-    def row_uris
-      Resource.find_by_sparql("
-        SELECT distinct ?uri
-        WHERE { ?uri a <http://statistics.data.gov.uk/def/statistical-geography>. }
-        LIMIT 10
-      ").map(&:uri)
-    end
-
-    private
-
     def invalid_upload
       flash.now[:error] = 'The uploaded file did not contain valid CSV data, please check and try again.'
       render :new
