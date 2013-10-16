@@ -6,6 +6,11 @@ module PublishMyData
     # the Fragments. It then constructs header rows with the appropriate
     # nesting of dimensions, and table rows with the data cube coordinates for
     # each observation.
+    #
+    # Having written this algorithm twice, I now suspect the easiest way to do
+    # it might be a sparse data structure (like a spreadsheet). The padding
+    # algorithm (now in HeaderRowSet) is the hardest bit, if that was
+    # encapsulated maybe the rest of this would simplify a lot. - Ash
     class Snapshot
       def initialize(dependencies)
         @observation_source = dependencies.fetch(:observation_source)
