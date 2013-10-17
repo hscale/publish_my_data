@@ -134,7 +134,9 @@ module PublishMyData
       end
 
       def query_result_statements(query)
-        ntriples_data = Tripod::SparqlClient::Query.query(query.to_s, 'application/n-triples')
+        ntriples_data = Tripod::SparqlClient::Query.query(
+          query.to_s, 'application/n-triples', {}, :no_response_limit
+        )
         RDF::Reader.for(:ntriples).new(ntriples_data).each_statement.to_a
       end
 
