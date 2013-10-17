@@ -7,6 +7,13 @@ module PublishMyData
       # (we need to merge these)
       class MockLabeller
         TEST_LABELS = {
+          'uri:dataset/1'           => "Dataset 1",
+          'uri:dataset/2'           => "Dataset 2",
+          'uri:dataset/3'           => "Dataset 3",
+          'uri:measure-property/1'  => "Measure property 1",
+          'uri:measure-property/2'  => "Measure property 2",
+          'uri:measure-property/3'  => "Measure property 3",
+
           'uri:dim/1/a' => "Dimension 1a",
           'uri:dim/1/b' => "Dimension 1b",
           'uri:dim/2/a' => "Dimension 2a",
@@ -17,7 +24,10 @@ module PublishMyData
           'uri:dim/4/b' => "Dimension 4b",
           'uri:dim/5/a' => "Dimension 5a",
           'uri:dim/5/b' => "Dimension 5b",
-          'uri:dim/6/a' => "Dimension 6a"
+          'uri:dim/6/a' => "Dimension 6a",
+          'uri:dim/6/b' => "Dimension 6b",
+          'uri:dim/7/a' => "Dimension 7a",
+          'uri:dim/7/b' => "Dimension 7b"
         }.freeze
 
         def label_for(uri)
@@ -86,13 +96,17 @@ module PublishMyData
 
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ "Dimension 1a", "Dimension 1b" ]
+              ["Dataset 1"],
+              ["Measure property 1"],
+              ["Dimension 1a", "Dimension 1b"]
             ]
           }
 
           specify {
             expect(widths_for(snapshot.header_rows)).to be == [
-              [ 1, 1 ]
+              [2],
+              [2],
+              [1, 1]
             ]
           }
         end
@@ -117,14 +131,19 @@ module PublishMyData
 
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ "Dimension 1a" ],
-              [ "Dimension 2a", "Dimension 2b" ]
+              ["Dataset 1"],
+              ["Measure property 1"],
+              ["Dimension 1a"],
+              ["Dimension 2a", "Dimension 2b"]
             ]
           }
 
           specify {
             expect(widths_for(snapshot.header_rows)).to be == [
-              [ 2 ], [ 1, 1 ]
+              [2],
+              [2],
+              [2],
+              [1, 1]
             ]
           }
         end
@@ -149,14 +168,19 @@ module PublishMyData
 
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ "Dimension 1a", "Dimension 1b" ],
-              [ "Dimension 2a", "Dimension 2b", "Dimension 2a", "Dimension 2b" ]
+              ["Dataset 1"],
+              ["Measure property 1"],
+              ["Dimension 1a", "Dimension 1b"],
+              ["Dimension 2a", "Dimension 2b", "Dimension 2a", "Dimension 2b"]
             ]
           }
 
           specify {
             expect(widths_for(snapshot.header_rows)).to be == [
-              [ 2, 2 ], [ 1, 1, 1, 1 ]
+              [4],
+              [4],
+              [2, 2],
+              [1, 1, 1, 1]
             ]
           }
         end
@@ -185,13 +209,17 @@ module PublishMyData
 
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ "Dimension 1a", "Dimension 1b", "Dimension 2a", "Dimension 2b" ]
+              ["Dataset 1", "Dataset 2"],
+              ["Measure property 1", "Measure property 2"],
+              ["Dimension 1a", "Dimension 1b", "Dimension 2a", "Dimension 2b"]
             ]
           }
 
           specify {
             expect(widths_for(snapshot.header_rows)).to be == [
-              [ 1, 1, 1, 1 ]
+              [2, 2],
+              [2, 2],
+              [1, 1, 1, 1]
             ]
           }
         end
@@ -223,20 +251,28 @@ module PublishMyData
             )
           end
 
-          # It would be nice to have one blank column of width 2,
-          # but that would be harder to implement (we'd need to remember
-          # the widths of the datasets)
+          # Two notes about this:
+          # 1) The measure properties and dataset URIs don't line up at
+          #    the top because writing a padding algorithm to do this
+          #    would have taken a lot longer.
+          # 2) It would be nice to have one blank column of width 2 when
+          #    we pad it all, but that would be a bit harder to implement
+          #    (maybe not massively though, I haven't looked into it)
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ nil, nil, "Dimension 2a" ],
-              [ "Dimension 1a", "Dimension 1b", "Dimension 3a", "Dimension 3b" ]
+              [nil, nil, "Dataset 2"],
+              ["Dataset 1", "Measure property 2"],
+              ["Measure property 1", "Dimension 2a"],
+              ["Dimension 1a", "Dimension 1b", "Dimension 3a", "Dimension 3b"]
             ]
           }
 
           specify {
             expect(widths_for(snapshot.header_rows)).to be == [
-              [ 1, 1, 2 ],
-              [ 1, 1, 1, 1 ]
+              [1, 1, 2],
+              [2, 2],
+              [2, 2],
+              [1, 1, 1, 1]
             ]
           }
         end
@@ -257,9 +293,19 @@ module PublishMyData
               measure_property_uri: 'uri:measure-property/2'
             )
             snapshot.dimension_detected(
-              dimension_uri:  'uri:dimension/4',
+              dimension_uri:  'uri:dimension/6',
               column_width:   1,
-              column_uris:    ['uri:dim/4/a', 'uri:dim/4/b']
+              column_uris:    ['uri:dim/6/a', 'uri:dim/6/b']
+            )
+            snapshot.dimension_detected(
+              dimension_uri:  'uri:dimension/5',
+              column_width:   2,
+              column_uris:    ['uri:dim/5/a']
+            )
+            snapshot.dimension_detected(
+              dimension_uri:  'uri:dimension4',
+              column_width:   2,
+              column_uris:    ['uri:dim/4/a']
             )
             snapshot.dimension_detected(
               dimension_uri:  'uri:dimension/3',
@@ -276,25 +322,33 @@ module PublishMyData
               measure_property_uri: 'uri:measure-property/3'
             )
             snapshot.dimension_detected(
-              dimension_uri:  'uri:dimension/5',
+              dimension_uri:  'uri:dimension/7',
               column_width:   1,
-              column_uris:    ['uri:dim/5/a', 'uri:dim/5/b']
+              column_uris:    ['uri:dim/7/a', 'uri:dim/7/b']
             )
           end
 
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ nil, nil, "Dimension 2a", nil, nil ],
-              [ nil, nil, "Dimension 3a", nil, nil ],
-              [ "Dimension 1a", "Dimension 1b", "Dimension 4a", "Dimension 4b", "Dimension 5a", "Dimension 5b" ]
+              [nil, nil, "Dataset 2", nil, nil],
+              [nil, nil, "Measure property 2", nil, nil],
+              [nil, nil, "Dimension 2a", nil, nil],
+              [nil, nil, "Dimension 3a", nil, nil],
+              ["Dataset 1", "Dimension 4a", "Dataset 3"],
+              ["Measure property 1", "Dimension 5a", "Measure property 3"],
+              ["Dimension 1a", "Dimension 1b", "Dimension 6a", "Dimension 6b", "Dimension 7a", "Dimension 7b"]
             ]
           }
 
           specify {
             expect(widths_for(snapshot.header_rows)).to be == [
-              [ 1, 1, 2, 1, 1 ],
-              [ 1, 1, 2, 1, 1 ],
-              [ 1, 1, 1, 1, 1, 1 ]
+              [1, 1, 2, 1, 1],
+              [1, 1, 2, 1, 1],
+              [1, 1, 2, 1, 1],
+              [1, 1, 2, 1, 1],
+              [2, 2, 2],
+              [2, 2, 2],
+              [1, 1, 1, 1, 1, 1]
             ]
           }
         end
@@ -347,9 +401,11 @@ module PublishMyData
 
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
-              [ nil, nil, nil, "Dimension 4a" ],
-              [ "Dimension 1a", nil, nil, "Dimension 5a" ],
-              [ "Dimension 2a", "Dimension 3a", "Dimension 3b", "Dimension 6a" ]
+              [nil, nil, nil, "Dataset 3"],
+              ["Dataset 1", nil, nil, "Measure property 3"],
+              ["Measure property 1", "Dataset 2", "Dimension 4a"],
+              ["Dimension 1a", "Measure property 2", "Dimension 5a"],
+              ["Dimension 2a", "Dimension 3a", "Dimension 3b", "Dimension 6a"]
             ]
           }
 
@@ -357,6 +413,8 @@ module PublishMyData
             expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 1, 1, 1 ],
               [ 1, 1, 1, 1 ],
+              [ 1, 2, 1 ],
+              [ 1, 2, 1 ],
               [ 1, 1, 1, 1 ]
             ]
           }

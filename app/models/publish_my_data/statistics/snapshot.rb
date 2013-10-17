@@ -44,8 +44,7 @@ module PublishMyData
       # public as it it's symmetric with #dataset_detected
       def dataset_completed
         return if no_dataset_in_progress?
-        # TODO (maybe)
-        # add_dataset_level_headers
+        add_dataset_level_headers
         concat_current_dataset_onto_header
         clear_dataset_in_progress
       end
@@ -104,6 +103,30 @@ module PublishMyData
 
       def clear_dataset_in_progress
         @current_dataset_header_rows = [ ]
+      end
+
+      def add_dataset_level_headers
+        measure_property_row = [
+          HeaderColumn.new(
+            uri:    current_dataset[:measure_property_uri],
+            width:  @current_dataset_cell_coordinates.length,
+            type:   :measure_property
+          )
+        ]
+        dataset_row = [
+          HeaderColumn.new(
+            uri:    current_dataset[:dataset_uri],
+            width:  @current_dataset_cell_coordinates.length,
+            type:   :dataset
+          )
+        ]
+
+        @current_dataset_header_rows << measure_property_row
+        @current_dataset_header_rows << dataset_row
+      end
+
+      def current_dataset
+        @datasets.last
       end
 
       def concat_current_dataset_onto_header
