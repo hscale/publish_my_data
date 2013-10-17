@@ -58,11 +58,6 @@ module PublishMyData
         end
       end
 
-      # TODO: Implement
-      def measure_label
-        "Measure label goes here"
-      end
-
       def save
         true
       end

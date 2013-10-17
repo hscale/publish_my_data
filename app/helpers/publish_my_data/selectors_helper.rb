@@ -1,7 +1,12 @@
 module PublishMyData
   module SelectorsHelper
     def dom_class_for_header_column(header_column)
-      "fragment-TBD"
+      case header_column.type
+      when :measure_property
+        "measure"
+      else
+        "fragment-TBD"
+      end
     end
 
     def dom_class_for_row_value(row_value)

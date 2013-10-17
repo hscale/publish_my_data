@@ -16,12 +16,11 @@
         %header PREVIEW
         %table
           %thead
-            %tr
-              %td
-                -# TODO: header row type for this
-                - @selector.fragments.each do |fragment|
-                  %th.measure{ colspan: fragment.volume_of_selected_cube, class: dom_class_for_fragment(fragment) }= fragment.measure_label
-            - @snapshot.header_rows.each do |header_row|
+            -# Hack to skip the dataset name, as otherwise we'd have to either
+            -# have different snapshot generation strategies for HTML and CSV,
+            -# or write a HTMLBuilder to correspond with CSVBuilder and stop using
+            -# this template (which is probably the better solution overall)
+            - @snapshot.header_rows.drop(1).each do |header_row|
               %tr
                 %td
                 - header_row.each do |header_column|
@@ -30,6 +29,8 @@
             - @snapshot.table_rows.each.with_index do |row, index|
               %tr
                 %th= row.label
+                -# Thought: we could make row.values pass TableCell objects in
+                -# and implement TableCell#to_s to return the value
                 - row.values.each do |value|
                   %td{ class: dom_class_for_row_value(value) }= value
                 - if @selector.empty? && index == 0

@@ -10,6 +10,9 @@ module PublishMyData
           @cell_coordinates     = description.fetch(:cell_coordinates)
         end
 
+        # It might be convenient to implement #to_s as an alias for
+        # value, but if so we'd need to pass the observation source in
+        # via the constructor
         def value(observation_source)
           observation_source.observation_value(to_h)
         end
