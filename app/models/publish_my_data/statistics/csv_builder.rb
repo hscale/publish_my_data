@@ -6,7 +6,8 @@ module PublishMyData
       DEFAULT_HEADER_ROW_STRATEGIES = {
         dataset:          { display: :uri,   padding: :blank },
         measure_property: { display: :label, padding: :blank },
-        dimension_value:  { display: :label, padding: :duplicate }
+        dimension_value:  { display: :label, padding: :duplicate },
+        blank:            { display: :none,  padding: :blank }
       }.freeze
 
       class << self
@@ -72,6 +73,8 @@ module PublishMyData
             cell.uri
           when :label
             cell.label
+          when :none
+            ""
           else
             raise ArgumentError.new("Unknown cell display type #{cell_display_type.inspect}")
           end

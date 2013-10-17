@@ -8,7 +8,7 @@ module PublishMyData
           @uri    = attributes[:uri]
           @label  = attributes[:label]
           @width  = attributes.fetch(:width, 1)
-          @type   = attributes.fetch(:type, nil) # Maybe raise an error?
+          @type   = attributes.fetch(:type, :blank)
         end
 
         def read_label(labeller)

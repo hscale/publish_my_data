@@ -11,7 +11,8 @@ module PublishMyData
           header_row_strategies: {
             dataset:          { display: :uri,   padding: :blank },
             measure_property: { display: :label, padding: :blank },
-            dimension_value:  { display: :label, padding: :duplicate }
+            dimension_value:  { display: :label, padding: :duplicate },
+            blank:            { display: :none,  padding: :blank }
           }
         )
       }
@@ -50,6 +51,18 @@ module PublishMyData
             )
             expect(parsed_output).to be == [
               ["", "", "Measure Property 1"]
+            ]
+          end
+
+          example "display: blank" do
+            builder.header_row(
+              [
+                # Assuming blank is the default, if not we want to know about it
+                Snapshot::HeaderColumn.new(uri: "uri:unused", label: "Unused", width: 1),
+              ]
+            )
+            expect(parsed_output).to be == [
+              ["", "", ""]
             ]
           end
         end
