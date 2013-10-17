@@ -52,6 +52,23 @@ module PublishMyData
       @snapshot = @selector.build_snapshot(row_limit: 20)
     end
 
+    def download
+      selector = Statistics::Selector.find(params[:id])
+      snapshot = selector.build_snapshot
+      filename = "statistics"
+      source_url = "[source link not currently stored]" # selector_url(selector)
+      output_builder = Statistics::CSVBuilder.build(
+        site_name:  PublishMyData.local_domain,
+        source_url: source_url,
+        timestamp:  Time.now
+      )
+      snapshot.render(output_builder)
+
+      response.headers['Content-Type'] = 'text/csv'
+      response.headers['Content-Disposition'] = %'attachment; filename="#{filename}.csv"'
+      render(text: output_builder.to_csv)
+    end
+
     private
 
     def invalid_upload

@@ -4,10 +4,9 @@ module PublishMyData
   module Statistics
     Snapshot.class_eval do
       describe Snapshot::TableRow do
-        pending "replace MockObservationSource with an RSpec double"
-
         let(:observation_source) {
           # Currently almost the same as the data in the Fragment spec
+          # This could probably be replaced with an RSpec double now
           MockObservationSource.new(
             measure_property_uris: %w[ uri:measure-property/1 uri:measure-property/2 ],
             observation_data: {

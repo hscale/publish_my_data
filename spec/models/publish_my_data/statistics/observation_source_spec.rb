@@ -222,13 +222,6 @@ module PublishMyData
           end
         end
       end
-
-      it "uses a graph block" do
-        pending
-      end
-      it "chunks the results" do
-        pending
-      end
     end
   end
 end

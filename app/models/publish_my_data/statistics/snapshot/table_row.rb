@@ -12,6 +12,10 @@ module PublishMyData
           )
         end
 
+        def uri
+          @row_uri
+        end
+
         def label
           @labeller.label_for(@row_uri)
         end

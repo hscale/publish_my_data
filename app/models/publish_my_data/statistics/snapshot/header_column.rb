@@ -2,14 +2,13 @@ module PublishMyData
   module Statistics
     class Snapshot
       class HeaderColumn
-        attr_reader :label
-        attr_reader :width
+        attr_reader :uri, :label, :width, :type
 
         def initialize(attributes = {})
-          @uri    = attributes.fetch(:uri, nil)
+          @uri    = attributes[:uri]
+          @label  = attributes[:label]
           @width  = attributes.fetch(:width, 1)
-
-          @label  = nil
+          @type   = attributes.fetch(:type, nil) # Maybe raise an error?
         end
 
         def read_label(labeller)

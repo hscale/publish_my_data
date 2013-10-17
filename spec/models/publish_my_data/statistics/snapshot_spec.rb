@@ -33,10 +33,6 @@ module PublishMyData
       }
 
       describe "#header_rows" do
-        it "lazily labels its own rows" do
-          pending "if this is better than using #label_columns"
-        end
-
         let(:labeller) { MockLabeller.new }
 
         def labels_for(header_rows)
@@ -368,58 +364,6 @@ module PublishMyData
       end
 
       describe "#table_rows" do
-        it "doesn't need the observation source and labeller passing to it" do
-          pending
-        end
-
-        describe "#table_rows" do
-          before(:each) do
-            pending "do we need this???"
-          end
-
-          subject(:selector) {
-            Selector.new(
-              geography_type: "uri:statistical-geography",
-              row_uris:       [ "uri:row_1" ]
-            )
-          }
-
-          let(:dimension_1) {
-            {
-              "uri:dimension/1" => [ "http://example.com/dimension_value_1a" ]
-            }
-          }
-
-          let(:dimension_2) {
-            {
-              "uri:dimension/2" => [
-                "http://example.com/dimension_value_2a",
-                "http://example.com/dimension_value_2b"
-              ]
-            }
-          }
-
-          describe "Row construction" do
-            let(:observation_source) {
-              double(ObservationSource)
-            }
-
-            before(:each) do
-              Selector::Row.stub(:new)
-            end
-
-            specify do
-              selector.table_rows(observation_source, labeller)
-              expect(Selector::Row).to have_received(:new).with(
-                hash_including(
-                  observation_source:   observation_source,
-                  row_uri:              'uri:row_1'
-                )
-              )
-            end
-          end
-        end
-
         context "two datasets" do
           before(:each) do
             # The first dataset has 2 dimension values x 2 dimension values

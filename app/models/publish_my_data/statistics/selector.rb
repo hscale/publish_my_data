@@ -32,7 +32,7 @@ module PublishMyData
 
       # Convenience method to take a snapshot with all necessary dependencies.
       # If we had an Application Service layer, this would probably live there.
-      def build_snapshot(options)
+      def build_snapshot(options = {})
         observation_source  = Statistics::ObservationSource.new
         labeller            = Statistics::Labeller.new
 

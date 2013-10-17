@@ -39,7 +39,7 @@ module PublishMyData
           it "only accepts UUIDs" do
             expect {
               Selector.find("foo")
-            }.to raise_error(Selector::InvalidIdError, 'Invalid Selector id: "foo" (not a UUID)')
+            }.to raise_error(Persistence::InvalidIdError, 'Invalid Selector id: "foo" (not a UUID)')
           end
         end
 

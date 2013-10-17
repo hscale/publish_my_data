@@ -44,6 +44,8 @@ module PublishMyData
       # public as it it's symmetric with #dataset_detected
       def dataset_completed
         return if no_dataset_in_progress?
+        # TODO (maybe)
+        # add_dataset_level_headers
         concat_current_dataset_onto_header
         clear_dataset_in_progress
       end
@@ -79,6 +81,21 @@ module PublishMyData
         }
       end
 
+      def render(output_builder)
+        output_builder.document_header_started
+        output_builder.document_header_finished
+        header_rows.each do |header_row|
+          output_builder.header_row(header_row)
+        end
+        table_rows.each do |table_row|
+          output_builder.table_row(
+            row_uri:    table_row.uri,
+            row_label:  table_row.label,
+            values:     table_row.values
+          )
+        end
+      end
+
       private
 
       def no_dataset_in_progress?
@@ -95,7 +112,7 @@ module PublishMyData
 
       def update_header_based_on_dimension(dimension_uri, column_width, column_uris)
         new_row = column_uris.map { |column_uri|
-          HeaderColumn.new(uri: column_uri, width: column_width)
+          HeaderColumn.new(uri: column_uri, width: column_width, type: :dimension_value)
         }
         number_of_columns_in_new_dimension = column_uris.length
         @current_dataset_header_rows.each do |row|
