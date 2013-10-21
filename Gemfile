@@ -37,5 +37,5 @@ group :install_only do
   gem "growl"
   gem "terminal-notifier-guard"
 
-  gem "spring"
+  gem "spring", ">= 0.0.11"
 end
