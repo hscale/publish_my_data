@@ -7,22 +7,24 @@
     %fieldset.sparql-parameters
       %legend Parameters
 
-      :markdown
-        Values supplied below will be substituted into the query in place of the <code>%{tokens}</code>. See the [developer docs](/docs) for more details.
+      .fields
+        - @expected_variables.each do |v|
 
-      - @expected_variables.each do |v|
+          :ruby
+            field_options = {:class => 'field'}
 
-        :ruby
-          field_options = {:class => 'field'}
+            if @missing_variables && @missing_variables.include?(v)
+              field_options.merge!(:class => 'field has-error')
+            end
 
-          if @missing_variables && @missing_variables.include?(v)
-            field_options.merge!(:class => 'field has-error')
-          end
+          - unless @reserved_variables_used && @reserved_variables_used.include?(v)
+            - # don't include reserved ones
+            = content_tag :div, field_options do
+              %label=v
+              = text_field_tag v, @interpolations[v]
+      .notes
+        :markdown
+          Values supplied will be substituted into the query in place of the <code>%{tokens}</code>. See the [developer docs](/docs) for more details.
 
-        - unless @reserved_variables_used && @reserved_variables_used.include?(v)
-          - # don't include reserved ones
-          = content_tag :div, field_options do
-            %label=v
-            = text_field_tag v, @interpolations[v]
-
-  = submit_tag "Run Query", id: 'run-sparql-query'
+  .run
+    = submit_tag "Run Query", id: 'run-sparql-query'

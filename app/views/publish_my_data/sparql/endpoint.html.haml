@@ -13,7 +13,7 @@
       %h1 Run a SPARQL Query
 
   - if @sparql_query || @error_message
-    %section#results
+    %section.results
       - if @error_message
         #error-message
           %h3 Sorry, your query failed to run.</h3>
@@ -62,7 +62,7 @@
                 new Swirrl.SparqlResultsGrid(encodedQuery);
               });
 
-  %section#Query
+  %section.query
     - if @sparql_query
       %h3 Edit the query
     - else
