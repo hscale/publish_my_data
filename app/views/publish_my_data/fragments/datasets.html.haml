@@ -6,8 +6,6 @@
         %h3 Add data
         %h1 Step 1 of 2: Select a Dataset
 
-        = group_datasets_by_theme(@datasets, @themes).inspect
-
         = form_tag new_selector_fragment_path(@selector), method: :get, remote: true do
           = select_tag :dataset_uri, grouped_options_for_select(group_datasets_by_theme(@datasets, @themes)), class: 'form-control'
           .submit.primary
