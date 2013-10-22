@@ -12,5 +12,18 @@ module PublishMyData
       end
       count
     end
+
+    def group_datasets_by_theme(datasets, themes)
+      grouped_datasets = datasets.group_by do |dataset|
+        theme = themes.find {|t| t.uri == dataset.theme}
+        theme.label
+      end
+
+      grouped_datasets.keys.each do |label|
+        grouped_datasets[label] = grouped_datasets[label].map{ |dataset| [dataset.title, dataset.uri.to_s] }
+      end
+
+      grouped_datasets
+    end
   end
 end

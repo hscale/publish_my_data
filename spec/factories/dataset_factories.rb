@@ -32,12 +32,6 @@ FactoryGirl.define do
       uri { PublishMyData::Dataset.uri_from_slug("my/geo/dataset")  }
       graph_uri { PublishMyData::Dataset.metadata_graph_uri("my/geo/dataset") }
     end
-
-    after(:build) do |dataset|
-      r = FactoryGirl.build(:geo_observation)
-      r.write_predicate(RDF::CUBE.dataSet, dataset.uri)
-      r.save!
-    end
   end
 
   factory :another_dataset, class: PublishMyData::Dataset do

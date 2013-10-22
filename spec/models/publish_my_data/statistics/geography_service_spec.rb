@@ -43,5 +43,23 @@ module PublishMyData
         end
       end
     end
+
+    describe ".geographical_data_cubes" do
+      let!(:data_cube) { FactoryGirl.create(:data_cube) }
+      let!(:geo_data_cube) { FactoryGirl.create(:geo_data_cube) }
+
+      before do
+        GeographyTasks.create_some_gss_resources
+        GeographyTasks.populate_dataset_with_geographical_observations(geo_data_cube)
+      end
+
+      it "should return data cubes where there is an observation with a reference area relating to the given RDF type" do
+        GeographyService.geographical_data_cubes("http://opendatacommunities.org/def/local-government/LocalAuthority").map(&:uri).should include(geo_data_cube.uri)
+      end
+
+      it "should not return data cubes where the observations do not contain a relevant geographical component" do
+        GeographyService.geographical_data_cubes("http://opendatacommunities.org/def/local-government/LocalAuthority").map(&:uri).should_not include(data_cube.uri)
+      end
+    end
   end
 end

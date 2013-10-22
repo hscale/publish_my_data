@@ -7,7 +7,7 @@ include PublishMyData
 feature "Preparing a Stats Selector document" do
   let(:selector) { Statistics::Selector.create(
     id: '12345678-abcd-efab-1234-5678abcdefab',
-    geography_type: 'http://statistics.data.gov.uk/def/statistical-geography',
+    geography_type: 'http://opendatacommunities.org/def/local-government/LocalAuthority',
     row_uris: ['http://statistics.data.gov.uk/id/statistical-geography/E07000008', 'http://statistics.data.gov.uk/id/statistical-geography/E07000036']
   ) }
   let(:dataset)  { FactoryGirl.create(:dataset) }
@@ -95,9 +95,6 @@ feature "Preparing a Stats Selector document" do
       GeographyTasks.populate_dataset_with_geographical_observations(dataset)
 
       visit "/selectors/#{selector.id}"
-      # Commenting this out so it isn't generated when we run unrelated tests
-      # (I don't know if this is supposed to still be here or not - Ash)
-      # page.save_screenshot('wtf.png')
       find('.btn-add-data').trigger(:click)
       select dataset.title, from: 'dataset_uri'
       click_on 'Select Dataset'

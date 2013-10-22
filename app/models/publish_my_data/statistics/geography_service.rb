@@ -23,6 +23,23 @@ module PublishMyData
         }
       end
 
+      def self.geographical_data_cubes(geo_uri)
+        filter_triples = case geo_uri
+          when "http://opendatacommunities.org/def/geography#LSOA"
+            "?o a <http://opendatacommunities.org/def/geography#LSOA> ."
+          when "http://opendatacommunities.org/def/local-government/LocalAuthority"
+            "?la a <http://opendatacommunities.org/def/local-government/LocalAuthority> . ?la <http://opendatacommunities.org/def/local-government/governsGSS> ?o ."
+        end
+        Dataset.find_by_sparql("
+          SELECT DISTINCT ?uri WHERE {
+            #{ filter_triples }
+            ?s <http://opendatacommunities.org/def/ontology/geography/refArea> ?o .
+            ?uri a <#{RDF::PMD_DS.Dataset}> .
+            ?s <#{ RDF::CUBE.dataSet }> ?uri .
+          }
+        ")
+      end
+
       private
 
       def gss_codes_and_uris(gss_codes)
@@ -33,13 +50,16 @@ module PublishMyData
           WHERE {
             {
               ?uri a <http://opendatacommunities.org/def/geography#LSOA> .
+              ?uri a ?type .
               ?uri <http://www.w3.org/2004/02/skos/core#notation> ?code .
             } UNION {
-              ?uri a <http://statistics.data.gov.uk/def/statistical-geography> .
+              ?la a <http://opendatacommunities.org/def/local-government/LocalAuthority> .
+              ?la a ?type .
+              ?la <http://opendatacommunities.org/def/local-government/governsGSS> ?uri .
               ?uri <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
             }
-            ?uri a ?type .
             VALUES ?code {#{gss_code_string}}
+            VALUES ?type {<http://opendatacommunities.org/def/geography#LSOA> <http://opendatacommunities.org/def/local-government/LocalAuthority>}
           }
           SPARQL
         )

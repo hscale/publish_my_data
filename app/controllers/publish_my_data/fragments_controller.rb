@@ -6,7 +6,8 @@ module PublishMyData
     before_filter :get_dataset, only:  [ :new, :create ]
 
     def datasets
-      @datasets = Dataset.geographical_data_cubes(@selector.geography_type)
+      @datasets = Statistics::GeographyService.geographical_data_cubes(@selector.geography_type)
+      @themes = Theme.all.resources
 
       respond_to do |format|
         format.html { render layout: false }

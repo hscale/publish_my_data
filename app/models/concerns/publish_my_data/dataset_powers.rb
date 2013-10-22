@@ -99,17 +99,6 @@ module PublishMyData
         all.where("?uri <#{RDF::DC.title}> ?title").order("?title")
       end
 
-      def geographical_data_cubes(geo_uri)
-        find_by_sparql("
-          SELECT DISTINCT ?uri WHERE {
-            ?uri a <#{RDF::PMD_DS.Dataset}> .
-            ?s <#{ RDF::CUBE.dataSet }> ?uri .
-            ?s <http://opendatacommunities.org/def/ontology/geography/refArea> ?o .
-            ?o a <#{ geo_uri }> .
-          }
-        ")
-      end
-
       def deprecation_last_query_str
         "
         SELECT ?uri where {

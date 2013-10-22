@@ -3,6 +3,8 @@ module GeographyTasks
     Tripod::SparqlClient::Update.update(<<-TTL
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX sg: <http://statistics.data.gov.uk/id/statistical-geography/>
+      PREFIX la: <http://opendatacommunities.org/id/district-council/>
+      PREFIX lg: <http://opendatacommunities.org/def/local-government/>
       PREFIX odclsoa: <http://opendatacommunities.org/id/geography/lsoa/>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       PREFIX admingeo: <http://data.ordnancesurvey.co.uk/ontology/admingeo/>
@@ -10,19 +12,18 @@ module GeographyTasks
       INSERT DATA {
         GRAPH <http://pmdtest.dev/graph/geodata> {
           # LA E07000008
-          sg:E07000008 skos:notation "E07000008" .
-          sg:E07000008 a <http://statistics.data.gov.uk/def/statistical-geography> .
           sg:E07000008 admingeo:gssCode "E07000008" .
           sg:E07000008 rdfs:label "E07000008 Cambridge" .
+          la:cambridge a lg:LocalAuthority .
+          la:cambridge lg:governsGSS sg:E07000008 .
           # LA E07000036
-          sg:E07000036 skos:notation "E07000036" .
-          sg:E07000036 a <http://statistics.data.gov.uk/def/statistical-geography> .
           sg:E07000036 admingeo:gssCode "E07000036" .
           sg:E07000036 rdfs:label "E07000036 Erewash" .
+          la:erewash a lg:LocalAuthority .
+          la:erewash lg:governsGSS sg:E07000036 .
           # LSOA E01018171
           odclsoa:E01018171 skos:notation "E01018171" .
           odclsoa:E01018171 a <http://opendatacommunities.org/def/geography#LSOA> .
-          odclsoa:E01018171 admingeo:gssCode "E01018171" .
         }
       }
     TTL
@@ -33,6 +34,7 @@ module GeographyTasks
     Tripod::SparqlClient::Update.update(<<-TTL
       PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX gce:   <http://opendatacommunities.org/def/concept/general-concepts/ethnicity/>
+      PREFIX theme: <http://opendatacommunities.org/def/concept/themes/>
       PREFIX rp:    <http://reference.data.gov.uk/id/quarter/>
       PREFIX og:    <http://opendatacommunities.org/def/ontology/geography/>
       PREFIX ot:    <http://opendatacommunities.org/def/ontology/time/>
@@ -59,6 +61,11 @@ module GeographyTasks
           # Measure Properties
           oha:homelessnessAcceptancesObs a qb:MeasureProperty .
         }
+        # Themes
+        GRAPH <#{Theme.theme_graph}> {
+          theme:homelessness a <#{RDF::SITE.Theme}> .
+          theme:homelessness rdfs:label "Homeslessness" .
+        }
       }
     TTL
     )
@@ -67,16 +74,21 @@ module GeographyTasks
   def self.populate_dataset_with_geographical_observations(dataset)
     Tripod::SparqlClient::Update.update(<<-TTL
       PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dcat:  <http://www.w3.org/ns/dcat#>
       PREFIX sg:    <http://statistics.data.gov.uk/id/statistical-geography/>
       PREFIX obs:   <http://example.com/observations/>
       PREFIX og:    <http://opendatacommunities.org/def/ontology/geography/>
       PREFIX ot:    <http://opendatacommunities.org/def/ontology/time/>
       PREFIX oha:   <http://opendatacommunities.org/def/ontology/homelessness/homelessness-acceptances/>
       PREFIX gce:   <http://opendatacommunities.org/def/concept/general-concepts/ethnicity/>
+      PREFIX theme: <http://opendatacommunities.org/def/concept/themes/>
       PREFIX rp:    <http://reference.data.gov.uk/id/quarter/>
       PREFIX qb:    <http://purl.org/linked-data/cube#>
       
       INSERT DATA {
+        GRAPH <#{ dataset.metadata_graph_uri }> {
+          <#{dataset.uri}> dcat:theme theme:homelessness .
+        }
         GRAPH <#{ dataset.data_graph_uri }> {
           obs:1 qb:dataSet                      <#{dataset.uri}> .
           obs:1 og:refArea                      sg:E07000008 .
