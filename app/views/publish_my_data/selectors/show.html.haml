@@ -24,15 +24,16 @@
               %tr
                 %td
                 - header_row.each do |header_column|
-                  %th.hardwrap{ colspan: header_column.width, class: dom_class_for_header_column(header_column) }= header_column.label
+                  - if header_column.type == :blank
+                    %td{ colspan: header_column.width, class: dom_class_for_fragment(header_column) }
+                  - else
+                    %th.hardwrap{ colspan: header_column.width, class: dom_class_for_fragment(header_column) }= header_column.label
           %tbody
             - @snapshot.table_rows.each.with_index do |row, index|
               %tr
                 %th= row.label
-                -# Thought: we could make row.values pass TableCell objects in
-                -# and implement TableCell#to_s to return the value
-                - row.values.each do |value|
-                  %td{ class: dom_class_for_row_value(value) }= value
+                - row.each do |cell|
+                  %td{ class: dom_class_for_fragment(cell) }= cell
                 - if @selector.empty? && index == 0
                   %td.intro{rowspan: "#{ @snapshot.table_rows.size + 1 }"}
                     %p Get started! Add some column data from a dataset by clicking on 'Add Data' below.

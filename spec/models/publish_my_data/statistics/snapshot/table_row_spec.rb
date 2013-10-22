@@ -88,6 +88,12 @@ module PublishMyData
           )
         }
 
+        describe "#cells" do
+          specify {
+            expect(row.map(&:value)).to be == [1, 2, 3, 4, 5]
+          }
+        end
+
         describe "#values" do
           specify {
             expect(row.values).to be == [1, 2, 3, 4, 5]

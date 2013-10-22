@@ -26,6 +26,7 @@ module PublishMyData
           )
         }
 
+        its(:fragment_code) { should be == 2872237166919839889 }
         its(:number_of_dimensions) { should be == 0 }
         its(:volume_of_selected_cube) { should be == 1 }
 
@@ -78,6 +79,7 @@ module PublishMyData
           end
         end
 
+        its(:fragment_code) { should be == 2872237166919839889 }
         its(:number_of_dimensions) { should be == 1 }
         its(:volume_of_selected_cube) { should be == 2 }
 
@@ -184,6 +186,7 @@ module PublishMyData
           end
         end
 
+        its(:fragment_code) { should be == 2872237166919839889 }
         its(:number_of_dimensions) { should be == 3 }
         its(:volume_of_selected_cube) { should be == 24 }
 

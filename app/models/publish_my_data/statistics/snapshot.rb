@@ -108,16 +108,18 @@ module PublishMyData
       def add_dataset_level_headers
         measure_property_row = [
           HeaderColumn.new(
-            uri:    current_dataset[:measure_property_uri],
-            width:  @current_dataset_cell_coordinates.length,
-            type:   :measure_property
+            dataset_uri:  current_dataset[:dataset_uri],
+            uri:          current_dataset[:measure_property_uri],
+            width:        @current_dataset_cell_coordinates.length,
+            type:         :measure_property
           )
         ]
         dataset_row = [
           HeaderColumn.new(
-            uri:    current_dataset[:dataset_uri],
-            width:  @current_dataset_cell_coordinates.length,
-            type:   :dataset
+            dataset_uri:  current_dataset[:dataset_uri],
+            uri:          current_dataset[:dataset_uri],
+            width:        @current_dataset_cell_coordinates.length,
+            type:         :dataset
           )
         ]
 
@@ -130,12 +132,16 @@ module PublishMyData
       end
 
       def concat_current_dataset_onto_header
-        @header_rows.concat_rows(@current_dataset_header_rows)
+        @header_rows.concat_rows(@current_dataset_header_rows, current_dataset)
       end
 
       def update_header_based_on_dimension(dimension_uri, column_width, column_uris)
         new_row = column_uris.map { |column_uri|
-          HeaderColumn.new(uri: column_uri, width: column_width, type: :dimension_value)
+          HeaderColumn.new(
+            dataset_uri:  current_dataset[:dataset_uri],
+            uri:          column_uri,
+            width:        column_width,
+            type:         :dimension_value)
         }
         number_of_columns_in_new_dimension = column_uris.length
         @current_dataset_header_rows.each do |row|

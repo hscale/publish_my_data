@@ -11,11 +11,13 @@ module PublishMyData
         def initialize
           @rows = [ ]
 
+          @dataset_uris = { }
+
           @current_row_index = 0
           @completed_width = 0
         end
 
-        def concat_rows(rows)
+        def concat_rows(rows, dataset_description)
           move_to_first_row
           rows.each do |row|
             ensure_header_row
@@ -23,6 +25,7 @@ module PublishMyData
             current_row.concat(row)
             move_to_next_header_row
           end
+          remember_dataset_uri(dataset_description.fetch(:dataset_uri))
           remember_completed_header_width
           pad_header_rows_to_completed_width
         end
@@ -73,8 +76,8 @@ module PublishMyData
 
         def pad_row_from_start
           if current_row.empty?
-            @completed_width.times do
-              current_row << HeaderColumn.new
+            @completed_width.times do |header_index|
+              current_row << new_blank_column(header_index)
             end
           end
         end
@@ -84,11 +87,20 @@ module PublishMyData
         end
 
         def pad_row_to_end(index)
-          width_of_void = @completed_width - row_width(index)
+          initial_row_width = row_width(index)
+          width_of_void = @completed_width - initial_row_width
 
-          width_of_void.times do
-            @rows[index] << HeaderColumn.new
+          width_of_void.times do |header_index_offset|
+            @rows[index] << new_blank_column(initial_row_width + header_index_offset)
           end
+        end
+
+        def remember_dataset_uri(uri)
+          @dataset_uris[current_dataset_width_range] = uri
+        end
+
+        def current_dataset_width_range
+          @completed_width ... row_width(0)
         end
 
         def remember_completed_header_width
@@ -102,6 +114,18 @@ module PublishMyData
 
         def move_to_next_header_row
           @current_row_index += 1
+        end
+
+        def new_blank_column(position)
+          HeaderColumn.new(dataset_uri: dataset_uri_for_header_column_position(position))
+        end
+
+        def dataset_uri_for_header_column_position(position)
+          @dataset_uris.each do |column_range, uri|
+            if column_range.include?(position)
+              return uri
+            end
+          end
         end
       end
     end

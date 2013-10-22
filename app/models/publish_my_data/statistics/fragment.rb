@@ -21,6 +21,17 @@ module PublishMyData
         }
       end
 
+      # An opaque token that identifies fragments (relatively) uniquely
+      # and is suitable for using in a CSS class name
+      #
+      # Note that this duplicates the logic in HeaderCell and TableCell
+      # (The reason we need it here is because the Selector show template
+      # iterates the fragments to generate the footer - otherwise we could
+      # pass a code in when building the snapshot)
+      def fragment_code
+        @dataset_uri.hash
+      end
+
       def inform_observation_source(observation_source)
         observation_source.dataset_detected(
           dataset_uri:          @dataset_uri,
