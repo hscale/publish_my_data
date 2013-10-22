@@ -5,6 +5,7 @@ module PublishMyData
     class InvalidCSVUploadError < StandardError; end
 
     rescue_from InvalidCSVUploadError, with: :invalid_upload
+    rescue_from Statistics::GeographyService::TooManyGSSCodesError, with: :too_many_gss_codes
     rescue_from Statistics::GeographyService::TooManyGSSCodeTypesError, with: :mixed_gss_codes
 
     def new
@@ -78,6 +79,11 @@ module PublishMyData
 
     def mixed_gss_codes
       flash.now[:error] = 'The uploaded file should contain GSS codes at either LSOA or Local Authority level.'
+      render :new
+    end
+
+    def too_many_gss_codes
+      flash.now[:error] = 'The uploaded file contains more than 500 GSS codes, please reduce its size and try again.'
       render :new
     end
   end

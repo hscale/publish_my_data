@@ -4,9 +4,15 @@ module PublishMyData
     # when we extract the Stats Selector into its own engine
     class GeographyService
       class TooManyGSSCodeTypesError < StandardError; end
+      class TooManyGSSCodesError < StandardError; end
+
+      cattr_accessor :MAX_NUMBER_OF_GSS_CODES
+      @@MAX_NUMBER_OF_GSS_CODES = 500
 
       def uris_and_geography_type_for_gss_codes(gss_code_candidates)
         gss_codes, gss_resource_uris, geography_types = gss_codes_and_uris(gss_code_candidates)
+        raise TooManyGSSCodesError if gss_codes.size > self.class.MAX_NUMBER_OF_GSS_CODES
+
         non_gss_codes = gss_code_candidates - gss_codes
         raise TooManyGSSCodeTypesError unless (geography_types.size == 1)
 
