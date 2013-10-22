@@ -35,7 +35,8 @@ module PublishMyData
           example "display: uri" do
             builder.header_row(
               [
-                Snapshot::HeaderColumn.new(uri: "uri:dataset/1", label: "Dataset 1", width: 1, type: :dataset)
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dataset/1", label: "Dataset 1", width: 1, type: :dataset)
               ]
             )
             expect(parsed_output).to be == [
@@ -46,7 +47,8 @@ module PublishMyData
           example "display: label" do
             builder.header_row(
               [
-                Snapshot::HeaderColumn.new(uri: "uri:measure-property/1", label: "Measure Property 1", width: 1, type: :measure_property),
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:measure-property/1", label: "Measure Property 1", width: 1, type: :measure_property),
               ]
             )
             expect(parsed_output).to be == [
@@ -58,7 +60,8 @@ module PublishMyData
             builder.header_row(
               [
                 # Assuming blank is the default, if not we want to know about it
-                Snapshot::HeaderColumn.new(uri: "uri:unused", label: "Unused", width: 1),
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:unused", uri: "uri:unused", label: "Unused", width: 1),
               ]
             )
             expect(parsed_output).to be == [
@@ -71,8 +74,10 @@ module PublishMyData
           example "width 1" do
             builder.header_row(
               [
-                Snapshot::HeaderColumn.new(uri: "uri:dataset/1", label: "Dataset 1", width: 1, type: :dataset),
-                Snapshot::HeaderColumn.new(uri: "uri:dataset/2", label: "Dataset 2", width: 1, type: :dataset)
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dataset/1", label: "Dataset 1", width: 1, type: :dataset),
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dataset/2", label: "Dataset 2", width: 1, type: :dataset)
               ]
             )
             expect(parsed_output).to be == [
@@ -83,8 +88,10 @@ module PublishMyData
           example "blank padding" do
             builder.header_row(
               [
-                Snapshot::HeaderColumn.new(uri: "uri:dataset/1", label: "Dataset 1", width: 3, type: :dataset),
-                Snapshot::HeaderColumn.new(uri: "uri:dataset/2", label: "Dataset 2", width: 1, type: :dataset)
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dataset/1", label: "Dataset 1", width: 3, type: :dataset),
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dataset/2", label: "Dataset 2", width: 1, type: :dataset)
               ]
             )
             expect(parsed_output).to be == [
@@ -95,8 +102,10 @@ module PublishMyData
           example "duplicate padding" do
             builder.header_row(
               [
-                Snapshot::HeaderColumn.new(uri: "uri:dim/1/val/1", label: "Dimension value 1", width: 3, type: :dimension_value),
-                Snapshot::HeaderColumn.new(uri: "uri:dim/1/val/2", label: "Dimension value 2", width: 1, type: :dimension_value)
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dim/1/val/1", label: "Dimension value 1", width: 3, type: :dimension_value),
+                Snapshot::HeaderColumn.new(
+                  dataset_uri: "uri:dataset/1", uri: "uri:dim/1/val/2", label: "Dimension value 2", width: 1, type: :dimension_value)
               ]
             )
             expect(parsed_output).to be == [
