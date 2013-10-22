@@ -53,6 +53,8 @@ module PublishMyData
             column_uris:    values
           )
         end
+
+        snapshot.dataset_completed
       end
 
       def inform_labeller(labeller)

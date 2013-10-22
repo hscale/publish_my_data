@@ -29,8 +29,6 @@ module PublishMyData
       end
 
       def dataset_detected(description)
-        dataset_completed
-
         dataset_uri           = description.fetch(:dataset_uri)
         measure_property_uri  = description.fetch(:measure_property_uri)
 
@@ -39,11 +37,7 @@ module PublishMyData
         )
       end
 
-      # An idempotent event handler written initially to lazily pad the end of
-      # rows when we're asked to give back the labelled rows, but I've left it
-      # public as it it's symmetric with #dataset_detected
       def dataset_completed
-        return if no_dataset_in_progress?
         add_dataset_level_headers
         concat_current_dataset_onto_header
         clear_dataset_in_progress
@@ -64,7 +58,6 @@ module PublishMyData
       end
 
       def header_rows
-        dataset_completed
         @header_rows.label_columns(@labeller)
         @header_rows.to_a
       end

@@ -74,10 +74,15 @@ module PublishMyData
               dataset_uri:          'uri:dataset/1',
               measure_property_uri: 'uri:measure-property/1'
             )
+            snapshot.dataset_completed
           end
 
+          # It's relatively unimportant what this does as
+          # it never happens in reality
           specify {
-            expect(labels_for(snapshot.header_rows)).to be == []
+            expect(labels_for(snapshot.header_rows)).to be == [
+              ["Dataset 1"], ["Measure property 1"]
+            ]
           }
         end
 
@@ -92,6 +97,7 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/1/a', 'uri:dim/1/b']
             )
+            snapshot.dataset_completed
           end
 
           specify {
@@ -127,6 +133,7 @@ module PublishMyData
               column_width:   2,
               column_uris:    ['uri:dim/1/a']
             )
+            snapshot.dataset_completed
           end
 
           specify {
@@ -164,6 +171,7 @@ module PublishMyData
               column_width:   2,
               column_uris:    ['uri:dim/1/a', 'uri:dim/1/b']
             )
+            snapshot.dataset_completed
           end
 
           specify {
@@ -196,6 +204,8 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/1/a', 'uri:dim/1/b']
             )
+            snapshot.dataset_completed
+
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/2',
               measure_property_uri: 'uri:measure-property/2'
@@ -205,6 +215,7 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/2/a', 'uri:dim/2/b']
             )
+            snapshot.dataset_completed
           end
 
           specify {
@@ -235,6 +246,8 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/1/a', 'uri:dim/1/b']
             )
+            snapshot.dataset_completed
+
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/2',
               measure_property_uri: 'uri:measure-property/2'
@@ -249,6 +262,7 @@ module PublishMyData
               column_width:   2,
               column_uris:    ['uri:dim/2/a']
             )
+            snapshot.dataset_completed
           end
 
           # Two notes about this:
@@ -288,6 +302,8 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/1/a', 'uri:dim/1/b']
             )
+            snapshot.dataset_completed
+
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/2',
               measure_property_uri: 'uri:measure-property/2'
@@ -317,6 +333,8 @@ module PublishMyData
               column_width:   2,
               column_uris:    ['uri:dim/2/a']
             )
+            snapshot.dataset_completed
+
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/3',
               measure_property_uri: 'uri:measure-property/3'
@@ -326,6 +344,7 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/7/a', 'uri:dim/7/b']
             )
+            snapshot.dataset_completed
           end
 
           specify {
@@ -369,6 +388,8 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/1/a']
             )
+            snapshot.dataset_completed
+
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/2',
               measure_property_uri: 'uri:measure-property/2'
@@ -378,6 +399,8 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/3/a', 'uri:dim/3/b']
             )
+            snapshot.dataset_completed
+
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/3',
               measure_property_uri: 'uri:measure-property/3'
@@ -397,6 +420,7 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/4/a']
             )
+            snapshot.dataset_completed
           end
 
           specify {
@@ -439,6 +463,8 @@ module PublishMyData
               column_width:   2,
               column_uris:    ['uri:dim/1/a', 'uri:dim/1/b']
             )
+            snapshot.dataset_completed
+
             # The second dataset is just to prove we can use multiple datasets
             snapshot.dataset_detected(
               dataset_uri:          'uri:dataset/2',
@@ -449,6 +475,8 @@ module PublishMyData
               column_width:   1,
               column_uris:    ['uri:dim/3/a']
             )
+            snapshot.dataset_completed
+
             # Also we need some rows
             snapshot.row_uris_detected(['uri:row/1', 'uri:row/2'])
             snapshot.row_uris_detected(['uri:row/3'])

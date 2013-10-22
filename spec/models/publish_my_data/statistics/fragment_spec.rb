@@ -117,7 +117,11 @@ module PublishMyData
         # content-independent example group
         describe "#inform_snapshot" do
           let(:snapshot) {
-            double(Snapshot, dataset_detected: nil, dimension_detected: nil)
+            double(Snapshot,
+              dataset_detected:   nil,
+              dimension_detected: nil,
+              dataset_completed:  nil
+            )
           }
 
           before(:each) do
@@ -131,6 +135,9 @@ module PublishMyData
               dataset_uri: 'uri:dataset/1' ,
               measure_property_uri: 'uri:measure-property/1'
             )
+
+            # Ideally `.ordered`, when RSpec spies support it
+            expect(snapshot).to have_received(:dataset_completed)
           end
 
           it "notifies the snapshot of each dimension (header row)" do

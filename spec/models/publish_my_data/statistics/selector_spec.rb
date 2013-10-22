@@ -98,6 +98,7 @@ module PublishMyData
           double(Snapshot,
             dataset_detected:   nil,
             dimension_detected: nil,
+            dataset_completed:  nil,
             row_uris_detected:  nil
           )
         }
