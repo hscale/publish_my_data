@@ -25,7 +25,7 @@
                 %td
                 - header_row.each do |header_column|
                   - if header_column.type == :blank
-                    %td{ colspan: header_column.width, class: dom_class_for_fragment(header_column) }
+                    %th{ colspan: header_column.width, class: dom_class_for_fragment(header_column) }
                   - else
                     %th.hardwrap{ colspan: header_column.width, class: dom_class_for_fragment(header_column) }= header_column.label
           %tbody

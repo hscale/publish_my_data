@@ -253,15 +253,11 @@ module PublishMyData
             snapshot.dataset_completed
           end
 
-          # It would be nice to have one blank column of width 2 when
-          # we pad it all, but that would be a bit harder to implement
-          # (maybe not massively though, I haven't looked into it)
-          # ie the [nil, nil] would change to [nil]
           specify {
             expect(labels_for(snapshot.header_rows)).to be == [
               ["Dataset 1", "Dataset 2"],
               ["Measure property 1", "Measure property 2"],
-              [nil, nil, "Dimension 2a"],
+              [nil, "Dimension 2a"],
               ["Dimension 1a", "Dimension 1b", "Dimension 3a", "Dimension 3b"]
             ]
           }
@@ -270,7 +266,7 @@ module PublishMyData
             expect(widths_for(snapshot.header_rows)).to be == [
               [2, 2],
               [2, 2],
-              [1, 1, 2],
+              [2, 2],
               [1, 1, 1, 1]
             ]
           }
@@ -326,8 +322,8 @@ module PublishMyData
             expect(labels_for(snapshot.header_rows)).to be == [
               ["Dataset 1", "Dataset 2", "Dataset 3"],
               ["Measure property 1", "Measure property 2", "Measure property 3"],
-              [nil, nil, "Dimension 2a", nil, nil],
-              [nil, nil, "Dimension 3a", nil, nil],
+              [nil, "Dimension 2a", nil],
+              [nil, "Dimension 3a", nil],
               ["Dimension 1a", "Dimension 1b", "Dimension 4a", "Dimension 4b", "Dimension 5a", "Dimension 5b"]
             ]
           }
@@ -336,8 +332,8 @@ module PublishMyData
             expect(widths_for(snapshot.header_rows)).to be == [
               [2, 2, 2],
               [2, 2, 2],
-              [1, 1, 2, 1, 1],
-              [1, 1, 2, 1, 1],
+              [2, 2, 2],
+              [2, 2, 2],
               [1, 1, 1, 1, 1, 1]
             ]
           }
@@ -398,8 +394,8 @@ module PublishMyData
             expect(labels_for(snapshot.header_rows)).to be == [
               ["Dataset 1", "Dataset 2", "Dataset 3"],
               ["Measure property 1", "Measure property 2", "Measure property 3"],
-              [nil, nil, nil, "Dimension 4a"],
-              ["Dimension 1a", nil, nil, "Dimension 5a"],
+              [nil, nil, "Dimension 4a"],
+              ["Dimension 1a", nil, "Dimension 5a"],
               ["Dimension 2a", "Dimension 3a", "Dimension 3b", "Dimension 6a"]
             ]
           }
@@ -408,8 +404,8 @@ module PublishMyData
             expect(widths_for(snapshot.header_rows)).to be == [
               [ 1, 2, 1 ],
               [ 1, 2, 1 ],
-              [ 1, 1, 1, 1 ],
-              [ 1, 1, 1, 1 ],
+              [ 1, 2, 1 ],
+              [ 1, 2, 1 ],
               [ 1, 1, 1, 1 ]
             ]
           }

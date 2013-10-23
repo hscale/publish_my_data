@@ -11,6 +11,7 @@ module PublishMyData
         def initialize
           @rows = [ ]
 
+          # <dataset column range> => <uri>
           @dataset_uris = { }
 
           @current_row_index = 0
@@ -76,8 +77,9 @@ module PublishMyData
 
         def pad_row_from_start
           if current_row.empty?
-            @completed_width.times do |header_index|
-              current_row << new_blank_column(header_index)
+            @dataset_uris.each do |column_range, uri|
+              dataset_width = column_range.end - column_range.begin
+              current_row << new_blank_column(column_range.begin, dataset_width)
             end
           end
         end
@@ -88,10 +90,13 @@ module PublishMyData
 
         def pad_row_to_end(index)
           initial_row_width = row_width(index)
-          width_of_void = @completed_width - initial_row_width
-
-          width_of_void.times do |header_index_offset|
-            @rows[index] << new_blank_column(initial_row_width + header_index_offset)
+          missing_datasets = @dataset_uris.select { |column_range, uri|
+            column_range.begin >= initial_row_width
+          }
+          missing_datasets.each do |column_range, uri|
+            dataset_width = column_range.end - column_range.begin
+            next if dataset_width == 0
+            @rows[index] << new_blank_column(column_range.begin, dataset_width)
           end
         end
 
@@ -116,8 +121,11 @@ module PublishMyData
           @current_row_index += 1
         end
 
-        def new_blank_column(position)
-          HeaderColumn.new(dataset_uri: dataset_uri_for_header_column_position(position))
+        def new_blank_column(position, width = 1)
+          HeaderColumn.new(
+            dataset_uri:  dataset_uri_for_header_column_position(position),
+            width:        width
+          )
         end
 
         def dataset_uri_for_header_column_position(position)
