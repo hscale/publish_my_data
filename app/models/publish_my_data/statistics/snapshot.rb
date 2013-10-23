@@ -17,15 +17,17 @@ module PublishMyData
         @labeller           = dependencies.fetch(:labeller)
 
         # Derived structure
-        @header_rows = HeaderRowSet.new
-        @datasets       = [ ]
-        @body_row_uris  = [ ]
+        @dimension_header_rows  = HeaderRowSet.new
+        @banner_header_rows     = HeaderRowSet.new
+        @datasets               = [ ]
+        @body_row_uris          = [ ]
 
         # Transient state as we listen for #dataset_detected and #dimension_detected
         # (Arguably we should split this class in two so we can discard the transient
         # builder state at the end)
-        @current_dataset_header_rows      = [ ]
-        @current_dataset_cell_coordinates = nil
+        @current_dataset_dimension_header_rows  = [ ]
+        @current_dataset_banner_header_rows     = [ ]
+        @current_dataset_cell_coordinates       = nil
       end
 
       def dataset_detected(description)
@@ -38,8 +40,9 @@ module PublishMyData
       end
 
       def dataset_completed
+        concat_current_dimensions_onto_dimension_header
         add_dataset_level_headers
-        concat_current_dataset_onto_header
+        concat_current_dataset_onto_banner_header
         clear_dataset_in_progress
       end
 
@@ -57,11 +60,17 @@ module PublishMyData
         @body_row_uris.concat(row_uris)
       end
 
+      # If you're not using #render, this is what you can use to iterate
+      # over the header rows (both dataset-level and dimension-level)
       def header_rows
-        @header_rows.label_columns(@labeller)
-        @header_rows.to_a
+        @dimension_header_rows.label_columns(@labeller)
+        @banner_header_rows.label_columns(@labeller)
+
+        @banner_header_rows.to_a + @dimension_header_rows.to_a
       end
 
+      # If you're not using #render, this is what you can use to iterate
+      # over the table body rows
       def table_rows
         @body_row_uris.map { |row_uri|
           TableRow.new(
@@ -73,6 +82,11 @@ module PublishMyData
         }
       end
 
+      # Watch out, this method is untested. I started writing examples
+      # for it, but it duplicates a lot of the logic implicit in the
+      # #header_rows and #table_rows example. We currently need to
+      # support the other methods for the view templates, so the data
+      # that gets sent inside #render is implied by the spec for those.
       def render(output_builder)
         output_builder.document_header_started
         output_builder.document_header_finished
@@ -91,11 +105,12 @@ module PublishMyData
       private
 
       def no_dataset_in_progress?
-        @current_dataset_header_rows.empty?
+        @current_dataset_dimension_header_rows.empty?
       end
 
       def clear_dataset_in_progress
-        @current_dataset_header_rows = [ ]
+        @current_dataset_banner_header_rows     = [ ]
+        @current_dataset_dimension_header_rows  = [ ]
       end
 
       def add_dataset_level_headers
@@ -116,16 +131,20 @@ module PublishMyData
           )
         ]
 
-        @current_dataset_header_rows << measure_property_row
-        @current_dataset_header_rows << dataset_row
+        @current_dataset_banner_header_rows << measure_property_row
+        @current_dataset_banner_header_rows << dataset_row
       end
 
       def current_dataset
         @datasets.last
       end
 
-      def concat_current_dataset_onto_header
-        @header_rows.concat_rows(@current_dataset_header_rows, current_dataset)
+      def concat_current_dimensions_onto_dimension_header
+        @dimension_header_rows.concat_rows(@current_dataset_dimension_header_rows, current_dataset)
+      end
+
+      def concat_current_dataset_onto_banner_header
+        @banner_header_rows.concat_rows(@current_dataset_banner_header_rows, current_dataset)
       end
 
       def update_header_based_on_dimension(dimension_uri, column_width, column_uris)
@@ -137,10 +156,10 @@ module PublishMyData
             type:         :dimension_value)
         }
         number_of_columns_in_new_dimension = column_uris.length
-        @current_dataset_header_rows.each do |row|
+        @current_dataset_dimension_header_rows.each do |row|
           row.replace(row * number_of_columns_in_new_dimension)
         end
-        @current_dataset_header_rows << new_row
+        @current_dataset_dimension_header_rows << new_row
       end
 
       def update_body_based_on_dimension(dimension_uri, column_width, column_uris)
