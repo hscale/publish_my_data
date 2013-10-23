@@ -5,21 +5,6 @@ require 'fileutils'
 module PublishMyData
   module Statistics
     describe Selector do
-      class MockLabeller
-        TEST_LABELS = {
-          "http://example.com/dimension_value_1a" => "Dimension 1a",
-          "http://example.com/dimension_value_1b" => "Dimension 1b",
-          "http://example.com/dimension_value_2a" => "Dimension 2a",
-          "http://example.com/dimension_value_2b" => "Dimension 2b",
-          "http://example.com/dimension_value_3a" => "Dimension 3a",
-          "http://example.com/dimension_value_3b" => "Dimension 3b"
-        }.freeze
-
-        def label_for(uri)
-          TEST_LABELS.fetch(uri, "<label not found>")
-        end
-      end
-
       describe "#id" do
         subject(:selector) { Selector.new(geography_type: 'unused') }
 

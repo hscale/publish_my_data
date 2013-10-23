@@ -3,10 +3,9 @@ require 'spec_helper'
 module PublishMyData
   module Statistics
     describe Snapshot do
-      # Where's also a mock labeller in the Selector spec too
-      # (we need to merge these)
-      class MockLabeller
-        TEST_LABELS = {
+      let(:observation_source) { double(ObservationSource) }
+      let(:labeller) {
+        MockLabeller.new(
           'uri:dataset/1'           => "Dataset 1",
           'uri:dataset/2'           => "Dataset 2",
           'uri:dataset/3'           => "Dataset 3",
@@ -26,23 +25,14 @@ module PublishMyData
           'uri:dim/5/b' => "Dimension 5b",
           'uri:dim/6/a' => "Dimension 6a",
           'uri:dim/6/b' => "Dimension 6b"
-        }.freeze
-
-        def label_for(uri)
-          TEST_LABELS.fetch(uri, "<label not found>")
-        end
-      end
-
-      let(:observation_source) { double(ObservationSource) }
-      let(:labeller) { MockLabeller.new }
+        )
+      }
 
       subject(:snapshot) {
         Snapshot.new(observation_source: observation_source, labeller: labeller)
       }
 
       describe "#header_rows" do
-        let(:labeller) { MockLabeller.new }
-
         def labels_for(header_rows)
           header_rows.map { |row|
             row.map { |column| column.label }
