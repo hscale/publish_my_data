@@ -101,7 +101,7 @@ module PublishMyData
       end
 
       def load_single_dataset_data_into_graph(graph, dataset_uri, measure_property_uri, dimensions)
-        triples, values = dimensions_query_fragments(dimensions).values_at(:triples, :values)
+        triples, dim_value_filters = dimensions_query_fragments(dimensions).values_at(:triples, :dim_value_filters)
 
         query = <<-SPARQL
           CONSTRUCT {
@@ -112,7 +112,7 @@ module PublishMyData
             ?obs <#{RDF::CUBE.dataSet}> <#{dataset_uri}> .
             ?obs <#{measure_property_uri}> ?measure .
             #{triples} #{"." unless triples.blank?}
-            #{values}
+            #{dim_value_filters}
           }
         SPARQL
 
@@ -121,16 +121,16 @@ module PublishMyData
 
       def dimensions_query_fragments(dimensions)
         triples = [ ]
-        value_tables = [ ]
+        dim_value_filters = [ ]
 
         dimensions.each_with_index do |(dimension, values), index|
           dim_value = "?dimValue#{index}"
           triples << "?obs <#{dimension}> #{dim_value}"
-          values_list = values.map { |value| "<#{value}>" }.join(" ")
-          value_tables << "VALUES #{dim_value} {#{values_list}}"
+          values_list = values.map { |value| "<#{value}>" }.join(", ")
+          dim_value_filters << "FILTER (#{dim_value} IN (#{values_list}))"
         end
 
-        { triples: triples.join(" . "), values: value_tables.join(" ") }
+        { triples: triples.join(" . "), dim_value_filters: dim_value_filters.join(" ") }
       end
 
       def query_result_statements(query)

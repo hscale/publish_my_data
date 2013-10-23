@@ -43,7 +43,7 @@ module PublishMyData
       private
 
       def gss_codes_and_uris(gss_codes)
-        gss_code_string = gss_codes.map{ |code| %'"#{code}"'}.join(' ')
+        gss_code_string = gss_codes.map{ |code| %'"#{code}"'}.join(', ')
 
         query_results = Tripod::SparqlClient::Query.select(<<-SPARQL
           SELECT DISTINCT ?uri ?code ?type
@@ -58,8 +58,8 @@ module PublishMyData
               ?la <http://opendatacommunities.org/def/local-government/governsGSS> ?uri .
               ?uri <http://data.ordnancesurvey.co.uk/ontology/admingeo/gssCode> ?code .
             }
-            VALUES ?code {#{gss_code_string}}
-            VALUES ?type {<http://opendatacommunities.org/def/geography#LSOA> <http://opendatacommunities.org/def/local-government/LocalAuthority>}
+            FILTER (?code IN (#{gss_code_string}))
+            FILTER (?type IN (<http://opendatacommunities.org/def/geography#LSOA>, <http://opendatacommunities.org/def/local-government/LocalAuthority>))
           }
           SPARQL
         )
