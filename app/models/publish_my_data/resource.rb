@@ -6,9 +6,10 @@ module PublishMyData
 
     field :rdf_type, RDF.type, :multivalued => true, :is_uri => true
 
-    cattr_accessor :LOCAL_RESOURCES, :RESOURCES
+    cattr_accessor :LOCAL_RESOURCES, :THIRD_PARTY_RESOURCES, :RESOURCES
     @@LOCAL_RESOURCES = [Dataset, ConceptScheme, Ontology]
-    @@RESOURCES = [ThirdParty::Ontology, ThirdParty::ConceptScheme, Concept, OntologyClass, Property, RdfType]
+    @@THIRD_PARTY_RESOURCES = [ThirdParty::Ontology, ThirdParty::ConceptScheme]
+    @@RESOURCES = [Concept, OntologyClass, Property, RdfType]
 
     class << self
       def uri_from_host_and_doc_path(host, doc_path, format="")
@@ -24,6 +25,9 @@ module PublishMyData
           self.LOCAL_RESOURCES.each do |klass|
             return klass.find(uri) if type.include?(klass.get_rdf_type)
           end
+        end
+        self.THIRD_PARTY_RESOURCES.each do |klass|
+          return klass.find(uri, :ignore_graph => true) if type.include?(klass.get_rdf_type)
         end
         self.RESOURCES.each do |klass|
           return klass.find(uri) if type.include?(klass.get_rdf_type)
