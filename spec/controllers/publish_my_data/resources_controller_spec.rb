@@ -243,7 +243,7 @@ module PublishMyData
       before do
         # make some resources (in and out of our dataset and type)
         (1..5).each do |i|
-          r = Resource.new("http://example.com/resource-in-ds/#{i}", dataset.data_graph_uri)
+          r = Resource.new("http://example.com/resource-in-ds/#{i}", graph_uri: dataset.data_graph_uri)
           r.label = "resource #{i}"
           r.write_predicate(RDF.type, RDF::URI.new(type.uri)) if i.even?
           r.save!
