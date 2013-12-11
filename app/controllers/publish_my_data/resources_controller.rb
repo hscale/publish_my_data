@@ -31,7 +31,10 @@ module PublishMyData
       if uri.present?
         begin
           resource = PublishMyData::Resource.find(uri, local: uri.starts_with?('http://' + PublishMyData.local_domain))
-          render_resource(resource)
+          
+          respond_with(resource) do |format|
+            format.html { render_resource(resource) }
+          end
         rescue Tripod::Errors::ResourceNotFound
           # if it's not there
           respond_to do |format|
@@ -60,7 +63,10 @@ module PublishMyData
     def doc
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
       resource = PublishMyData::Resource.find(uri)
-      render_resource(resource)
+      
+      respond_with(resource) do |format|
+        format.html { render_resource(resource) }
+      end
     end
 
     private

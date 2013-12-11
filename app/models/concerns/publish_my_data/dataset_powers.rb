@@ -11,6 +11,10 @@ module PublishMyData
       self.class.metadata_graph_uri(self.slug)
     end
 
+    def id
+      to_param
+    end
+
     def to_param
       slug
     end
