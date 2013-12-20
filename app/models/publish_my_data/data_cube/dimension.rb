@@ -1,18 +1,18 @@
 module PublishMyData
   module DataCube
-
     class Dimension
-
       include PublishMyData::CubeResults
 
       attr_reader :uri
       attr_reader :cube
+      attr_reader :label
 
       PAGE_SIZE = 5000
 
-      def initialize(uri, cube)
+      def initialize(uri, cube, label = nil)
         @uri = uri
         @cube = cube
+        @label = label
       end
 
       # get all the possible values (uris and labels) for this dimension in the dataset passed in.
@@ -50,9 +50,6 @@ module PublishMyData
         sparql += " ORDER BY #{labels ? '?label' : ''} ?uri"
         sparql
       end
-
-
-
     end
   end
 end

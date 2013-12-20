@@ -7,14 +7,8 @@ module PublishMyData
       private
 
       def render_resource(resource)
-        respond_with(resource) do |format|
-          format.html do
-            resource.eager_load!
-
-            logger.debug(locals_for_resource(resource))
-            render template: template_for_resource(resource), locals: locals_for_resource(resource)
-          end
-        end
+        resource.eager_load!
+        render template: template_for_resource(resource), locals: locals_for_resource(resource)
       end
 
       def template_for_resource(resource)

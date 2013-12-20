@@ -12,10 +12,10 @@ module PublishMyData
       let(:type_one) { 'http://example.com/types/one' }
       let(:type_two) { 'http://example.com/types/two' }
       before do
-        r = Resource.new('http://example.com/id/foo', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/foo', graph_uri: dataset.data_graph_uri)
         r.rdf_type = type_one
         r.save!
-        r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/bar', graph_uri: dataset.data_graph_uri)
         r.rdf_type = type_two
         r.save!
       end
@@ -29,10 +29,10 @@ module PublishMyData
       let(:type_uri) { 'http://example.com/types/one' }
 
       before do
-        r = Resource.new('http://example.com/id/foo', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/foo', graph_uri: dataset.data_graph_uri)
         r.rdf_type = type_uri
         r.save!
-        r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/bar', graph_uri: dataset.data_graph_uri)
         r.rdf_type = type_uri
         r.save!
       end
@@ -44,13 +44,13 @@ module PublishMyData
 
     describe '#resource_count' do
       before do
-        r = Resource.new('http://example.com/id/foo', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/foo', graph_uri: dataset.data_graph_uri)
         r.rdf_type = 'http://example.com/types/one'
         r.save!
-        r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/bar', graph_uri: dataset.data_graph_uri)
         r.rdf_type = 'http://example.com/types/two'
         r.save!
-        r = Resource.new('http://example.com/id/baz', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/baz', graph_uri: dataset.data_graph_uri)
         r.rdf_type = 'http://example.com/types/three'
         r.save!
       end
@@ -62,21 +62,21 @@ module PublishMyData
 
     describe '#example_resources' do
       let!(:resource_one) do
-        r = Resource.new('http://example.com/id/foo', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/foo', graph_uri: dataset.data_graph_uri)
         r.rdf_type = 'http://example.com/types/one'
         r.save!
         r
       end
 
       let!(:resource_two) do
-        r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/bar', graph_uri: dataset.data_graph_uri)
         r.rdf_type = 'http://example.com/types/two'
         r.save!
         r
       end
 
       before do
-        r = Resource.new('http://example.com/id/baz', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/baz', graph_uri: dataset.data_graph_uri)
         r.rdf_type = 'http://example.com/types/two'
         r.save!
       end
@@ -95,7 +95,7 @@ module PublishMyData
       let(:property) { ontology.properties.first }
 
       before do
-        r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/bar', graph_uri: dataset.data_graph_uri)
         r.write_predicate(property.uri, 'foo')
         r.save!
       end
@@ -110,7 +110,7 @@ module PublishMyData
       let(:concept) { concept_scheme.concepts.first }
 
       before do
-        r = Resource.new('http://example.com/id/bar', dataset.data_graph_uri)
+        r = Resource.new('http://example.com/id/bar', graph_uri: dataset.data_graph_uri)
         r.write_predicate('http://example.com/is-unrelated-to', concept.uri)
         r.save!
       end

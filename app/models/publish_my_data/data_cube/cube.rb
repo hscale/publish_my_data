@@ -12,10 +12,7 @@ module PublishMyData
       end
 
       def recommended_dimensions
-
-        dim_objs = dimensions.map { |d| PublishMyData::DataCube::Dimension.new(d[:uri], self) }
-
-        sorted_dims = dim_objs.sort{ |x,y| y.size <=> x.size } # ordered by size desc
+        sorted_dims = dimension_objects
 
         largest_dimension = sorted_dims.first
         second_largest_dimension = sorted_dims[1]
@@ -54,7 +51,15 @@ module PublishMyData
         uris_and_labels_only(Tripod::SparqlClient::Query.select(query))
       end
 
+      def dimension_objects
+        dim_objs = dimensions.map { |d| PublishMyData::DataCube::Dimension.new(d[:uri], self, d[:label]) }
+        dim_objs.sort{ |x,y| y.size <=> x.size } # ordered by size desc
+      end
+
       # the (one and only) measure property for this cube.
+      # This method appears to exist only for the DimensionsController,
+      # currently in PMD Enterprise (link taken 17-Oct-2013):
+      # https://github.com/Swirrl/publish_my_data_enterprise/blob/545215a331ea8752b6ff4c9692db17170453d2c8/app/controllers/publish_my_data/data_cube/dimensions_controller.rb#L19-L23
       def measure_property
 
         query = "PREFIX qb: <http://purl.org/linked-data/cube#>
@@ -351,8 +356,6 @@ module PublishMyData
 
         return sparql
       end
-
     end
-
   end
 end

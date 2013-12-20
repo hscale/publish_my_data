@@ -78,6 +78,14 @@ module PublishMyData
           before { get :data, id: resource.slug, use_route: :publish_my_data, :format => 'nt' }
           include_examples 'as n-triples'
         end
+
+        context "as atom" do
+          before { get :data, id: resource.slug, use_route: :publish_my_data, :format => 'atom' }
+
+          it 'should respond successfully' do
+            response.should be_success
+          end
+        end
       end
 
       context "given an arbitrary information resource which is not a dataset" do
@@ -113,6 +121,14 @@ module PublishMyData
         context "as n-triples" do
           before { get :data, id: "information/resource", use_route: :publish_my_data, :format => 'nt' }
           include_examples 'as n-triples'
+        end
+
+        context "as atom" do
+          before { get :data, id: "information/resource", use_route: :publish_my_data, :format => 'atom' }
+
+          it 'should respond with a 406' do
+            response.status.should == 406
+          end
         end
       end
 
