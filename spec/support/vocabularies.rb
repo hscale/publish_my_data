@@ -115,7 +115,7 @@ shared_examples 'an external vocabulary' do
 
   context 'with metadata triples in the data graph' do
     let!(:data_resource) do
-      r = PublishMyData::Ontology.new(vocabulary.uri, vocabulary.data_graph_uri)
+      r = PublishMyData::Ontology.new(vocabulary.uri, graph_uri: vocabulary.data_graph_uri)
       r.title = 'Awesome Title, by Bob'
       r.label = 'Awesome Title, by Bob'
       r.comment = 'Awesome external vocabulary'

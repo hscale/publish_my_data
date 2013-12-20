@@ -3,4 +3,5 @@ module RDF
   PMD_DS = RDF::Vocabulary.new("http://publishmydata.com/def/dataset#")
   DCAT = RDF::Vocabulary.new("http://www.w3.org/ns/dcat#")
   VOID = RDF::Vocabulary.new("http://rdfs.org/ns/void#")
+  CUBE = RDF::Vocabulary.new("http://purl.org/linked-data/cube#")
 end

@@ -26,7 +26,7 @@ module PublishMyData
       private
 
       def data_resource
-        @data_resource = PublishMyData::Ontology.new(self.uri, self.data_graph_uri)
+        @data_resource = PublishMyData::Ontology.new(self.uri, graph_uri: self.data_graph_uri)
         @data_resource.hydrate!
         @data_resource
       end

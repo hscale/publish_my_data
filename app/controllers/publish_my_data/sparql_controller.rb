@@ -18,7 +18,10 @@ module PublishMyData
       else
         build_sparql_query(@query_text)
         @sparql_query_result = process_sparql_query(@sparql_query)
-        respond_with(@sparql_query_result)
+        respond_to do |format|
+          format.html { render }
+          format.any { render text: @sparql_query_result }
+        end
       end
 
     end
