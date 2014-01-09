@@ -24,7 +24,12 @@ module PublishMyData
     end
 
     def types
-      @types ||= RdfType.where('?s a ?uri').graph(self.data_graph_uri).resources
+      query =  "SELECT ?uri WHERE {"
+      query << "  GRAPH <#{self.data_graph_uri.to_s}> { ?s a ?uri }"
+      query << "  FILTER (?s != <#{self.uri}>)"
+      query << "}"
+
+      @types ||= RdfType.find_by_sparql(query)
     end
 
     def type_count(type_uri)
@@ -39,8 +44,11 @@ module PublishMyData
     def example_resources
       return @example_resources if @example_resources
 
-      resource_queries = self.types.map do |t|
-        "{ SELECT DISTINCT ?uri WHERE { ?uri a <#{t.uri.to_s}> } LIMIT 1 }"
+      types = self.types.to_a
+      types.reject!{|t| self.rdf_type.include?(t.uri)}
+
+      resource_queries = types.map do |t|
+        "  { SELECT DISTINCT ?uri WHERE { ?uri a <#{t.uri.to_s}> } LIMIT 1 }"
       end
       query =  "SELECT ?uri WHERE { GRAPH <#{self.data_graph_uri.to_s}> {"
       query << resource_queries.join(" UNION ")

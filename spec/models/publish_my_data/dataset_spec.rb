@@ -23,6 +23,18 @@ module PublishMyData
       it 'should return resources for the types used in the dataset' do
         dataset.types.map(&:uri).should == [type_one, type_two]
       end
+
+      context 'given an added type for the dataset' do
+        let(:type_three) { 'http://example.com/types/three' }
+        before do
+          dataset.write_predicate(RDF.type, [RDF::PMD_DS.Dataset, type_three])
+          dataset.save!
+        end
+
+        it 'should ignore the dataset type' do
+          dataset.types.map(&:uri).should_not include(type_three)
+        end
+      end
     end
 
     describe '#type_count' do
