@@ -24,7 +24,7 @@ module PublishMyData
     end
 
     def types
-      query =  "SELECT ?uri WHERE {"
+      query =  "SELECT DISTINCT ?uri WHERE {"
       query << "  GRAPH <#{self.data_graph_uri.to_s}> { ?s a ?uri }"
       query << "  FILTER (?s != <#{self.uri}>)"
       query << "}"
