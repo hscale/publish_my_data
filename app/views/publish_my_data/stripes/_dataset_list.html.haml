@@ -1,0 +1,36 @@
+- container = local_assigns[:container] || "category"
+- preposition =  local_assigns[:preposition] || "for"
+
+%section
+	= fullwidth do
+		- if @datasets.length > 0
+			%table
+				%thead
+					%tr
+						%th
+							dataset
+						%th{style:"width:20%;"}
+							last updated
+						%th{style:"width:15%;"}
+							theme
+				- @datasets.each do |dataset|
+					%tr.deprecated
+						%td
+							%h3= link_to dataset.title, dataset
+							%p
+								=dataset.comment
+							- if dataset.deprecated?
+								%span.pmd_phrase_warning
+									This dataset is discontinued.
+						%td{style:"width:20%;"}
+							= formatted_date(dataset.modified.to_s)
+						%td{style:"width:15%;"}
+							- if dataset.theme
+								- theme = PublishMyData::Theme.find(dataset.theme)
+								= link_to theme.label, theme_path(theme)
+							- else
+								none
+
+- if pagination_required?(@datasets, @pagination_params)
+	= fullwidth do
+		= paginate @datasets

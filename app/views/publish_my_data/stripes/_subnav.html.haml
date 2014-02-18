@@ -1,0 +1,9 @@
+// the standard_menu_x functions in subnavigation_helper.rb are intended to be overridden by 
+// your app to customise the contents of one or more of the sum navigation menus
+
+%nav.pmd_nav_sub
+	= row do
+		= render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_catalogue}
+		= render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_tools}
+		= render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_docs}
+		= render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_pmd}

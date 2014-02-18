@@ -1,0 +1,15 @@
+-# set locals:{container:} as either a dataset, concept scheme or ontology
+
+=label "Description"
+%a#read-more(href="#"){style:"display:none;"} [show long description]
+.description
+	:markdown
+		#{container.description.to_s}
+:javascript
+	$("a#read-more").show();
+	$(".description").hide();
+	$("a#read-more").click(function(e) {
+		e.preventDefault();
+		$(".description").show();
+		$("a#read-more").hide();
+	});

@@ -1,7 +1,11 @@
 module PublishMyData
   module DatasetsHelper
     def formatted_date(date_string)
-      DateTime.parse(date_string).to_s(:long)
+      unless date_string.blank?
+        DateTime.parse(date_string).to_s(:long)
+      else 
+        date_string
+      end
     end
 
     def vocabulary_class(dataset, uri)

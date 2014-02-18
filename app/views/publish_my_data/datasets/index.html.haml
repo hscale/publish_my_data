@@ -1,32 +1,19 @@
-- page_title 'Datasets'
+- highlight_in_menu "catalogue"
+- set_page_title "Catalogue"
+- page_kind 'page of datasets'
+- bodyclass 'datasets'
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    %li.datasets Datasets
+- format_options = {only_path:false, page: @pagination_params.page, per_page: @pagination_params.per_page}
+- additional_format('N-triples', url_for(format_options.merge(format: 'nt')))
+- additional_format('Turtle', url_for(format_options.merge(format: 'ttl')))
+- additional_format('RDF/XML', url_for(format_options.merge(format: 'rdf')))
+- additional_format('JSON', url_for(format_options.merge(format: 'json')))
 
-%section#datasets
-  %header
-    %h1 All Datasets
-    %h3= pluralize(@datasets.length, "dataset")
-  %ul
-    - @datasets.each do |dataset|
-      %li
-        %h3= link_to dataset.title, dataset
-        %p
-          =dataset.comment
-          - if dataset.deprecated?
-            %span.discontinued
-              %i.icon.-warning
-              Discontinued
-  - if pagination_required?(@datasets, @pagination_params)
-    = paginate @datasets
-  %footer.alternative-formats
-    :markdown
-      This **page of datasets** is available as
-    %ul
-      %li HTML
-      %li= link_to 'N-triples', format: 'nt', page: @pagination_params.page, per_page: @pagination_params.per_page
-      %li= link_to "Turtle", format: 'ttl', page: @pagination_params.page, per_page: @pagination_params.per_page
-      %li= link_to "RDF/XML", format: 'rdf', page: @pagination_params.page, per_page: @pagination_params.per_page
-      %li= link_to "JSON", format: 'json', page: @pagination_params.page, per_page: @pagination_params.per_page
+%header
+	= fullwidth do
+		= page_title("Catalogue")
+		%p
+			The data are organised into <em>datasets</em> of thematically-related information. You can also browse the dataset catalogue 
+			= link_to 'by theme', '/themes'
+
+= render "publish_my_data/stripes/dataset_list", locals:{container:"theme", preposition:"in"}

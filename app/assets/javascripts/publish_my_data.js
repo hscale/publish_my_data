@@ -13,4 +13,4 @@
 //= require jquery
 //= require_tree ./slick_grid
 //= require_tree ./publish_my_data
-//= require bootstrap/tab
+//= require_tree ./vendor/codemirror

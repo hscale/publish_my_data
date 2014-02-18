@@ -1,0 +1,80 @@
+/************************************************************************
+ *
+ *	2002 - FACADE: SNAPPER [NB - slightly bitrotted - needs update]
+ *
+ *	Blank template for making new framework facades
+ *
+ **********************************************************************/
+
+/************************************************************************
+ *
+ *  Type: match pmd config to framework
+ *
+ **********************************************************************/
+
+// $? : 	$pmdconfig_typeface_bodycopy;
+// $?: 		$pmdconfig_typeface_bodycopy;
+// $?: 		$pmdconfig_typeface_monospace;
+
+/************************************************************************
+ *
+ *  Framework
+ *
+ **********************************************************************/
+
+@import "vendor/snapper/snapper";
+
+/************************************************************************
+ *
+ *  Layout Breakpoints
+ *
+ **********************************************************************/
+
+// in pixels, the width above which we switch from single into multi-column view;
+$pmd_breakpoint_mobile: // TODO ;
+
+/************************************************************************
+ *
+ *	Grid
+ *
+ **********************************************************************/
+
+// .pmd_row is a vertical division of the page, containing one or more .pmd_box_*'s
+.pmd_row{
+	@extend .row;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+	width: $mobile; 
+	@include when(tablet){ width: $tablet; }
+	@include when(widescreen){ width: $widescreen; }
+}
+
+// .pmd_box_* are horzontal content containers
+
+// full page width
+.pmd_box_full{
+	@extend .box;
+}
+
+// quarter page width
+.pmd_box_quarter{
+	@extend .box;
+	@include when(tablet){ width:$cols2; }
+	@include when(widescreen){ width:$cols3; }
+}
+
+// main content with sidebar right
+.pmd_box_has_sidebar{
+	@extend .box;
+	@include when(tablet){ width:$cols6; }
+	@include when(widescreen){ width:$cols9; }
+}
+.pmd_box_sidebar{
+	@extend .box;
+	@include when(tablet){ width:$cols2; }
+	@include when(widescreen){ width:$cols3; }
+}
+
+

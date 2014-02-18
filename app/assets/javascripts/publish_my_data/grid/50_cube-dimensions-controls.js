@@ -36,7 +36,7 @@
 
     function createRowsDimensionDropdown() {
       rowsDimensionDropdown = new Swirrl.CubeDimensionDropdown(cubeGrid.getCubeDimensions(), 'rows-dimension-dropdown');
-      $('#rows-dimension-container').append(rowsDimensionDropdown.jQueryElement);
+      $('#rows_dimension_container').append(rowsDimensionDropdown.jQueryElement);
       rowsDimensionDropdown.setValue(cubeGrid.getRowsDimension().uri);
       rowsDimensionDropdown.disable(); // create as disabled
       wireUpDimensionDropDownChanged(rowsDimensionDropdown);
@@ -44,7 +44,7 @@
 
     function createColumnsDimensionDropdown() {
       columnsDimensionDropdown = new Swirrl.CubeDimensionDropdown(cubeGrid.getCubeDimensions(), 'columns-dimension-dropdown');
-      $('#columns-dimension-container').append(columnsDimensionDropdown.jQueryElement);
+      $('#columns_dimension_container').append(columnsDimensionDropdown.jQueryElement);
       columnsDimensionDropdown.setValue(cubeGrid.getColumnsDimension().uri);
       columnsDimensionDropdown.disable(); // create as disabled
       wireUpDimensionDropDownChanged(columnsDimensionDropdown);
@@ -52,7 +52,7 @@
 
     function createLockedDimensionsDropdownsAnync() {
       // make drop downs for the locked dimensions
-      var lockedDimensionsSelector = containerSelector + " .locked-dimensions";
+      var lockedDimensionsSelector = containerSelector + " .locked_dimensions";
       var dimensionsReady = 0;
 
       var lockedDimObjects = cubeGrid.getLockedDimensionObjects();

@@ -29,6 +29,10 @@ module PublishMyData
       )
     end
 
+    def classes_sorted
+      Ontology.sort_by_label_or_uri(classes)
+    end
+
     def properties
       @properties ||= Property.find_by_sparql("
         SELECT DISTINCT ?uri ?graph
@@ -39,6 +43,10 @@ module PublishMyData
           }
         }"
       )
+    end
+
+    def properties_sorted
+      Ontology.sort_by_label_or_uri(properties)
     end
 
     def local?

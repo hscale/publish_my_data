@@ -1,43 +1,25 @@
-- page_title "Theme: #{@theme.label || @theme.uri}"
+- highlight_in_menu "browse"
+- set_page_title "Theme: #{@theme.label || @theme.uri}"
+- page_kind 'themed list of datasets'
+- bodyclass 'theme'
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    %li= link_to "Themes", themes_path
-    %li Theme
+%header
+	= fullwidth do
+		= badge("theme")
+		%h1
+			= @theme.label || @theme.uri
+			%span{style:"font-weight:normal"}
+				= "(#{pluralize @datasets.length, "dataset"})"
+		%p
+			= @theme.comment
+		= link_to "Metadata for this theme", resource_path_from_uri(@theme.uri)
 
-%article#theme
-  %header
-    %h3 Theme
-    %h1= @theme.label || @theme.uri
-    %h3 Comment
-    %p
-      = @theme.comment
-      = link_to "Metadata for this theme", resource_path_from_uri(@theme.uri)
+= render "publish_my_data/stripes/dataset_list", locals:{container:"theme", preposition:"in"}
 
-  %section#datasets
-    %h3= pluralize(@datasets.length, "dataset")
-
-    %ul
-      - @datasets.each do |dataset|
-        %li
-          %h3= link_to dataset.title, dataset
-          %p
-            =dataset.comment
-            - if dataset.deprecated?
-              %span.discontinued
-                %i.icon.-warning
-                Discontinued
-    - if pagination_required?(@datasets, @pagination_params)
-      = paginate @datasets
-
-  %footer.alternative-formats
-    :markdown
-      This **page of datasets** is available as:
-
-    %ul
-      %li HTML
-      %li= link_to('N-triples', :format => 'nt', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
-      %li= link_to("Turtle", :format => 'ttl', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
-      %li= link_to("RDF/XML", :format => 'rdf', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
-      %li= link_to("JSON", :format => 'json', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+/
+	- content_for :formats do
+		%ul
+			%li= link_to('N-triples', :format => 'nt', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+			%li= link_to("Turtle", :format => 'ttl', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+			%li= link_to("RDF/XML", :format => 'rdf', :page => @pagination_params.page, :per_page => @pagination_params.per_page)
+			%li= link_to("JSON", :format => 'json', :page => @pagination_params.page, :per_page => @pagination_params.per_page)

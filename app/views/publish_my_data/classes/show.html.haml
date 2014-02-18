@@ -1,28 +1,21 @@
-- page_title "Class: #{ontology_class.label || ontology_class.uri}"
+- title = ontology_class.label || ontology_class.uri
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    - if ontology_class.defined_by_ontology
-      %li= link_to "Ontology: #{ontology_class.defined_by_ontology.label || ontology_class.defined_by_ontology.uri}", resource_path_from_uri(ontology_class.defined_by_ontology.uri)
-    %li Class
+- highlight_in_menu "vocabularies"
+- set_page_title("Class: #{title}")
+- page_kind 'ontology class'
+- bodyclass 'ontology'
 
-%article#resource
-  %header
-    %h3 Class
-    %h1= ontology_class.label || ontology_class.uri
-    %h3 URI
-    %h2.click-to-select= ontology_class.uri
+- additional_formats_for_resource(ontology_class.uri)
 
-  = render  'publish_my_data/resources/resource_data', resource: ontology_class
+%header
+	= fullwidth do
+		= badge("class")
+		= page_title(title)
+		= title_uri ontology_class.uri
+	- if ontology_class.defined_by_ontology
+		= fullwidth do
+			=label("Ontology")
+			%p= link_to "Ontology: #{ontology_class.defined_by_ontology.label || ontology_class.defined_by_ontology.uri}", resource_path_from_uri(ontology_class.defined_by_ontology.uri)
 
-  %footer.alternative-formats
-    :markdown
-      This **class** is available as:
-    %ul
-      %li HTML
-      %li= link_to("JSON", show_resource_path(:uri => ontology_class.uri, :format => 'json'))
-      %li= link_to("RDF/XML", show_resource_path(:uri => ontology_class.uri, :format => 'rdf'))
-      %li= link_to("Turtle", show_resource_path(:uri => ontology_class.uri, :format => 'ttl'))
-      %li= link_to("N-triples", show_resource_path(:uri => ontology_class.uri, :format => 'nt'))
+= render  'publish_my_data/stripes/resource_data', resource: ontology_class
 

@@ -1,0 +1,103 @@
+/* ==========================================================================
+	§5000 - STYLING - PHRASE-LEVEL CLASSES & DECORATIONS
+   ========================================================================== */
+
+.pmd_bookmarkable{
+	position: absolute; // previous relatively positioned thing should be <section>
+	top: -2px;
+	left: -1em;
+}
+
+a.pmd_bookmarkable:focus{
+	-moz-outline-style: none;
+	outline: none;
+}
+
+a.pmd_bookmarkable:hover,
+a.pmd_bookmarkable:active,
+a.pmd_bookmarkable:focus{
+	text-decoration:none;
+}
+
+label,
+.pmd_phrase_label{
+	font-weight: normal;
+	text-transform: uppercase;
+}
+
+.pmd_phrase_label{
+	margin-bottom: 0.25em;
+}
+
+/* 5001 - MENU styling
+   ========================================================================== */
+
+.pmd_nav_sub .pmd_selected {
+	font-weight: bold;
+}
+
+.pmd_nav a,
+.pmd_nav_sub a,{
+	transition: background 0.2s;
+}
+
+.pmd_nav_sub h5 a{
+	border-bottom: 2px solid rgba(0,0,0,0.2);
+}
+
+.pmd_nav_sub h5 a.pmd_selected,
+.pmd_nav_sub h5 a:hover{
+	border-bottom-color: transparent;
+}
+
+
+/* 5002 - DEPRECATION
+   ========================================================================== */
+
+header.deprecated h1, header.deprecated h2,.pmd_deprecated{ // TODO: are all these really needed?
+	text-decoration: line-through;
+}
+
+/* 5010 - CODE and related styles
+   ========================================================================== */
+
+// code appears inline by default. add .block for block layout, or .pre for a block with preformatted text
+
+code{
+	padding: 0 6px;
+}
+
+code.block{
+	@extend p;
+	width: 100%;
+	display: block;
+	padding: 10px;
+	white-space: normal; // better than clippings
+ }
+
+ code.pre{
+	@extend code.block;
+	white-space: pre; // better than clippings
+ }
+
+code.scrolling{
+	@extend code.pre;
+	overflow: auto;
+}
+
+.code {
+	font-family: Monaco, Consolas, "Lucida Console", monospace;
+	font-size: 1.2em;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.codesmall {
+	@extend .code;
+	font-size: 0.9em;
+}
+
+.uri{
+	font-family: Monaco, Consolas, "Lucida Console", monospace;
+	word-break: break-all;
+}

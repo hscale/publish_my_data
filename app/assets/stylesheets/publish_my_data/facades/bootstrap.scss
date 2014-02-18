@@ -1,0 +1,53 @@
+/* ==========================================================================
+
+   PublishMyData BOOTSTRAP FAÇADE
+   makes pmd sit on top of Twitter Bootstrap
+
+   ========================================================================== */
+
+// Typeface (nb this should go before framework is included)
+// ========================================================================== */
+
+$font-size-base:			$pmdconfig_font-size;
+$font-family-sans-serif:	$pmdconfig_typeface_bodycopy;
+$font-family-base:			$pmdconfig_typeface_bodycopy;
+$font-family-monospace:		$pmdconfig_typeface_monospace;
+
+@import "vendor/bootstrap/bootstrap";
+
+// Responsive breakpoints
+// ========================================================================== */
+
+// in pixels, the width above which we switch from single into multi-column view;
+$pmd_breakpoint_mobile: $screen-md; 
+
+// Grid
+// ========================================================================== */
+
+// .pmd_row is only required to support bootstrap, which is sad
+.pmd_wrapper{
+	@extend .container;
+}
+// .pmd_row is a vertical division of the page, containing one or more .pmd_box_*'s
+.pmd_row{
+	@extend .row;
+}
+// horzontal content container - full page width
+.pmd_box_full{
+	@extend .col-md-12;
+}
+// horzontal content container -  quarter width on sufficiently large screens
+.pmd_box_quarter{
+	@extend .col-md-3;
+}
+// horzontal content container - half width on sufficiently large screens
+.pmd_box_half{
+	@extend .col-md-6;
+}
+// horzontal content containers - main content with sidebar right
+.pmd_box_has_sidebar{
+	@extend .col-md-9;
+}
+.pmd_box_sidebar{
+	@extend .col-md-3;
+}

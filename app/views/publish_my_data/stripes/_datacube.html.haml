@@ -1,0 +1,52 @@
+- if dataset.is_cube?
+	%section.section_data_cube.visible_when_javascript_available
+		= fullwidth do
+			= section_title("Spreadsheet view")
+			:markdown
+				This dataset contains multidimensional data (a _data cube_) which can be displayed as a grid to compare two dimensions at a time.
+
+				Use the drop-down menus below the grid to choose which dimensions to show as rows and columns (and, optionally, to filter the other dimensions by value).
+
+		= fullwidth do
+			.grid_header
+				.grid_title
+					%h4#cube_grid_title
+						&nbsp;
+
+			#data_cube_grid.data_grid
+
+			.grid_footer
+				.footer_content{style:"display:inline-block;"}
+				%span.grid_status
+					%span.status-value
+					= image_tag("publish_my_data/small-spinner.gif", alt: "busy", style: "display:none", class: "busy")
+		=row do
+			%form.dimensions_controls
+				.pmd_box_half.rows_and_columns
+					%fieldset
+						%h4 Grid rows and columns
+						.field
+							%label Columns
+							%div#columns_dimension_container.picker
+						.field
+							%label Rows (values in first column)
+							%div#rows_dimension_container.picker
+				.pmd_box_half.other_options
+					%fieldset
+						%h4 Other dimensions
+						.locked_dimensions
+							No other options for this dataset
+
+		=fullwidth do
+			%ul{style:"padding-bottom:0; margin-bottom:0;"}
+				%li
+					To view information for a column or individual cell, click the links inline in the grid.
+				%li
+					You can re-order a column's contents by clicking on its header (anywhere except the links themselves), or resize it by dragging the column boundaries.
+				%li
+					The entire contents of grid (based on the currently selected options and ordering) can be downloaded in CSV format (eg to import into Excel etc) via the link below the grid.
+
+		:javascript
+			$(function() {
+				new Swirrl.DatasetCubeGrid(window.location.host, '#{dataset.slug}', "#{dataset.title}", "#data_cube_grid");
+			});

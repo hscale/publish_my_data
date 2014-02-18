@@ -1,0 +1,74 @@
+/************************************************************************
+ *
+ *	2001 - FACADE: ZURB [NB - slightly bitrotted - needs update]
+ *
+ *	Makes Zurb Foundation the basis of PMD
+ *
+ **********************************************************************/
+
+/************************************************************************
+ *
+ *  Type: match pmd config to framework
+ *
+ **********************************************************************/
+
+// $? : 	$pmdconfig_typeface_bodycopy;
+// $?: 		$pmdconfig_typeface_bodycopy;
+// $?: 		$pmdconfig_typeface_monospace;
+
+/************************************************************************
+ *
+ *  Framework
+ *
+ **********************************************************************/
+
+@import "vendor/zurb/foundation";
+
+/************************************************************************
+ *
+ *  Layout Breakpoints
+ *
+ **********************************************************************/
+
+// in pixels, the width above which we switch from single into multi-column view;
+$pmd_breakpoint_mobile: 40.063em;
+
+/************************************************************************
+ *
+ *	Grid
+ *
+ **********************************************************************/
+
+// .pmd_row is a vertical division of the page, containing one or more .pmd_box_*'s
+.pmd_row{
+	@extend .row;
+}
+
+// .pmd_box_* are horzontal content containers
+
+// full page width
+.pmd_box_full{
+	@extend .column;
+	@extend .large-12;
+}
+
+// .pmd_box_quarter are quarter width on sufficiently large screens
+.pmd_box_quarter{
+	@extend .column;
+	@extend .large-3;
+}
+
+// main content with sidebar right
+.pmd_box_has_sidebar{
+	@extend .column;
+	@extend .large-8;
+}
+.pmd_box_sidebar{
+	@extend .column;
+	@extend .large-3;
+	@extend .large-offset-1;
+	padding-top: $pmdconfig_space_vertical/2; // when collapsed in mobile mode, this needs some vertical space
+	@media #{$large-up}{
+		padding-top: 0;
+	}
+}

@@ -1,0 +1,17 @@
+%section
+	= fullwidth do
+		%table
+			%thead
+				%tr
+					%th{style:"width:50%"}
+						Predicate
+					%th{style:"width:50%"}
+						Object
+			%tbody
+				- resource.predicates.each do |predicate|
+					%tr
+						%td
+							= resource_uri_or_label(resource, predicate)
+						%td
+							- resource.read_predicate(predicate).each do |obj|
+								= resource_uri_or_label(resource, obj)

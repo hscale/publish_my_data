@@ -444,23 +444,23 @@
 
       var url = buildObservationsUrl('csv', null);
 
-      $(".grid-footer i.icon-download").show();
+      $(".grid_footer i.icon-download").show();
 
       var theIcon = $("<i></i>");
       theIcon.addClass("icon-download");
 
       var theLink = $("<a></a>");
-      theLink.addClass("download-csv");
+      theLink.addClass("download_csv");
       theLink.attr("href", url);
 
       theLink.append(theIcon);
       theLink.append(" Download results as CSV");
 
-      $(".grid-footer .footer-content").append(theLink);
+      $(".grid_footer .footer_content").append(theLink);
     }
 
     function hideCSVDownloadLink() {
-      $(".grid-footer .footer-content a.download-csv").remove();
+      $(".grid_footer .footer_content a.download_csv").remove();
     }
 
     // public api.

@@ -1,9 +1,0 @@
-%select.formats{style:'display:inline;'}
-  %option{value: sparql_endpoint_url(:format => 'json', :query => @sparql_query.query)}
-    JSON
-  %option{value: sparql_endpoint_url(:format => 'xml', :query => @sparql_query.query)}
-    XML
-  %option{value: sparql_endpoint_url(:format => 'csv', :query => @sparql_query.query)}
-    CSV
-  %option{value: sparql_endpoint_url(:format => 'text', :query => @sparql_query.query)}
-    Text

@@ -1,0 +1,43 @@
+- displayable_parameters = exclude_keys(@expected_variables,@reserved_variables_used)
+
+%section
+	=fullwidth do
+		=section_title("#{ @sparql_query ? 'Edit' : 'Enter' } query")
+	=fullwidth do
+		= form_tag sparql_endpoint_path, method: :get do
+			= text_area_tag :query, @query_text || "SELECT * WHERE { ?s ?p ?o } LIMIT 20"
+			- # interpolated variables - ie anything in %{} in the query
+			- # example query to generate interpolations:
+			- #		SELECT * WHERE { ?%{foo}  ?p ?o}
+			- # example query to generate interpolations with reserved words:
+			- # 	SELECT * WHERE { ?%{controller}  ?p ?o}
+			- if @expected_variables && @expected_variables.any?
+				%fieldset#sparql_parameters
+					%h4 Special parameters
+					%p
+						:markdown
+							Values supplied will be substituted into the query in place of the <code>%{tokens}</code>. See the [developer docs](/docs) for more details.
+					- @expected_variables.each do |v|
+						:ruby
+							field_options = {:class => 'field'}
+							if @missing_variables && @missing_variables.include?(v)
+								field_options.merge!(:class => 'pmd_field_error')
+							end
+						= content_tag :div, field_options do
+							- if @missing_variables && @missing_variables.include?(v)
+								%label="#{v}: can't be blank"
+							- else
+								%label="#{v}: "
+							= text_field_tag v, @interpolations[v]
+
+			= submit_tag "Run Query", id: 'run-sparql-query'
+
+/
+	:javascript
+		$(function(){
+			var editor = CodeMirror.fromTextArea(document.getElementById("query"), {
+				mode: "application/x-sparql-query",
+				tabMode: "indent",
+				matchBrackets: true
+			});
+		});

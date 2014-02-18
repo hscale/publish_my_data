@@ -8,5 +8,10 @@ module PublishMyData
 
     config.autoload_paths << "./app/models/concerns"
     config.autoload_paths << "./app/controllers/concerns"
+
+    initializer :myassets do |app|
+      app.config.assets.paths << root.join("app", "assets", "fonts")
+    end
+
   end
 end

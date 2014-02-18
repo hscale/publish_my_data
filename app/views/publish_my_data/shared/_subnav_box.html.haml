@@ -1,0 +1,6 @@
+.pmd_box_quarter
+	%h5{class: menu[:classname]}
+		= submenu_link menu[:title], menu[:target], menu[:highlight]
+	%ul
+		- menu[:items].each do | item |
+			%li= submenu_link item[:title], item[:target], item[:highlight]

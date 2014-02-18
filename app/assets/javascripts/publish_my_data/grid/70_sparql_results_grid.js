@@ -21,7 +21,7 @@
     var totalCount = INITIALTOTALCOUNT;
     var columns = null;
     var loader = new Swirrl.DataLoader(totalCount, PAGESIZE);
-    var slickGrid = new Slick.Grid('#results-grid.data-grid', loader.data, [], SLICKGRIDOPTIONS);
+    var slickGrid = new Slick.Grid('#results_grid.data_grid', loader.data, [], SLICKGRIDOPTIONS);
 
     $(document).on("click", ".slick-cell", function() {
       $(this).selectText();
@@ -29,23 +29,23 @@
 
     // These are thte same methods as in the cube grid. Refactor??
     function setGridStatus(status, busy) {
-      $(".grid-status .status-value").empty();
-      $(".grid-status .status-value").append(status);
+      $(".grid_status .status-value").empty();
+      $(".grid_status .status-value").append(status);
 
       if (busy) {
-        $(".grid-status img.busy").show();
+        $(".grid_status img.busy").show();
       } else {
-        $(".grid-status img.busy").hide();
+        $(".grid_status img.busy").hide();
       }
     }
 
     function setGridError(httpStatusCode) {
-      $(".grid-status img.busy").hide();
-      $(".grid-status .status-value").empty();
+      $(".grid_status img.busy").hide();
+      $(".grid_status .status-value").empty();
       if (httpStatusCode == 500 || httpStatusCode == 400) {
-        $(".grid-status .status-value").append('<i class="icon-warning"></i> Error fetching data');
+        $(".grid_status .status-value").append('<i class="icon-warning"></i> Error fetching data');
       } else if (httpStatusCode == 503) {
-        $(".grid-status .status-value").append('<i class="icon-warning"></i> Query timed out');
+        $(".grid_status .status-value").append('<i class="icon-warning"></i> Query timed out');
       }
     }
 
@@ -89,7 +89,7 @@
         dataType: 'json',
         success: function(responseData, _, jqXHR) {
           loader.setPageOfData(jqXHR.page, processResponseData(responseData));
-          setGridStatus('Grid Ready.');
+          setGridStatus(''); // ie 'Grid Ready.' Nothing to report because we're in good shape
         },
         error: function( jqXHR, _, _ ) {
           setGridError(jqXHR.status);

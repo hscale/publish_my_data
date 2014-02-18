@@ -1,0 +1,21 @@
+- highlight_in_menu "tools"
+- set_page_title "Tools"
+- bodyclass 'tools'
+
+%header
+	= fullwidth do
+		= page_title("Tools")
+		%p
+			We provide a number of tools to help you access and work with the data on this site. Additional tools are available in PublishMyData Enterprise Edition.
+
+%section
+	= fullwidth do
+		= section_title("SPARQL endpoint")
+		%p
+			Build and execute queries against our SPARQL1.1 endpoint.
+		%p
+			Results are available in a choice of downloadable formats, both for desktop use (eg spreadsheets) and as machine-readable versions. Shareable, bookmarkable permalinks allow you to save to your query. In addition, this tool supports our SPARQL variable interpolation API
+			= link_to "(documented here)", publish_my_data.api_docs_path
+			, allowing you to build parameterised queries with a form-based interface.
+		%p
+			= link_to "Launch tool", publish_my_data.sparql_endpoint_path

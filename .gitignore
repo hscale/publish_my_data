@@ -1,9 +1,5 @@
-.bundle/
-log/*.log
-pkg/
-spec/dummy/db/*.sqlite3
-spec/dummy/log/*.log
-spec/dummy/tmp/
-spec/dummy/.sass-cache
-Gemfile.lock
+spec/dummy/log/test.log
 .DS_Store
+.bundle
+
+vendor/assets/components/*

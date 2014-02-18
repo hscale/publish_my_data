@@ -1,0 +1,26 @@
+%section
+	= fullwidth do
+		= section_title("Data model")
+	= row do
+		.pmd_box_sidebar
+			= label "Resource types"
+			%p
+				There are 4 types of resource in this dataset:
+			%ul{style:"list-style:none; padding:0;"}
+				%li
+					%a type one
+					(234 resources),
+				%li
+					%a type two
+					(124 resources),
+				%li
+					%a type three
+					(23 resources),
+				%li
+					%a type four
+					(4 resources)
+		.pmd_box_has_sidebar
+			= render 'publish_my_data/stripes/type'
+			= render 'publish_my_data/stripes/type'
+			= render 'publish_my_data/stripes/type'
+			= render 'publish_my_data/stripes/type'

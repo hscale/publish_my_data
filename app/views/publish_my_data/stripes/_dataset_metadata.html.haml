@@ -1,0 +1,30 @@
+%section
+	= row do
+		.pmd_box_has_sidebar
+			- if dataset.comment.present?
+				= label "Abstract"
+				%p= auto_link(dataset.comment.to_s)
+			- if dataset.description.present?
+				= render partial: 'publish_my_data/shared/description', locals:{container:dataset}
+			- if dataset.publisher.present?
+				= label "Publisher"
+				%p= resource_uri_or_label(dataset, dataset.publisher)
+			- if dataset.license.present?
+				= label "Licence"
+				%p= resource_uri_or_label(dataset, dataset.license)
+			- if dataset.contact_email.present?
+				= label "Contact"
+				%p= auto_link dataset.contact_email.to_s.gsub('mailto:','')
+		.pmd_box_sidebar
+			- if dataset.issued.present?
+				=label "Issued"
+				%p= formatted_date(dataset.issued.to_s)
+			- if dataset.modified.present?
+				=label "Modified"
+				%p= formatted_date(dataset.modified.to_s)
+			- if dataset.theme.present?
+				=label "Theme"
+				%p= link_to dataset.theme_obj.label, theme_path(dataset.theme_obj.slug)
+			/
+				=label "Tags"
+				%p= dataset.tags.join(', ')

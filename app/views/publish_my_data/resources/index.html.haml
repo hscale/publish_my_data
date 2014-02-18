@@ -1,37 +1,20 @@
-- page_title 'Resources'
+- title = resources_list_table_title
+- set_page_title title
 - rdf_type_label = PublishMyData::RdfType.find(@type_filter).label rescue nil
+- highlight_in_menu "catalogue"
+- page_kind 'page of resources'
+- bodyclass ''
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    - if @dataset && @dataset.theme
-      %li= link_to "Theme: #{@dataset.theme_obj.label || @dataset.theme_obj.uri}", theme_path(@dataset.theme_obj)
-    - if @dataset
-      %li= link_to "Dataset: #{@dataset.label}", @dataset
-    - if @type_filter
-      %li= "Resources of Type: #{rdf_type_label || @type_filter}"
-    - else
-      %li Resources
+- format_options = {only_path:false, page: @pagination_params.page, per_page: @pagination_params.per_page}
+- additional_format('N-triples', url_for(format_options.merge(format: 'nt')))
+- additional_format('Turtle', url_for(format_options.merge(format: 'ttl')))
+- additional_format('RDF/XML', url_for(format_options.merge(format: 'rdf')))
+- additional_format('JSON', url_for(format_options.merge(format: 'json')))
 
-%section#datasets
-  %header
-    %h1 Resources
-    %h2= resources_list_table_title
-  %ul
-    - @resources.each do |r|
-      %li
-        %h3= link_to((r.label || r.uri.to_s), resource_path_from_uri(r.uri))
-        %h4.click-to-select= r.uri.to_s
+%header
+	= fullwidth do
+		= page_title "Resources"
+		%h4
+			=resources_list_table_title
 
-  - if pagination_required?(@resources, @pagination_params)
-    = paginate @resources
-
-  %footer.alternative-formats
-    :markdown
-      This **page of resources** is available as
-    %ul
-      %li HTML
-      %li= link_to 'N-triples', format: 'nt', page: @pagination_params.page, per_page: @pagination_params.per_page
-      %li= link_to "Turtle", format: 'ttl', page: @pagination_params.page, per_page: @pagination_params.per_page
-      %li= link_to "RDF/XML", format: 'rdf', page: @pagination_params.page, per_page: @pagination_params.per_page
-      %li= link_to "JSON", format: 'json', page: @pagination_params.page, per_page: @pagination_params.per_page
+= render 'publish_my_data/stripes/list_of_resources', title:"Resources", resources:@resources

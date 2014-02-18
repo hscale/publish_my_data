@@ -1,10 +1,10 @@
 module PublishMyData
   module AllFeatures
     extend ActiveSupport::Concern
-    
+
     included do
       include PublishMyData::BasicFeatures
-      
+
       # basics
       field :title, RDF::DC.title
       field :description, RDF::DC.description # long desc
@@ -54,6 +54,12 @@ module PublishMyData
     end
 
     module ClassMethods
+
+      def sort_by_label_or_uri(array_of_resources)
+        # TODO: implement me! :-)
+        array_of_resources
+      end
+
       def deprecated_rdf_type(type)
         self._DEPRECATED_RDF_TYPE = type
       end

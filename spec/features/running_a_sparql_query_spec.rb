@@ -61,19 +61,19 @@ describe 'visiting the sparql endpoint' do
 
   shared_examples_for 'a construct query' do
     describe 'and clicks N-triples format' do
-      before { page.click_link "N-triples" }
+      before { page.click_link "(download N-triples)" }
 
       it_should_behave_like "an n-triples response"
     end
 
     describe 'and clicks Turtle format' do
-      before { page.click_link "Turtle" }
+      before { page.click_link "(download Turtle)" }
 
       it_should_behave_like "a turtle response"
     end
 
     describe 'and clicks rdf/xml format' do
-      before { page.click_link "RDF/XML" }
+      before { page.click_link "(download RDF/XML)" }
 
       it_should_behave_like "an rdf response"
     end
@@ -120,19 +120,19 @@ describe 'visiting the sparql endpoint' do
     end
 
     describe 'and clicking JSON format' do
-      before { page.click_link "JSON" }
+      before { page.click_link "(download JSON)" }
 
       it_should_behave_like 'a json response'
     end
 
     describe 'and clicking XML format' do
-      before { page.click_link "XML" }
+      before { page.click_link "(download XML)" }
 
       it_should_behave_like 'an xml response'
     end
 
     describe 'and clicking Text format' do
-      before { page.click_link "Text" }
+      before { page.click_link "(download plaintext)" }
 
       it_should_behave_like 'a text response'
     end
@@ -152,25 +152,25 @@ describe 'visiting the sparql endpoint' do
       it_should_behave_like 'a sparql query'
 
       describe 'and clicking XML format' do
-        before { page.click_link "XML" }
+        before { page.click_link "(download XML)" }
 
         it_should_behave_like 'an xml response'
       end
 
       describe 'and clicking CSV format' do
-        before { page.click_link "CSV" }
+        before { page.click_link "(download CSV)" }
 
         it_should_behave_like 'a csv response'
       end
 
       describe 'and clicking JSON format' do
-        before { page.click_link "JSON" }
+        before { page.click_link "(download JSON)" }
 
         it_should_behave_like 'a json response'
       end
 
       describe 'and clicking Text format' do
-        before { page.click_link "Text" }
+        before { page.click_link "(download plaintext)" }
 
         it_should_behave_like 'a text response'
       end
@@ -251,7 +251,7 @@ describe 'visiting the sparql endpoint' do
     end
 
     it "should show a message" do
-      page.should have_content "Response Too Large"
+      page.should have_content "Response too large"
     end
   end
 

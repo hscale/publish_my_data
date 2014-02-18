@@ -1,0 +1,62 @@
+/* ==========================================================================
+	§1000 - UTILITIES
+   ========================================================================== */
+
+// intended use .foo { @extend .clear; )
+
+.clear {
+	&:after{
+	content: "";
+	display: table;
+	clear: both;
+	}
+}
+
+/* 1001 - RESPONSIVE utilities
+   ========================================================================== */
+
+@mixin for_mobile {
+	@media (max-width: $pmd_breakpoint_mobile) { @content; }
+}
+
+@mixin not_for_mobile {
+	@media (min-width: $pmd_breakpoint_mobile) { @content; }
+}
+
+/**
+ * Example usage:
+ * 
+ * body{
+ * 	@include for_mobile {
+ * 		background: #00f;
+ * 	}
+ * 	@include not_for_mobile {
+ * 		background: #0f0;
+ * 	}
+ * }
+ * 
+ *  nb preferred style is mobile first then override with additional styles 
+ *  for larger screens, ie
+ * 
+ * body{
+ * 	background: #00f;
+ * 	@include not_for_mobile {
+ * 		background: #0f0;
+ * 		}
+ * }
+ */
+
+/* 1002 - JAVASCRIPT degrade
+   ========================================================================== */
+
+.visible_when_javascript_available{
+	display: none;
+}
+
+.js .visible_when_javascript_available{
+	display: block;
+}
+
+.js .hidden_when_javascript_available{
+	display: none;
+}

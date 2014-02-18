@@ -46,10 +46,15 @@ PublishMyData::Engine.routes.draw do
   match "sparql(.:format)" => "sparql#endpoint", :as => 'sparql_endpoint' # the main sparql endpoint
 
   # Static pages
-  match "/docs" => "home#docs", :as => 'developer_docs'
-  match "/privacy" => "home#privacy", :as => 'privacy'
-  match "/accessibility" => "home#accessibility", :as => 'accessibility'
-  match "/" => 'home#home', :as => 'home'
+  match "/docs/publish_my_data"         => "docs#publish_my_data",  :as => 'about_pmd'
+  match "/docs/tools"                   => "docs#tools",            :as => 'tools'
+  match "/docs"                         => "docs#index",            :as => 'api_docs'
+
+  # Vocabularies (placeholder)
+  #match "/vocabularies"                 => "vocabularies#index",    :as => 'vocabs'
+
+  # Search (placeholder)
+  #match "/search"                       => "searches#index",        :as => 'search'
 
   #http://techoctave.com/c7/posts/36-rails-3-0-rescue-from-routing-error-solution
   match '*a', :to => 'errors#routing'

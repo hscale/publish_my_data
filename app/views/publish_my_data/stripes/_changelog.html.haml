@@ -1,0 +1,12 @@
+%section
+	= fullwidth do
+		=section_title("Changelog")
+	= row do
+		= render 'publish_my_data/changelog/log', title: "Data"
+		= render 'publish_my_data/changelog/log', title: "Platform"
+	:javascript
+		$(".visible_when_javascript_available a").click(function(e) {
+			e.preventDefault();
+			$(e.target).parent().hide();
+			$(e.target).closest(".recent").find(".hidden_when_javascript_available").show();
+		});

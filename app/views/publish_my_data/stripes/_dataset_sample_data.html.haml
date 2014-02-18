@@ -1,0 +1,48 @@
+- if show_sample_data?(dataset)
+	%section
+		= fullwidth do
+			= section_title("Sample data")
+			%p
+				This dataset contains
+				= pluralize dataset.types.length, 'type'
+				of resource:
+			- dataset.example_resources.each do |resource|
+				%table
+					%thead
+						%tr
+							%td(colspan="2")
+								=label resource.read_predicate(RDF.type).many? ? 'Types' : 'Type'
+								%h3= resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe
+								%h5
+									Subject:
+									= link_to (resource.label || resource.uri), resource_path_from_uri(resource.uri)
+						%tr
+							%th{style:"width:50%;"} Predicate
+							%th{style:"width:50%;"} Object
+					- resource.predicates.each do |pred|
+						%tr
+							%td{style:"width:50%;"}
+								= resource_uri_or_label(resource, pred)
+								= maybe_link_to_vocabulary(dataset,pred)
+							%td{style:"width:50%;"}
+								- resource.read_predicate(pred).each do |obj|
+									%div
+										= resource_uri_or_label(resource, obj)
+										= maybe_link_to_vocabulary(dataset,obj)
+					%tfoot
+						%tr
+							%th(colspan="2")
+								%div
+									= link_to show_resource_path(uri: resource.uri, format: 'ttl'), target: 'blank' do
+										Raw data for this resource (.ttl)
+										%i.icon-popup
+								- types_for_example_resource(dataset, resource).each do |type|
+									= link_to list_resources_path(dataset: dataset, type_uri: type) do
+										- if type.label
+											View all
+											= pluralize dataset.type_count(type.uri), type.label
+										- else
+											View all
+											= dataset.type_count(type.uri)
+											resources of type
+											= type.uri

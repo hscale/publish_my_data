@@ -1,0 +1,159 @@
+/* ==========================================================================
+	§4000 - LAYOUT
+   ========================================================================== */
+
+/* 4001 - NAVIGATION & SUBNAVIGATION
+   ========================================================================== */
+
+// we're dogmatic about what our navigation looks like - to customise for your site
+// replace our default nav with yours at html level. recommend you retain our subnav
+
+.pmd_nav a:hover,
+.pmd_nav_sub a:hover{
+	text-decoration: none;
+}
+
+.pmd_nav {
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+.pmd_nav div{
+	height: 50px;
+	overflow: hidden;
+}
+
+@include for_mobile {
+	.pmd_nav .pmd_row div{
+		margin: 0;
+		width: 100% !important; // this is ugly, but nav div currently have an inline width on the html tag which we need to override
+	}
+}
+
+.pmd_nav a {
+	display: inline-block;
+	font-size: 18px;
+	padding: $pmdconfig_space_vertical/2 15px;
+	width: 100%;
+}
+
+.pmd_nav_sub{
+	padding: 0 0 $pmdconfig_space_vertical/2 0;
+	@include not_for_mobile{
+		padding: $pmdconfig_space_vertical 0;
+	}
+}
+
+.pmd_nav_sub h5{
+	font-weight: bold;
+	margin: 0 0 $pmdconfig_space_vertical/4 0;
+}
+
+.pmd_nav_sub ul {
+	display: none; // hidden on mobiles
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	@include not_for_mobile{
+		display: block;
+	}
+}
+
+.pmd_nav_sub ul.pmd_contains_selected{
+	display: block;
+}
+
+.pmd_nav_sub a{
+	display: inline-block;
+	line-height: 1.4em;
+	font-size: 16px;
+	padding: $pmdconfig_space_vertical/4 12px;
+	width: 100%;
+}
+
+.pmd_nav_sub li a{
+	padding: $pmdconfig_space_vertical/4 24px;
+	@include not_for_mobile{
+		padding: $pmdconfig_space_vertical/4 12px;
+	}
+}
+
+.pmd_nav .pmd_wrapper{
+	@include for_mobile{
+		padding: 0;
+	}
+}
+
+/* 4002 - FORMATS stripe
+   ========================================================================== */
+
+.pmd_nav_formats{
+	padding: $pmdconfig_space_vertical/4 0;
+}
+
+.pmd_nav_formats ul{
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.pmd_nav_formats p,
+.pmd_nav_formats li{
+	display: inline;
+}
+
+.pmd_nav_formats a{
+	display: inline-block;
+	padding: $pmdconfig_space_vertical/4 12px;
+}
+
+.pmd_nav_formats li a:hover {
+	text-decoration: none;
+}
+
+/* 4003 - BADGES (ie the coloured blocks displaying page type)
+   ========================================================================== */
+
+.pmd_badge{
+	display: inline-block;
+	padding: $pmdconfig_space_vertical 12px 6px 12px;
+	font-size: 1.2em;
+	text-align: center;
+	margin-bottom: $pmdconfig_space_vertical;
+}
+
+/* 4004 - ERRORS & WARNINGS
+   ========================================================================== */
+
+.pmd_phrase_warning{ // TODO - this may be unused
+	font-style:bold;
+	color: #f00;
+}
+
+.pmd_warning,
+.pmd_error {
+	padding: $pmdconfig_space_vertical/4 0;
+}
+
+/* 4005 - MISC
+   ========================================================================== */
+
+td.centred,
+th.centred {
+	text-align: center;
+}
+
+.pagination .previous {
+	margin-right: 10px;
+}
+
+/* 4100 - EXPERIMENTAL huge monitor support (most useful for SPARQL tool)
+   ========================================================================== */
+
+ @media (min-width:1900px) {
+	.pmd_wrapper{
+		max-width: 100%; // FIXME: bootstrap only for now
+	}
+}

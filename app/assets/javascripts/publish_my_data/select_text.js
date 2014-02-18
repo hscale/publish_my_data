@@ -21,7 +21,7 @@ jQuery.fn.selectText = function(){
 };
 
 $(function(){
-    $('.click-to-select').click(function(){
+    $('.click_to_select').click(function(){
       $(this).selectText();
     });
 });

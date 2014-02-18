@@ -1,30 +1,36 @@
-- page_title "Themes"
+- highlight_in_menu "browse"
+- set_page_title "Themes"
+- page_kind 'list of themes'
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    %li Themes
+%header
+	= fullwidth do
+		= page_title("Datasets by theme")
+		%p The datasets are organised into #{pluralize @themes.length, "broad themes"}.
+%section
+	= fullwidth do
+		%table
+			%thead
+				%tr
+					%th
+						theme
+					%th.centred
+						datasets
+			%tbody
+				- @themes.each do |theme|
+					%tr
+						%td
+							%h3
+								= link_to (theme.label || theme.uri), theme
+							%p
+								= theme.comment
+						%td.centred
+							%h3
+								=theme.datasets_count
 
-%section#themes
-  %header
-    %h1 Themes
-    %p The datasets in this site are collected into #{pluralize @themes.length, "broad themes"}.
-
-  %ul
-    - @themes.each do |theme|
-      %li
-        %h3= link_to (theme.label || theme.uri), theme
-        %p.comment= theme.comment
-        %p.dataset-count= pluralize( theme.datasets_count, "dataset" )
-
-
-  %footer.alternative-formats
-    :markdown
-      This **list of themes** is available as
-
-    %ul
-      %li HTML
-      %li= link_to 'N-triples', format: 'nt'
-      %li= link_to "Turtle", format: 'ttl'
-      %li= link_to "RDF/XML", format: 'rdf'
-      %li= link_to "JSON", format: 'json'
+/
+	- content_for :formats do
+		%ul
+			%li= link_to 'N-triples', format: 'nt'
+			%li= link_to "Turtle", format: 'ttl'
+			%li= link_to "RDF/XML", format: 'rdf'
+			%li= link_to "JSON", format: 'json'

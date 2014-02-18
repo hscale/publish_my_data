@@ -1,0 +1,54 @@
+-if @sparql_query && ! @error_message
+	%section
+		= fullwidth do
+			=section_title("Query results")
+		= fullwidth do
+			- unless @sparql_query.query_type == :select
+				- # not a SELECT query - raw text results
+				- # eg CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o} LIMIT 10
+				%code.scrolling~ @sparql_query_result.to_s
+			- else
+				- if @result_count > 0
+					- # SELECT QUERY - raw text results without JavaScript
+					.hidden_when_javascript_available
+						%code.scrolling~ @sparql_query_result.to_s
+						.pagination
+							= link_to("Previous #{@pagination_params.per_page} results".html_safe, params.merge({:page => (@pagination_params.page-1)}), class: 'previous' ) if @pagination_params.page > 1
+							= link_to("Next #{@pagination_params.per_page} results".html_safe, params.merge({:page => (@pagination_params.page+1)}), class: 'next' ) if @more_pages
+					- # SELECT QUERY - tabular results with JavaScript
+					#js_grid_results.visible_when_javascript_available
+						#results_grid.data_grid
+							- # results go in here.
+						.grid_footer
+							.grid_status
+								= image_tag("publish_my_data/small-spinner.gif", alt: "busy", style: "display:none", class: "busy")
+								.status-value
+						/
+							.footer_content
+								%a.download_csv{href: sparql_endpoint_url(format: 'csv', query: @sparql_query.query)}
+									%i.icon-download
+									Download Results as CSV
+
+					:javascript
+						// use this instead of $(function(){}) to fix slick grid style injection issues.
+						$(window).load(function() {
+							var encodedQuery = "#{CGI.escape(@sparql_query.query)}"; // note that we encode on the server so we don't hit the multiline JS prob
+							new Swirrl.SparqlResultsGrid(encodedQuery);
+						});
+				- else
+					- # eg SELECT * WHERE { ?s ?o ?p . FILTER(1=0)}
+					Your query ran successfully but returned no results.
+
+	-if @sparql_query.query_type == :select
+		- additional_format('XML', url_for_sparql_results_format('xml', @sparql_query.query, @interpolations))
+		- additional_format('JSON', url_for_sparql_results_format('json', @sparql_query.query, @interpolations))
+		- additional_format('CSV', url_for_sparql_results_format('csv', @sparql_query.query, @interpolations))
+		- additional_format('plaintext', url_for_sparql_results_format('text', @sparql_query.query, @interpolations))
+	-elsif @sparql_query.query_type == :construct || @sparql_query.query_type == :describe
+		- additional_format('N-triples', url_for_sparql_results_format('nt', @sparql_query.query, @interpolations))
+		- additional_format('Turtle', url_for_sparql_results_format('ttl', @sparql_query.query, @interpolations))
+		- additional_format('RDF/XML', url_for_sparql_results_format('rdf', @sparql_query.query, @interpolations))
+	-elsif @sparql_query.query_type == :ask
+		- additional_format('XML', url_for_sparql_results_format('xml', @sparql_query.query, @interpolations))
+		- additional_format('JSON', url_for_sparql_results_format('json', @sparql_query.query, @interpolations))
+		- additional_format('plaintext', url_for_sparql_results_format('text', @sparql_query.query, @interpolations))

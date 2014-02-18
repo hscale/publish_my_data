@@ -1,0 +1,22 @@
+- if (@additional_formats && @additional_formats.count > 0)
+	%section
+		=fullwidth do
+			= section_title("Alternative formats")
+			%p
+				In addition to this bookmarkable html page, this
+				%strong= @page_kind
+				is also available for our robot customers in the folowing machine-readable formats:
+				%span.visible_inline_when_javascript_available
+					%a (show)
+			.hidden_when_javascript_available
+				- @additional_formats.each do |f|
+					= label(f[:format])
+					.codesmall.click_to_select=f[:link]
+					=link_to "(download #{f[:format]})", f[:link]
+
+:javascript
+	$(".visible_inline_when_javascript_available a").click(function(e) {
+		e.preventDefault();
+		$(e.target).parent().hide();
+		$(e.target).closest(".pmd_row").find(".hidden_when_javascript_available").show();
+	});

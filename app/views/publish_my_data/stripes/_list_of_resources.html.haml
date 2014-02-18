@@ -1,0 +1,15 @@
+%section
+	= fullwidth do
+		=section_title(title)
+		%table
+			%tbody
+			- resources.each do |resource|
+				%tr
+					%td
+						%h4= resource_uri_or_label(resource, resource.uri)
+						%h5.click_to_select.uri= resource.uri
+						%p= resource.comment
+
+		- if (@pagination_params) && (pagination_required?(resources, @pagination_params))
+			Page
+			= paginate resources

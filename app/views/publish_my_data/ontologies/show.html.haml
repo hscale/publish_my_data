@@ -1,100 +1,26 @@
-- page_title("Ontology: #{ontology.label || ontology.uri}")
+- title = ontology.label || ontology.uri
+- kind = ontology.local? ? 'Ontology' : 'External Ontology'
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    %li= link_to 'Ontology', resource_path_from_uri(ontology.uri)
+- set_page_title "Ontology: #{title}"
+- highlight_in_menu "vocabularies"
+- page_kind 'ontology'
+- bodyclass 'ontology'
 
-- if ontology.deprecated?
-  = render partial: 'publish_my_data/shared/deprecation_notice', locals: {resource: ontology}
+- additional_formats_for_resource(ontology.uri)
 
-%article#ontology
-  %header
-    %h3= ontology.local? ? 'Ontology' : 'External Ontology'
-    %h1= ontology.label || ontology.uri
-    %h3 URI
-    %h2.click-to-select= ontology.uri
+%header{class: (ontology.deprecated? ? "deprecated" : "")}
+	= fullwidth do
+		= badge kind
+		= page_title title
+		= title_uri ontology.uri
+		- if ontology.deprecated?
+			= render 'publish_my_data/shared/deprecation_notice', resource: ontology, description:"ontology"
 
-  %section.metadata
-    .primary
-      - if ontology.comment.present?
-        %h3 Description
-        %p= auto_link ontology.comment.to_s
-      - if ontology.publisher.present?
-        %h3 Publisher
-        %p= resource_uri_or_label(ontology, ontology.publisher)
-      - if ontology.license.present?
-        %h3 Licence
-        %p= resource_uri_or_label(ontology, ontology.license)
-      - if ontology.contact_email.present?
-        %h3 Contact
-        %p= auto_link ontology.contact_email.to_s.gsub('mailto:','')
-      - if ontology.description.present?
-        %h3 Further Information
-        .js-only
-          #further-information.truncated
-            :markdown
-              #{ontology.description.to_s}
-            .fade-out
-        %p
-          %a#read-more(href="#") Read more
-        %noscript
-          :markdown
-            #{ontology.description.to_s}
-          :css
-            .js-only { display: none; }
-        :javascript
-          $("a#read-more").click(function(e) {
-            e.preventDefault();
-            $("#further-information").removeClass("truncated");
-            $("#further-information .fade-out").hide();
-            $("a#read-more").closest('p').hide();
-          });
-    .secondary
-      - if ontology.issued.present?
-        %h3 Issued
-        %p= formatted_date(ontology.issued.to_s)
-      - if ontology.modified.present?
-        %h3 Modified
-        %p= formatted_date(ontology.modified.to_s)
-      - if ontology.tags.try(:any?)
-        %h3 Tags
-        %p= ontology.tags.join(', ')
+= render 'publish_my_data/stripes/vocabulary_metadata', vocabulary:ontology, is_a:"ontology"
 
-  %ul.tab-links
-    %li.active
-      %a(href="#classes" data-toggle="tab") Classes
-    %li
-      %a(href="#properties" data-toggle="tab") Properties
-    %li
-      %a(href="#linked-data" data-toggle="tab") Linked Data &amp; SPARQL
+- if (ontology.classes_sorted.count > 0 )
+	= render 'publish_my_data/stripes/list_of_resources', title:"Classes", resources:ontology.classes_sorted
+- if (ontology.properties_sorted.count > 0 )
+	= render 'publish_my_data/stripes/list_of_resources', title:"Properties", resources:ontology.properties_sorted
 
-  .tab-content
-    %section#classes.active
-      .content
-        %ul
-          - ontology.classes.each do |klass|
-            %li
-              %h3= resource_uri_or_label(klass, klass.uri)
-              %h4.click-to-select= klass.uri
-              %p= klass.comment
-    %section#properties
-      .content
-        %ul
-          - ontology.properties.each do |property|
-            %li
-              %h3= resource_uri_or_label(property, property.uri)
-              %h4.click-to-select= property.uri
-              %p= property.comment
-
-    = render 'publish_my_data/resources/sparql_section', resource: ontology
-
-  %footer.alternative-formats
-    :markdown
-      This **ontology** is available as:
-    %ul
-      %li HTML
-      %li= link_to("JSON", show_resource_path(:uri => ontology.uri, format: 'json'))
-      %li= link_to("RDF/XML", show_resource_path(:uri => ontology.uri, format: 'rdf'))
-      %li= link_to("Turtle", show_resource_path(:uri => ontology.uri, format: 'ttl'))
-      %li= link_to("N-triples", show_resource_path(:uri => ontology.uri, format: 'nt'))
+= render 'publish_my_data/stripes/linked_data', resource:ontology, resource_class_name:"ontology"

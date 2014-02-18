@@ -43,5 +43,6 @@ module PublishMyData
     def dataset
       Dataset.find(Dataset.uri_from_data_graph_uri(self.graph_uri)) rescue nil
     end
+
   end
 end

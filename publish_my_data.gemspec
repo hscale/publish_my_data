@@ -7,7 +7,7 @@ require "publish_my_data/version"
 Gem::Specification.new do |s|
   s.name        = "publish_my_data"
   s.version     = PublishMyData::VERSION
-  s.authors     = ["Ric Roberts", "Bill Roberts", "Ed Forshaw", "Asa Calow", "Ash Moran", "Tekin Suleyman", "Guy Hilton"]
+  s.authors     = ["Ric Roberts", "Bill Roberts", "Ed Forshaw", "Asa Calow", "Rick Moynihan", "Ash Moran", "Tekin Suleyman", "Guy Hilton"]
   s.email       = ["ric@swirrl.com"]
   s.homepage    = "http://github.com/Swirrl/publish_my_data"
   s.summary     = "PublishMyData Community Edition"
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 3.2"
   s.add_dependency "tripod", "~> 0.9.0"
-  s.add_dependency "rdf", "~> 1.0"
+  s.add_dependency "rdf", "1.0.8"
   s.add_dependency "aws-sdk"
   s.add_dependency "kaminari"
   s.add_dependency "rdiscount"
@@ -30,6 +30,4 @@ Gem::Specification.new do |s|
   s.add_dependency "haml-rails"
   s.add_dependency "jquery-rails"
   s.add_dependency "sass-rails"
-  # s.add_dependency "compass-rails"
-  s.add_dependency "entypo-rails"
 end

@@ -1,0 +1,159 @@
+/* ==========================================================================
+	§6000 - SLICKGRID
+   ========================================================================== */
+
+@import "vendor/slick_grid/slick.grid";
+@import "vendor/slick_grid/slick-default-theme";
+
+/* 6001 - PATCH slickgrid
+   ========================================================================== */
+
+.data_grid *{
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+}
+
+.data_grid {
+	height: $pmdconfig_space_vertical * 20;
+	width: 100%;
+}
+
+.slick-sort-indicator-desc {
+	background: image-url('publish_my_data/slickgrid/sort-desc.gif');
+}
+
+.slick-sort-indicator-asc {
+	background: image-url('publish_my_data/slickgrid/sort-asc.gif');
+}
+
+/* 6002 - TWEAK slickgrid
+   ========================================================================== */
+
+.data_grid {
+	// margin-top: $pmdconfig_space_vertical /2;
+}
+
+.ui-state-default.slick-header-column{
+	padding-top: $pmdconfig_space_vertical / 2;
+}
+
+.ui-state-default.slick-header-column,
+.slick-header-columns,
+.grid_footer{
+	height: $pmdconfig_space_vertical * 1.5;
+}
+
+.grid_header,
+.grid_footer{
+	padding: 6px;
+	width: 100%;
+	margin-bottom: 0;
+	overflow: none;
+}
+
+.grid_header h4{
+	margin-left: 6px;
+}
+
+.status-value{
+	display: inline-block;
+	margin-left: 6px;
+}
+
+.grid_footer{
+	margin-bottom: 24px;
+}
+
+.grid_footer:last-child{
+	margin-bottom: 0;
+}
+
+/* 6003 - COLOUR slickgrid
+   ========================================================================== */
+
+.slick-header-columns,
+.slick-header-column,
+.slick-header-column:hover,
+.slick-header-column-active,
+.slick-cell.row-num,
+.grid_footer {
+	background: $pmdconfig_colour_slickgrid_headers;
+}
+
+.slick-cell {
+	border-right: 1px dotted $pmdconfig_colour_slickgrid_borders;
+	border-bottom-color: $pmdconfig_colour_slickgrid_borders;
+}
+
+.slick-cell.row-num {
+	border-bottom-color: $pmdconfig_colour_slickgrid_header_inside_borders;
+	border-right-color: $pmdconfig_colour_slickgrid_header_borders;
+}
+
+.grid_footer{
+	border-top: 1px solid $pmdconfig_colour_slickgrid_header_borders !important;
+}
+
+.slick-header-columns{
+	border-bottom-color: $pmdconfig_colour_slickgrid_header_borders;
+}
+
+.slick-header-column{
+	border-right-color: $pmdconfig_colour_slickgrid_header_inside_borders !important;
+}
+
+.slick-row.odd {
+	background: $pmdconfig_colour_slickgrid_alternate_row_bg;
+}
+
+// outline around whole thing
+
+.data_grid,
+.grid_header,
+.grid_footer{
+	border: 2px solid $pmdconfig_colour_slickgrid_outline;
+}
+
+.data_grid{
+	border-bottom:0;
+}
+
+.grid_header{
+	background: $pmdconfig_colour_slickgrid_headers;
+	border-bottom: 0;
+	margin-top: 12px;
+}
+
+.data_grid a,
+.data_grid a:visited{
+	color: $pmdconfig_colour_slickgrid_content_links;
+}
+
+.data_grid a:hover{
+	color: $pmdconfig_colour_slickgrid_content_links_hover;
+}
+
+/* 6004 - DATA CUBE viewer
+   ========================================================================== */
+
+.slick-sort-indicator{
+	float: right;
+	margin-right: 6px;
+}
+
+.slick-header-column-sorted{
+	font-weight: bold;
+	font-style: normal;
+}
+
+.dimensions_controls{
+	margin-top: 24px;
+	.field{
+		margin-bottom: 12px;
+	}
+
+	select{
+		width: 100%;
+	}
+}

@@ -1,3 +1,5 @@
+require 'tripod'
+
 require "publish_my_data/engine"
 require "publish_my_data/renderers"
 require "publish_my_data/sparql_query"
@@ -49,10 +51,18 @@ module PublishMyData
   @@default_html_resources_per_page = 20
 
   # Maximum allowable page size for lists of resources.
-  # This is constrained by Fuseki's sparql request size. 500 is about the max it can handle (for lists of DESCRIBES).
   mattr_accessor :max_resources_per_page
   @@max_resources_per_page = 1000
 
+  # human reading name of your application as it will appear eg in page titles
+  mattr_accessor :application_name
+  @@application_name = "Your Application Name"
+
+  mattr_accessor :logo_small
+  @@logo_small = "/assets/publish_my_data/logo-placeholder.png"
+
+  mattr_accessor :logo_large
+  @@logo_large = "/assets/publish_my_data/logo-placeholder-large.png"
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
   # (defaults shown)
@@ -75,6 +85,7 @@ module PublishMyData
 
 end
 
+require 'rdf'
 require 'kaminari'
 require 'rdiscount'
 require 'aws-sdk'
@@ -82,7 +93,6 @@ require 'rails_autolink'
 require 'haml-rails'
 require 'sass-rails'
 require 'jquery-rails'
-require 'entypo-rails'
 
 Kaminari.configure do |config|
   config.default_per_page = 20

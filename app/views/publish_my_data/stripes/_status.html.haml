@@ -1,0 +1,10 @@
+/ status stripes
+
+/[if lt IE 8]
+	%aside#pmd_old_browser.pmd_error
+		= fullwidth do
+			%p <i class="icon-info"></i> Your browser is <strong>not supported</strong>. Please upgrade to a recent version.
+
+%aside.pmd_warning.hidden_when_javascript_available
+	= fullwidth do
+		%p <i class="icon-info"></i> <strong>JavaScript</strong> is disabled, so you're missing out on some features.

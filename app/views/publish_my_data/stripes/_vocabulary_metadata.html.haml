@@ -1,0 +1,35 @@
+%section
+	= row do
+		.pmd_box_has_sidebar
+			- if vocabulary.comment.present?
+				=label "Description"
+				%p= auto_link vocabulary.comment.to_s
+			- if vocabulary.publisher.present?
+				=label "Publisher"
+				%p= resource_uri_or_label(vocabulary, vocabulary.publisher)
+			- if vocabulary.license.present?
+				=label "Licence"
+				%p= resource_uri_or_label(vocabulary, vocabulary.license)
+			- if vocabulary.contact_email.present?
+				=label "Contact"
+				%p= auto_link vocabulary.contact_email.to_s.gsub('mailto:','')
+			- if vocabulary.description.present?
+				= render partial: 'publish_my_data/shared/description', locals: {container:vocabulary}
+
+		.pmd_box_sidebar
+			/
+				= label "Download"
+				= link_to show_resource_path(:uri => vocabulary.uri, :format => 'nt') do
+					%i.icon-download
+					=is_a
+					%br
+					(n-triples file)
+			- if vocabulary.issued.present?
+				=label "Issued"
+				%p= formatted_date(vocabulary.issued.to_s)
+			- if vocabulary.modified.present?
+				=label "Modified"
+				%p= formatted_date(vocabulary.modified.to_s)
+			- if vocabulary.tags.try(:any?)
+				=label "Tags"
+				%p= vocabulary.tags.join(', ')

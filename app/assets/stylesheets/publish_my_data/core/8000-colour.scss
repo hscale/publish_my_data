@@ -1,0 +1,220 @@
+/* ==========================================================================
+	§8000 - COLOURS
+   ========================================================================== */
+
+body {
+	background: $pmdconfig_colour_body_background;
+	color: $pmdconfig_colour_body_text;
+}
+
+label,
+.pmd_phrase_label{
+	color: $pmdconfig_colour_label;
+}
+
+section .pmd_wrapper:first-child .pmd_row{
+	border-top: 5px solid #eee;
+}
+
+section:first-of-type .pmd_wrapper:first-child .pmd_row{
+	border-top: none;
+}
+
+a, a *, a:visited, a:visited *,  a:active, a:active *{
+	color: $pmdconfig_colour_link;
+};
+a:hover, a:hover * {
+	color: $pmdconfig_colour_link_hover;
+};
+
+/* 8001 - ERROR & WARNING colours
+   ========================================================================== */
+
+.pmd_error{
+	background: red;
+	color: white;
+	h5 {
+		color: white;
+	}
+}
+
+.pmd_warning{
+	background: lemonchiffon;
+	color: black;
+	h5 {
+		color: black;
+	}
+}
+
+/* 8002 - NAVIGATION colours
+   ========================================================================== */
+
+.pmd_nav,
+.pmd_nav a{
+	background: $pmdconfig_colour_nav_top_background;
+	color: $pmdconfig_colour_nav_top_text
+}
+.pmd_nav a:hover {
+	background: $pmdconfig_colour_nav_top_background_hover;
+	color: $pmdconfig_colour_nav_top_text_hover;
+}
+
+.pmd_nav .pmd_selected a{
+	background: transparent;
+}
+
+.pmd_nav_sub a:hover,
+.pmd_nav_sub .pmd_selected{
+	color: $pmdconfig_colour_nav_text;
+}
+
+.pmd_nav .pmd_selected a,
+.pmd_nav_sub,
+.pmd_nav_sub a {
+	color: $pmdconfig_colour_nav_text;
+}
+
+.pmd_nav .pmd_selected,
+.pmd_nav_sub{
+	background: $pmdconfig_colour_nav_background;
+}
+
+.pmd_nav_sub a:hover,
+.pmd_nav_sub .pmd_selected{
+	background: $pmdconfig_colour_nav_selected_background;
+	color: $pmdconfig_colour_nav_selected_text;
+}
+
+/* 8003 - FORMAT STRIPE colours
+   ========================================================================== */
+
+.pmd_nav_formats {
+	background: $pmdconfig_colour_nav_background;
+	color: $pmdconfig_colour_nav_text;
+}
+
+.pmd_nav_formats a{
+	color: $pmdconfig_colour_nav_text;
+}
+
+.pmd_nav_formats a:hover,
+.pmd_nav_formats .pmd_selected{
+	background: $pmdconfig_colour_nav_selected_background;
+	color: $pmdconfig_colour_nav_selected_text;
+}
+
+/* 8004 - ARTICLE TOP STRIPE is coloured by body tag
+   ========================================================================== */
+
+.dataset article{
+	border-top-color: $pmdconfig_colour_page_dataset;
+	border-bottom-color: $pmdconfig_colour_page_dataset;
+}
+
+.theme article{
+	border-top-color: $pmdconfig_colour_page_theme;
+	border-bottom-color: $pmdconfig_colour_page_theme;
+}
+
+.concept article,
+.concept_scheme article{
+	border-top-color: $pmdconfig_colour_page_concept;
+	border-bottom-color: $pmdconfig_colour_page_concept;
+}
+
+.resource article{
+	border-top-color: $pmdconfig_colour_page_resource;
+	border-bottom-color: $pmdconfig_colour_page_resource;
+}
+
+.ontology article{
+	border-top-color: $pmdconfig_colour_page_ontology;
+	border-bottom-color: $pmdconfig_colour_page_ontology;
+}
+
+.type article{
+	border-top-color: $pmdconfig_colour_page_type;
+	border-bottom-color: $pmdconfig_colour_page_type;
+}
+
+// in the future, a page might have more than one of these so can't just inherit from body class
+
+.badge_dataset{
+	background: $pmdconfig_colour_page_dataset;
+	color: $pmdconfig_colour_badge_text;
+}
+
+.badge_theme{
+	background: $pmdconfig_colour_page_theme;
+	color: $pmdconfig_colour_badge_text;
+}
+
+.badge_concept{
+	background: $pmdconfig_colour_page_concept;
+	color: $pmdconfig_colour_badge_text;
+}
+
+.badge_resource{
+	background: $pmdconfig_colour_page_resource;
+	color: black; // FIXME
+}
+
+.badge_concept, .badge_concept_scheme{
+	background: $pmdconfig_colour_page_concept;
+	color: $pmdconfig_colour_badge_text;
+}
+
+.badge_type{
+	background: $pmdconfig_colour_page_type;
+	color: $pmdconfig_colour_badge_text;
+}
+
+.badge_ontology,.badge_external_ontology,.badge_class,.badge_property{
+	background: $pmdconfig_colour_page_ontology;
+	color: $pmdconfig_colour_badge_text;
+}
+
+/* 8005 - TABLE colours
+   ========================================================================== */
+
+table {
+	border: $pmdconfig_border_thickness_heavy solid $pmdconfig_colour_table_borders;
+}
+
+thead, th {
+	background: $pmdconfig_colour_table_borders;
+	color: $pmdconfig_colour_table_header_text;
+}
+
+td {
+	border: 1px solid $pmdconfig_colour_table_borders;
+	background: white;
+}
+
+td.resource-predicate{
+	background: #fdfdfd;
+}
+
+/* 8006 - SPARQL TOOL colours
+   ========================================================================== */
+
+textarea#query{
+	background: #000;
+	color: #fff;
+}
+
+/* 8010 - MISC colours
+   ========================================================================== */
+
+.pmd_bookmarkable i,
+.pmd_bookmarkable:visited i, 
+.pmd_bookmarkable:active i,
+.pmd_bookmarkable:hover i,
+.pmd_bookmarkable:focus i{
+	color: $pmdconfig_colour_page_furniture;
+}
+
+ code{
+	background: #feffe5;
+	color: #000;
+ }

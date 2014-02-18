@@ -1,79 +1,21 @@
-- page_title("Concept Scheme: #{concept_scheme.label || concept_scheme.uri}")
+- title = concept_scheme.label || concept_scheme.uri
+- kind = concept_scheme.local? ? 'Concept Scheme' : 'External Concept Scheme'
 
-- content_for :crumbs do
-  %ol.breadcrumb
-    %li= link_to_home
-    %li= link_to 'Concept Scheme', resource_path_from_uri(concept_scheme.uri)
+- set_page_title "Concept scheme: #{title}"
+- highlight_in_menu "vocabularies"
+- page_kind 'concept scheme'
+- bodyclass 'concept_scheme'
 
-- if concept_scheme.deprecated?
-  = render partial: 'publish_my_data/shared/deprecation_notice', locals: {resource: dataset}
+- additional_formats_for_resource(concept_scheme.uri)
 
-%article#concept-scheme
-  %header
-    %h3= concept_scheme.local? ? 'Concept Scheme' : 'External Concept Scheme'
-    %h1= concept_scheme.label || concept_scheme.uri
-    %h3 URI
-    %h2.click-to-select= concept_scheme.uri
+%header{class: (concept_scheme.deprecated? ? "deprecated" : "")}
+	= fullwidth do
+		= badge kind
+		= page_title title
+		= title_uri concept_scheme.uri
+		- if concept_scheme.deprecated?
+			= render 'publish_my_data/shared/deprecation_notice', resource: concept_scheme, description:"concept scheme"
 
-  %section.metadata
-    .primary
-      - if concept_scheme.comment.present?
-        %h3 Description
-        %p= auto_link concept_scheme.comment.to_s
-      - if concept_scheme.publisher.present?
-        %h3 Publisher
-        %p= resource_uri_or_label(concept_scheme, concept_scheme.publisher)
-      - if concept_scheme.license.present?
-        %h3 Licence
-        %p= resource_uri_or_label(concept_scheme, concept_scheme.license)
-      - if concept_scheme.contact_email.present?
-        %h3 Contact
-        %p= auto_link concept_scheme.contact_email.to_s.gsub('mailto:','')
-      - if concept_scheme.description.present?
-        %h3 Further Information
-        .js-only
-          #further-information.truncated
-            :markdown
-              #{concept_scheme.description.to_s}
-            .fade-out
-        %p
-          %a#read-more(href="#") Read more
-        %noscript
-          :markdown
-            #{concept_scheme.description.to_s}
-          :css
-            .js-only { display: none; }
-        :javascript
-          $("a#read-more").click(function(e) {
-            e.preventDefault();
-            $("#further-information").removeClass("truncated");
-            $("#further-information .fade-out").hide();
-            $("a#read-more").closest('p').hide();
-          });
-    .secondary
-      - if concept_scheme.issued.present?
-        %h3 Issued
-        %p= formatted_date(concept_scheme.issued.to_s)
-      - if concept_scheme.modified.present?
-        %h3 Modified
-        %p= formatted_date(concept_scheme.modified.to_s)
-      - if concept_scheme.tags.try(:any?)
-        %h3 Tags
-        %p= concept_scheme.tags.join(', ')
-
-  %ul.tab-links
-    %li.active
-      %a(href="#concepts" data-toggle="tab") Concepts
-    %li
-      %a(href="#linked-data" data-toggle="tab") Linked Data &amp; SPARQL
-
-  .tab-content
-    %section#concepts.active
-      .content
-        %ul
-          - concept_scheme.concepts.each do |concept|
-            %li
-              %h3= resource_uri_or_label(concept, concept.uri)
-              %h4.click-to-select= concept.uri
-              %p= concept.comment
-    = render 'publish_my_data/resources/sparql_section', resource: concept_scheme
+= render 'publish_my_data/stripes/vocabulary_metadata', vocabulary:concept_scheme, is_a:"concept scheme"
+= render 'publish_my_data/stripes/list_of_resources', title:"Concepts", resources:concept_scheme.concepts_sorted
+= render 'publish_my_data/stripes/linked_data', resource:concept_scheme, resource_class_name:"concept scheme"

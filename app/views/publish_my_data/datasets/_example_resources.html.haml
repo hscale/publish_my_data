@@ -1,47 +1,47 @@
 - if dataset.example_resources.any?
-  %p Types of resource in this dataset:
-  %ul
-    - dataset.types.each do |type|
-      %li= link_to (type.label || type.uri), '#' + dom_id(example_resource_for_type(dataset, type))
+	%p Types of resource in this dataset:
+	%ul
+		- dataset.types.each do |type|
+			%li= link_to (type.label || type.uri), '#' + dom_id(example_resource_for_type(dataset, type))
 
-  - dataset.example_resources.each do |resource|
-    %table
-      %thead
-        %tr
-          %td(colspan="2")
-            %h5 Subject
-            %h3= link_to (resource.label || resource.uri), resource_path_from_uri(resource.uri)
-            %h5
-              = resource.read_predicate(RDF.type).many? ? 'Types:' : 'Type:'
-              = resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe
-        %tr
-          %th Predicate
-          %th Object
+	- dataset.example_resources.each do |resource|
+		%table
+			%thead
+				%tr
+					%td(colspan="2")
+						%h5 Subject
+						%h3= link_to (resource.label || resource.uri), resource_path_from_uri(resource.uri)
+						%h5
+							= resource.read_predicate(RDF.type).many? ? 'Types:' : 'Type:'
+							= resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe
+				%tr
+					%th Predicate
+					%th Object
 
-      - resource.predicates.each do |pred|
-        %tr
-          %td
-            %span(class="#{ vocabulary_class(dataset, pred) }")= resource_uri_or_label(resource, pred)
-          %td
-            %ul
-              - resource.read_predicate(pred).each do |obj|
-                %li(class="#{ vocabulary_class(dataset, obj) }")= resource_uri_or_label(resource, obj)
+			- resource.predicates.each do |pred|
+				%tr
+					%td
+						%span(class="#{ vocabulary_class(dataset, pred) }")= resource_uri_or_label(resource, pred)
+					%td
+						%ul
+							- resource.read_predicate(pred).each do |obj|
+								%li(class="#{ vocabulary_class(dataset, obj) }")= resource_uri_or_label(resource, obj)
 
-      %tfoot
-        %tr
-          %td(colspan="2")
-            %ul
-              %li
-                = link_to show_resource_path(uri: resource.uri, format: 'ttl'), target: 'blank' do
-                  Raw data for this resource (.ttl)
-                  %i.icon-popup
-              - types_for_example_resource(dataset, resource).each do |type|
-                = link_to list_resources_path(dataset: dataset, type_uri: type) do
-                  - if type.label
-                    View all
-                    = pluralize dataset.type_count(type.uri), type.label
-                  - else
-                    View all
-                    = dataset.type_count(type.uri)
-                    resources of type
-                    = type.uri
+			%tfoot
+				%tr
+					%td(colspan="2")
+						%ul
+							%li
+								= link_to show_resource_path(uri: resource.uri, format: 'ttl'), target: 'blank' do
+									Raw data for this resource (.ttl)
+									%i.icon-popup
+							- types_for_example_resource(dataset, resource).each do |type|
+								= link_to list_resources_path(dataset: dataset, type_uri: type) do
+									- if type.label
+										View all
+										= pluralize dataset.type_count(type.uri), type.label
+									- else
+										View all
+										= dataset.type_count(type.uri)
+										resources of type
+										= type.uri

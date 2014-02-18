@@ -22,6 +22,10 @@ module PublishMyData
       )
     end
 
+    def concepts_sorted
+      ConceptScheme.sort_by_label_or_uri(concepts)
+    end
+
     def local?
       true
     end

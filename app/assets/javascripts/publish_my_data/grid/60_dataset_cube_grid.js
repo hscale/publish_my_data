@@ -9,23 +9,23 @@
         ;
 
     function setGridStatus(status, busy) {
-      $(".grid-status .status-value").empty();
-      $(".grid-status .status-value").append(status);
+      $(".grid_status .status-value").empty();
+      $(".grid_status .status-value").append(status);
 
       if (busy) {
-        $(".grid-status img.busy").show();
+        $(".grid_status img.busy").show();
       } else {
-        $(".grid-status img.busy").hide();
+        $(".grid_status img.busy").hide();
       }
     }
 
     function setGridError(httpStatusCode) {
-      $(".grid-status img.busy").hide();
-      $(".grid-status .status-value").empty();
+      $(".grid_status img.busy").hide();
+      $(".grid_status .status-value").empty();
       if (httpStatusCode == 500 || httpStatusCode == 400) {
-        $(".grid-status .status-value").append('<i class="icon-warning"></i> Error fetching data');
+        $(".grid_status .status-value").append('<i class="icon-warning"></i> Error fetching data');
       } else if (httpStatusCode == 503) {
-        $(".grid-status .status-value").append('<i class="icon-warning"></i> Query timed out');
+        $(".grid_status .status-value").append('<i class="icon-warning"></i> Query timed out');
       }
     }
 
@@ -43,7 +43,7 @@
     }
 
     function showDimensionsControls() {
-      $("#dimensions-controls form").show();
+      $("#dimensions_controls form").show();
     }
 
     function showOptionsToggler() {
@@ -51,8 +51,8 @@
     }
 
     function setTitle(title) {
-      $("#cube-grid-title").empty();
-      $("#cube-grid-title").append(title);
+      $("#cube_grid_title").empty();
+      $("#cube_grid_title").append(title);
     }
 
     function calculateGridTitle() {
@@ -160,11 +160,11 @@
 
     // subscribe to grid events.
     cubeGrid.onGridReady.subscribe(function (e, args) {
-      setGridStatus("Grid ready.", false);
+      setGridStatus("", false); // was "Grid ready"
     });
 
     var gridInitializedHandler = function (e, args) {
-      cubeDimensionsControls = new Swirrl.CubeDimensionsControls(cubeGrid, "#dimensions-controls");
+      cubeDimensionsControls = new Swirrl.CubeDimensionsControls(cubeGrid, "#dimensions_controls");
       wireUpCubeDimensionsEvents();
       cubeDimensionsControls.init();
       cubeGrid.onGridInitialized.unsubscribe(gridInitializedHandler);// only do 1st time round.
