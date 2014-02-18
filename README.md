@@ -59,6 +59,7 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
           config.local_domain = 'pmd.dev' # the domain under which your linked data resources URIs are minted
           config.sparql_timeout_seconds = 30
           config.tripod_cache_store = nil # Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
+          config.application_name = "Your Application Name"
         end
 
 6. Mount it in your `routes.rb`
