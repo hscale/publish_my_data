@@ -1,5 +1,5 @@
 spec/dummy/log/test.log
 .DS_Store
 .bundle
-
-vendor/assets/components/*
+Gemfile.lock
+pkg
