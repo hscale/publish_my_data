@@ -37,12 +37,11 @@
 										Raw data for this resource (.ttl)
 										%i.icon-popup
 								- types_for_example_resource(dataset, resource).each do |type|
+									View 
 									= link_to list_resources_path(dataset: dataset, type_uri: type) do
-										- if type.label
-											View all
-											= pluralize dataset.type_count(type.uri), type.label
-										- else
-											View all
-											= dataset.type_count(type.uri)
-											resources of type
-											= type.uri
+										all
+										= dataset.type_count(type.uri)
+										resources of type
+										%strong
+											= type.label.nil? ? type.uri : type.label
+										%br
