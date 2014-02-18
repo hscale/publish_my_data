@@ -35,10 +35,24 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
         gem 'rails', '3.2.15'
         gem 'publish_my_data'
 
+3. Bundle.
 
-3. Configure PublishMyData (in `application.rb`, or `development|production|test.rb`)
+        $ bundle
+
+        Fetching gem metadata from https://rubygems.org/.........
+        Fetching gem metadata from https://rubygems.org/..
+        Resolving dependencies...
+        ...
+        Installing publish_my_data (1.2.0) 
+        Your bundle is updated!
+
+If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bundle update publish_my_data`
+
+4. Add the following line to production.rb
 
         config.assets.precompile += %w(modernizr.js publish_my_data.js) # <-- required for production
+
+5. Configure PublishMyData (in `application.rb`, or `development|production|test.rb`)
 
         PublishMyData.configure do |config|
           config.sparql_endpoint = 'http://localhost:3030/pmd/sparql'
@@ -48,7 +62,7 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
           config.application_name = "Your Application Name"
         end
 
-4. Mount it in your `routes.rb`
+6. Mount it in your `routes.rb`
       
         # Note that there is no default home page route for publish_my_data. You need to define your own. e.g.        
  
@@ -60,10 +74,9 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
 
         mount PublishMyData::Engine, at: "/" 
 
+7. Delete all files from the `public` dir except the `robots.txt`.
 
-5. Delete all files from the `public` dir except the `robots.txt`.
-
-6. Create an application layout under `layouts/publish_my_data` (i.e. called `application.html.haml` or `application.html.erb` etc). 
+8. Create an application layout under `app/views/layouts/publish_my_data` (i.e. called `application.html.haml` or `application.html.erb` etc).  NOTE that if you create `application.html.haml` you should remove the existing `application.html.erb` file.
    It should provide content for `:head` and `:global_header`, then render `pmd_layout`. e.g.
 
         - content_for :head do
@@ -75,14 +88,15 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
 
         = render template: 'layouts/publish_my_data/pmd_layout'
 
-7. Add the helpers in your app's `ApplicationController`, and derive from the engines application controller
+9. Add the helpers in your app's `ApplicationController`, and derive from the PublishMyData engines application controller
 
         class ApplicationController < PublishMyData::ApplicationController
+          protect_from_forgery 
           helper PublishMyData::Engine.helpers
           helper :all
         end
 
-8. In `assets/stylesheets/application.scss`:
+10. Remove `assets/stylesheets/application.css` and create a new file called `assets/stylesheets/application.scss` which contains the following lines:
 
         $pmdconfig_colour_link: #da0;
         /* [...optional style configuration...] */
