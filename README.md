@@ -45,6 +45,7 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
           config.local_domain = 'pmd.dev' # the domain under which your linked data resources URIs are minted
           config.sparql_timeout_seconds = 30
           config.tripod_cache_store = nil # Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
+          config.application_name = "Your Application Name"
         end
 
 4. Mount it in your `routes.rb`
