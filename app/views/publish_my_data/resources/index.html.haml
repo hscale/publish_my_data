@@ -1,5 +1,5 @@
 - title = resources_list_table_title
-- set_page_title title
+- set_page_title strip_tags(title)
 - rdf_type_label = PublishMyData::RdfType.find(@type_filter).label rescue nil
 - highlight_in_menu "catalogue"
 - page_kind 'page of resources'
