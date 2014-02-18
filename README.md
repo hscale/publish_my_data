@@ -52,7 +52,7 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
 
         config.assets.precompile += %w(modernizr.js publish_my_data.js) # <-- required for production
 
-5. Configure PublishMyData (in `application.rb`, or `development|production|test.rb`)
+5. Configure PublishMyData (in development|production|test.rb`)
 
         PublishMyData.configure do |config|
           config.sparql_endpoint = 'http://localhost:3030/pmd/sparql'
@@ -73,14 +73,31 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
 
         mount PublishMyData::Engine, at: "/" 
 
+6. In order for PublishMyData provided-views to be able to use helpers defined by our app, add the following to your `application.rb`:     
+
+        config.to_prepare do
+          # include only the ApplicationHelper module in the PMD engine
+          PublishMyData::ApplicationController.helper ApplicationHelper
+          # # include all helpers from your application into the PMD engine
+          # PublishMyData::ApplicationController.helper YourApp::Application.helpers
+        end
+
 7. Delete all files from the `public` dir except the `robots.txt`.
 
 8. Create an application layout under `app/views/layouts/publish_my_data` (i.e. called `application.html.haml` or `application.html.erb` etc).  NOTE that if you create `application.html.haml` you should remove the existing `application.html.erb` file.
    It should provide content for `:head` and `:global_header`, then render `pmd_layout`. e.g.
 
         - content_for :head do
-          %title
-            My page title
+          %head
+            %title
+              = appname
+              = yield :page_title
+            
+            = yield :page_description
+
+            = javascript_include_tag :modernizr
+            = javascript_include_tag :publish_my_data
+            = stylesheet_link_tag :application
 
         - content_for :global_header do
           My header here
@@ -101,6 +118,18 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
         /* [...optional style configuration...] */
         @import "publish_my_data.scss";
 
+11. You can configure the navigation in your application by overriding the `views/publish_my_data/stripes/_subnav.html.haml` partial to pass in different `:menu` locals
+
+        %nav.pmd_nav_sub
+          = row do
+            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_catalogue}
+            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_tools}
+            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:alternative_menu_docs} # <-- # e.g. this line changed:
+            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_pmd}
+      
+If you define a new helper method to provide the locals (e.g. in our case `alternative_menu_docs`), it can build upon, and adapt the data stucture provided by the existing helpers in `publish_my_data/subnavigation_helper.rb`.
+
+
 ##Licence
 
 Source code is licensed under the MIT-LICENSE included in this distribution.
@@ -109,17 +138,17 @@ Source code is licensed under the MIT-LICENSE included in this distribution.
 
 If you create a website powered by PublishMyData, we'd really appreciate it if you [let us know](mailto:hello@swirrl.com), and also credit us on your website (e.g. with a link in the footer to [the github repo](http://github.com/swirrl/publish_my_data) or [our website](http://www.swirrl.com/publishmydata)). The default footer supplied by the engine does this for you.
 
-### Licence Exceptions
+###Licence Exceptions
 
 The Swirrl logo, which is the mark of Swirrl IT Limited and is copyright ©2013-4 Swirrl IT Limited, is licensed for use with no modification or adaptation permitted. It may be reproduced for purposes of attribution, but not in any way that suggests that Swirrl endorses you or your use.
 
-## Contributing
+##Contributing
 
 If you want to issue a patch, bug fix or feature, please just issue a pull request (with tests where appropriate). Before accepting your first pull request, we ask you to send us an email agreeing to assigning to Swirrl the copyright for all project contributions. We will release any contibutions under the MIT license.
 
-### Style Guidelines
+###Style Guidelines
 
-#### Ruby
+####Ruby
 
 We roughly try to follow [Github's Ruby Style Guide](https://github.com/styleguide/ruby).
 
