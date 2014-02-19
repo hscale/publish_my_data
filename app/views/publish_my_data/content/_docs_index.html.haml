@@ -218,3 +218,19 @@
       %p If using an extension, you must request the document page directly (as '.json' is not part of the URI)
       = codeblock "ruby" do
         RestClient.get 'http://{data-site-domain}/doc/my/resource.json'
+
+  = documentation_subsection "1.4", "Example: Dereferencing URIs with cURL" do
+    %p Here's an example of dereferencing a URI using the widely available [cURL](http://curl.haxx.se) command line program.
+    
+    = documentation_subsubsection "1.4.1", "Specifying the format in an accept header (in this case, Turtle)" do
+      %p If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. cURL looks after that for you if you use the <code>-L</code> option.
+      = codeblock "terminal" do
+        curl -L -H "Accept: text/turtle" http://{data-site-domain}/id/my/resource
+      %p You can also request the document page directly
+      = codeblock "terminal" do
+        curl -H "Accept: text/turtle" http://{data-site-domain}/id/my/resource
+    
+    = documentation_subsubsection "1.4.2", "Specifing the format as an extension (in this case N-triples)" do
+      %p If using an extension, you must request the document page directly (as '.nt' is not part of the URI)
+      = codeblock "terminal" do
+        curl http://{data-site-domain}/doc/my/resource.nt
