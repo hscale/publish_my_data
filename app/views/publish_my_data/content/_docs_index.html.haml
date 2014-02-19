@@ -259,6 +259,22 @@
 		= codeblock "uri" do
 			http://{data-site-domain}/themes/{theme-name}
 		%p where <code>{theme-name}</code> is the part of the theme URI after <code>/themes/</code>
+	= documentation_subsection "Individual Resources" do
+		%p As well as using [URI dereferencing](#uri-dereferencing) to access information about individual resources, you can use the following URL pattern:
+		= codeblock "uri" do
+			http://{data-site-domain}/resource?uri={resource-uri}
+		%p This is especially useful for resources for which we have information in our database, but which aren't in the site's domain (i.e. so you can't dereference them in this site). e.g.
+		= codeblock "uri" do
+			http://{data-site-domain}/resource?uri=http://another.domain/id/external/resource
+		%p If using a format extension to request a particular format for the resource, the extension is added immediately after '/resource', for example to get a JSON-LD version of the above postcode
+		= codeblock "uri" do
+			http://{data-site-domain}/resource.json?uri={resource-uri}
+
+
+
+
+
+
 
 = documentation_section "SPARQL" do
 	TODO
