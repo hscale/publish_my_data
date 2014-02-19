@@ -112,7 +112,7 @@ code.scrolling{
 		padding:0;
 	}
 	
-	section, .subsection{
+	section {
 		padding: 0 0 $pmdconfig_space_vertical 0;
 	}
 
@@ -121,10 +121,8 @@ code.scrolling{
 	}
 
 	h2{
-		background: #888;
-		color: #fff;
-		padding: 10px;
 		width:100%;
+		border-bottom:2px solid black;
 	}
 
 	h4{
