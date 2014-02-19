@@ -101,3 +101,26 @@ code.scrolling{
 	font-family: Monaco, Consolas, "Lucida Console", monospace;
 	word-break: break-all;
 }
+
+/* 5100 - DOCUMENTATION
+   ========================================================================== */
+
+.pmd.documentation{
+
+	header ul{
+		list-style-type: none;
+		padding:0;
+	}
+	
+	section, .subsection{
+		padding: 0;
+	}
+
+	h2{
+		background: #888;
+		color: #fff;
+		padding: 10px;
+		width:100%;
+	}
+
+}

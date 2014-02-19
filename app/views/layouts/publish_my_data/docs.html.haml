@@ -8,10 +8,11 @@
 			%header
 				=fullwidth do
 					= yield :docs_intro
-			%section
 				=fullwidth do
-					- # for now, inline - in future, erhaps in a sidebar or something...
+					- # for now, inline - in future, perhaps in a sidebar or something...
 					= yield :docs_contents
+			.content
+				=fullwidth do
 					= yield
 
 		= render 'publish_my_data/stripes/footer'
