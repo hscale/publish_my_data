@@ -1,6 +1,12 @@
 module PublishMyData
   module ApplicationHelper
 
+    def inside_layout(layout, &block)
+      layout = "layouts/#{layout}" unless layout =~ %r[\Alayouts/]
+      content_for :publish_my_data_content, capture(&block)
+      render template: layout
+    end
+
     def bodyclass(c)
       @bodyclass = c;
     end

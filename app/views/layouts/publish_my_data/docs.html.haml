@@ -1,10 +1,12 @@
 = inside_layout 'application' do
 
-	%main.pmd
+	%main.pmd.documentation
 		= render 'publish_my_data/stripes/subnav'
 		= render 'publish_my_data/stripes/status'
 		
 		%article
+			%h1
+				DOCUMENTATION
 			= yield
 			= render 'publish_my_data/stripes/formats'
 		
