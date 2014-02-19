@@ -3,12 +3,16 @@
 	%main.pmd.documentation
 		= render 'publish_my_data/stripes/subnav'
 		= render 'publish_my_data/stripes/status'
-		
+
 		%article
-			%h1
-				DOCUMENTATION
-			= yield
-			= render 'publish_my_data/stripes/formats'
-		
+			%header
+				=fullwidth do
+					= yield :docs_intro
+			%section
+				=fullwidth do
+					- # for now, inline - in future, erhaps in a sidebar or something...
+					= yield :docs_contents
+					= yield
+
 		= render 'publish_my_data/stripes/footer'
 		= render 'publish_my_data/shared/google_analytics'

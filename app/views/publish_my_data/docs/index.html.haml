@@ -2,11 +2,4 @@
 - set_page_title "Developer documentation"
 - bodyclass 'docs'
 
-%header
-	=fullwidth do
-		= page_title("Developer documentation")
-		= yield :pageheader
-
-%section
-	=fullwidth do
-		= render 'publish_my_data/content/docs_index'
+= render 'publish_my_data/content/docs_index'
