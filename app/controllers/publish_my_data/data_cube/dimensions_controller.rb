@@ -20,6 +20,12 @@ module PublishMyData
         respond_with @cube.measure_property
       end
 
+      # TODO:
+      # GET /data/:dataset_slug/cube/area_dimension(.:format)
+      def area_dimension
+        respond_with @cube.area_dimension
+      end
+
       # all values for a single dimension in the cube.
       # Useful for getting axes data for cube grids.
       # GET /data/:dataset_slug/cube/dimension_values(.:format)
@@ -38,7 +44,6 @@ module PublishMyData
           format.json { render :json => {:size => @dimension.size } }
         end
       end
-
 
       # recommended starting columns
       def recommended
