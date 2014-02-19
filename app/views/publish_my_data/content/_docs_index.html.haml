@@ -3,9 +3,8 @@
 -# -------------------------------------------------------------------
 
 - content_for :docs_intro do
-  :markdown
-    # Developer Documentation
-    This page describes the current version of our production API, which was deployed on 26th of June 2013. This release included only backward-compatible changes. See our [Change Log](/changelog) for more details of what changed.
+  %h1 Developer Documentation
+  %p This page describes the current version of our production API, which was deployed on 26th of June 2013. This release included only backward-compatible changes. See our [Change Log](/changelog) for more details of what changed.
 
 -# -------------------------------------------------------------------
 -#  CONTENTS NAVIGATION
@@ -220,7 +219,10 @@
         RestClient.get 'http://{data-site-domain}/doc/my/resource.json'
 
   = documentation_subsection "1.4", "Example: Dereferencing URIs with cURL" do
-    %p Here's an example of dereferencing a URI using the widely available [cURL](http://curl.haxx.se) command line program.
+    %p
+      Here's an example of dereferencing a URI using the widely available
+      = link_to "cURL", "http://curl.haxx.se"
+      command line program.
     
     = documentation_subsubsection "1.4.1", "Specifying the format in an accept header (in this case, Turtle)" do
       %p If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. cURL looks after that for you if you use the <code>-L</code> option.
@@ -234,3 +236,23 @@
       %p If using an extension, you must request the document page directly (as '.nt' is not part of the URI)
       = codeblock "terminal" do
         curl http://{data-site-domain}/doc/my/resource.nt
+
+= documentation_section "2", "Other Resource APIs" do
+  = documentation_subsection "2.0", "Ways to access data" do
+    %p Alongside the URI dereferencing we offer the following additional ways of accessing data in the system. Please be sure to read the [Options and Limits](#resource-options-and-limits) section, for some background information which applies to all these APIs, such as details on data formats and pagination.
+    %p Some examples of accessing the data from our APIs using different languages follow at the end of this section.
+  = documentation_subsection "2.1", "Individual Datasets" do
+    %p Dataset identifiers take the form
+    = codeblock "uri" do
+      http://example.com/data/{dataset-short-name}
+    %p where <code>{dataset-short-name}</code> is a URI section that uniquely identifies the dataset. The short name can contain lower-case letters, numbers, slashes, and hyphens.
+    %p Dereferencing a dataset identifier responds with HTTP status code 200 and provides metadata about the dataset, including a link to where the dataset contents can be downloaded. e.g.:
+    = codeblock "uri" do
+      http://{data-site-domain}/data/my/dataset
+    %p Please also see the [Use of Named Graphs](#named-graphs) section, for how the dataset data and metadata is stored in the database.
+
+= documentation_section "3", "SPARQL" do
+  TODO
+
+= documentation_section "4", "General" do
+  TODO
