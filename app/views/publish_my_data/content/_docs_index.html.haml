@@ -269,10 +269,160 @@
 		%p If using a format extension to request a particular format for the resource, the extension is added immediately after '/resource', for example to get a JSON-LD version of the above postcode
 		= codeblock "uri" do
 			http://{data-site-domain}/resource.json?uri={resource-uri}
+	= documentation_subsection "Collections of Resources" do
+		%p Collections of resources can be retrieved from <code>/resources</code> by supplying filters. For now, we just support filters for <code>dataset</code> and <code>type_uri</code>.
+		%table
+			%thead
+				%tr
+					%th Filter parameter
+					%th Expected value
+					%th Behaviour
+			%tbody
+				%tr
+					%td.details dataset
+					%td The <span style="font-style:italic">short name</span> of a dataset (see <a href="#individual-datasets">above</a>).
+					%td Filters the results to only include resources in the named graph of that dataset.
+				%tr
+					%td.details type_uri
+					%td The URI of a resource type.
+					%td Filters the results to only include resources of the type identified by that URI.
+		%p e.g.
+		= codeblock "uri" do
+			http://{data-site-domain}/resources?dataset={dataset-name}&type_uri={URL-encoded type URI}
+		= codeblock "uri" do
+			http://{data-site-domain}/resources?dataset=my-dataset&type_uri=http%3A%2F%2Fexample.com%2Fdef%2Fmy%2Ftype
+	= documentation_subsection "Options and Limits" do
+		= documentation_subsubsection "Formats" do
+			%p Resources accessed via our resource APIs can be accessed in the same [choice of formats](#resource-format) as for URI dereferencing (via both **format extensions** or **HTTP Accept headers**).
+		= documentation_subsubsection "Pagination" do
+			%p For any APIs which return collections of things, the list can be paginated using <code>page</code> (default 1) and <code>per_page</code> (default 1000) query-string parameters. The maximum allowable page size will initially be set to 1000, but we may consider increasing this (as well as the default) in the future.
+		= documentation_subsubsection "Response Size Limits" do
+			%p All requests to our APIs are subject to the [response size limits](#response-size-limits).
+	= documentation_subsection "Example: Using Ruby to get a filtered list of resources" do
+		= documentation_subsubsection "Basic Example" do
+			%p Here we use Ruby to retrieve a list of all resources of a type in a dataset as N-triples.
+			%p Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
+			= codeblock "uri" do
+				http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
+			%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
+			%p We want to get it in N-triples format, so we'll add the .nt extension. (See the [Formats section](#resource-formats)).
+			%p The following Ruby code assigns a string of N-triples into the <code>ntriples_data</code> variable. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
+			%p We use the [RestClient](http://rubydoc.info/gems/rest-client) here, which you can install with <code>$ gem install rest-client</code>.
+			= codeblock_pre "uri" do
+				= preserve do
+					:escaped
+						require 'rest-client'
 
+						url = "http://{site-domain}/resources.nt"
 
+						ntriples_data = ""
+						page = 1
+						done = false
 
+						while !done
+							puts "requesting page \#{page}..."
+							response = RestClient.get url, {:params =>
+								{
+									:page => page,
+									:per_page => 1000,
+									:dataset => "my/dataset",
+									:type_uri => "http://purl.org/linked-data/cube#Observation"
+								}
+							}
 
+							if response.length > 0
+								ntriples_data += response
+								page += 1
+							else
+								puts "no more data"
+								done = true
+							end
+						end
+
+						puts "data:"
+						puts ntriples_data
+		= documentation_subsubsection "Extension: parsing the n-triples into an array of statements" do
+			%p The [ruby-rdf](http://rubydoc.info/github/ruby-rdf/rdf/master/) library is useful for parsing various rdf formats. Install it with <code>$ gem install rdf</code>. The following code reads our string of ntriples data into an array of <code>RDF::Statement</code>s.
+			= codeblock_pre "uri" do
+				= preserve do
+					:escaped
+						require 'rdf'
+
+						statements = []
+						RDF::Reader.for(:ntriples).new(ntriples_data) {|r| r.each {|s| statements << s}}
+
+						puts "parsed \#{statements.length} triples"
+			%p <strong>Note</strong>: If you're doing a lot of work with RDF in Ruby, you might want to look at using [Swirrl](http://swirrl.com)'s open-source SPARQL ORM for Ruby, [Tripod](http://github.com/swirrl/tripod).
+	= documentation_subsection "Example: Using JavaScript to get a filtered list of resources" do
+		%p Here we use jQuery to retrieve a list of all the resources of a certain type in a dataset, as JSON-LD.
+		%p Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
+		= codeblock "uri" do
+			http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
+		%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
+		%p We want to get it in JSON format, so we'll add the .json extension. (See the [Formats section](#resource-formats)).
+		%p The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
+		= codeblock_pre "uri" do
+			= preserve do
+				:escaped
+					<!DOCTYPE html>
+					<html>
+						<head>
+							<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+						</head>
+						<body>
+							<script type="text/javascript">
+								var perPage = 100;
+								var typeUri = "http://purl.org/linked-data/cube#Observation";
+								var dataset = "my/dataset";
+
+								var baseUrl = "http://{site-domain}/resources.json?"
+								baseUrl += "per_page=" + perPage.toString();
+								baseUrl += "&dataset=" + encodeURIComponent(dataset);
+								baseUrl += "&type_uri=" + encodeURIComponent(typeUri);
+
+								var page = 1;
+								var results = [];
+
+								function callAjaxPaging() {
+									console.log("trying page: " + page.toString());
+									url = baseUrl + "&page=" + page.toString();
+
+									$.ajax({
+										dataType: 'json',
+										url: url,
+										success: function(pageOfData) {
+											results = results.concat(pageOfData);
+											console.log("got " + results.length.toString() + " so far");
+
+											if (pageOfData.length == perPage) {
+												// this page was full. There might be more.
+												page += 1;
+												console.log("trying next page");
+												callAjaxPaging();
+											} else {
+												// no more pages.
+												alert('finished with ' + results.length.toString() + " results");
+											}
+										}
+									});
+								}
+
+								alert('press OK to begin');
+								callAjaxPaging();
+							</script>
+						</body>
+					</html>
+	= documentation_subsection "Example: Using cURL to get the list of datasets in a theme" do
+		%p
+			Here we use the 
+			= link_to "cURL", "http://curl.haxx.se"
+			command line program to get a list of datasets in the a theme, as JSON-LD.
+		%p Let's assume the theme's name is <code>my/theme</code> is, so the URL we need to call is as follows. (See the [Collections of Datasets section](#dataset-collections)).
+		= codeblock "uri" do
+			http://{site-domain}/themes/my/theme
+		%p We'll use the Accept header to tell the server we want the response as JSON.
+		= codeblock "terminal" do
+			curl -H "Accept: application/json" http://{site-domain}/themes/my/theme
 
 
 

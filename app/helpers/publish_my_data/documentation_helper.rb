@@ -28,5 +28,11 @@ module PublishMyData
       end
     end
 
+    def codeblock_pre(language, &block)
+      content_tag :code, class:"block #{language} pre" do
+        capture &block
+      end
+    end
+
   end
 end
