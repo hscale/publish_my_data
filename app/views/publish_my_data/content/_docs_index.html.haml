@@ -151,16 +151,16 @@
 = documentation_section "1", "Linked Data API" do
   = documentation_subsection "1.1", "URI Dereferencing" do
     %p Following the standard practices for Linked Data, we distinguish between a 'real-world' resource and documents about that resource. <strong>Identifiers (URIs)</strong> for the resources follow the pattern:
-    = codeblock do
+    = codeblock "uri" do
       http://{data-site-domain}/<strong>id</strong>/{...}
     %p When you look them up you get redirected to the corresponding document about that thing. The <strong>document URLs</strong> follow the pattern:
-    = codeblock do
+    = codeblock "uri" do
       http://{data-site-domain}/<strong>doc</strong>/{...}
     %p For example, for a URI identified by a URI:
-    = codeblock do
+    = codeblock "uri" do
       http://{data-site-domain}/<strong>id</strong>/my/resource
     %p If you put it into your browser you get redirected, with an HTTP status code of 303 ("See Other"), to an HTML page about that resource
-    = codeblock do
+    = codeblock "uri" do
       http://{data-site-domain}/<strong>doc</strong>/my/resource
     %p In cases where a URI identifies something that is essentially a document (an 'information resource') then we respond with a 200, as their URI and document page URL are one and the same.  This includes [Datasets](#individual-datasets) as well as ontology terms and concept schemes.
 
@@ -194,3 +194,27 @@
           %td.hardwrap
             application/ld+json,
             application/json
+
+  = documentation_subsection "1.3", "Example: Dereferencing URIs with Ruby" do
+    %p
+      Here's an example of dereferencing a URI using the
+      = link_to "RestClient", "http://rubydoc.info/gems/rest-client"
+      library. Similar approaches can be taken in other languages. This assumes you already have Ruby set up on your system. Also, if you don't already have it, you'll need to install the gem:
+    = codeblock "ruby" do
+      $ gem install rest-client
+    %p &hellip; and require it in your script.
+    = codeblock "ruby" do
+      require 'rest-client'
+
+    = documentation_subsubsection "1.3.1", "Specifying the format in an accept header - in this case RDF/XML" do
+      %p If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. RestClient looks after that for you.
+      = codeblock "ruby" do
+        RestClient.get 'http://{data-site-domain}/id/my/resource, :accept=>'application/rdf+xml'
+      %p You can also request the document page directly:
+      = codeblock "ruby" do
+        RestClient.get 'http://{data-site-domain}/doc/my/resource', :accept=>'application/rdf+xml'
+
+    = documentation_subsubsection "1.3.2", "Specifing the format as an extension - in this case JSON" do
+      %p If using an extension, you must request the document page directly (as '.json' is not part of the URI)
+      = codeblock "ruby" do
+        RestClient.get 'http://{data-site-domain}/doc/my/resource.json'

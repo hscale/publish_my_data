@@ -15,8 +15,15 @@ module PublishMyData
       end
     end
 
-    def codeblock(&block)
-      content_tag :code, class:"block" do
+    def documentation_subsubsection(index, title, &block)
+      content_tag :div, class:"subsubsection", id:title.parameterize do
+        concat content_tag :h4, raw("#{index} - #{content_tag(:strong, title)}")
+        concat capture &block
+      end
+    end
+
+    def codeblock(language, &block)
+      content_tag :code, class:"block #{language}" do
         capture &block
       end
     end
