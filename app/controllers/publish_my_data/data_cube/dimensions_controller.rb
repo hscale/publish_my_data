@@ -19,8 +19,7 @@ module PublishMyData
       def measure
         respond_with @cube.measure_property
       end
-
-      # TODO:
+      
       # GET /data/:dataset_slug/cube/area_dimension(.:format)
       def area_dimension
         respond_with @cube.area_dimension
