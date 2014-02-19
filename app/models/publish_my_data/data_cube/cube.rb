@@ -56,10 +56,41 @@ module PublishMyData
         dim_objs.sort{ |x,y| y.size <=> x.size } # ordered by size desc
       end
 
+      # the (one and only) area dimenson for this cube.
+      def area_dimension
+
+        # NOTE: finds any properties which are any level of descendant of sdmxDim:refArea
+
+        query = "PREFIX qb: <http://purl.org/linked-data/cube#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX sdmxDim: <http://purl.org/linked-data/sdmx/2009/dimension#>
+
+        SELECT DISTINCT ?uri ?label WHERE {
+                  
+          ?uri a ?dimensionType .
+          ?uri a qb:DimensionProperty .
+
+          OPTIONAL {
+            ?uri rdfs:label ?label .
+            ?uri rdfs:subPropertyOf+ ?superProperty .
+          }
+          GRAPH <#{dataset.data_graph_uri}> {
+            ?s ?uri ?o .
+          }
+
+          FILTER ( 
+            ?dimensionType = sdmxDim:refArea || 
+            ( 
+              bound(?superProperty) && 
+              ?superProperty = sdmxDim:refArea
+            )
+          )          
+        }"
+
+        uris_and_labels_only(Tripod::SparqlClient::Query.select(query)).first
+      end
+
       # the (one and only) measure property for this cube.
-      # This method appears to exist only for the DimensionsController,
-      # currently in PMD Enterprise (link taken 17-Oct-2013):
-      # https://github.com/Swirrl/publish_my_data_enterprise/blob/545215a331ea8752b6ff4c9692db17170453d2c8/app/controllers/publish_my_data/data_cube/dimensions_controller.rb#L19-L23
       def measure_property
 
         query = "PREFIX qb: <http://purl.org/linked-data/cube#>
