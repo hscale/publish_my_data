@@ -11,6 +11,7 @@ PublishMyData::Engine.routes.draw do
   # data cube stuff
   match "/data/*id/cube/dimensions(.:format)" => "data_cube/dimensions#index" # list the dimensions for the cube
   match "/data/*id/cube/measure(.:format)" => "data_cube/dimensions#measure" # the measure property for the cube
+  match "/data/*id/cube/area_dimension(.:format)" => "data_cube/dimensions#area_dimension" # the measure property for the cube
   match "/data/*id/cube/dimension_values(.:format)" => "data_cube/dimensions#values" # all values for a single dimension in the cube. Useful for getting axes.
   match "/data/*id/cube/dimension_size(.:format)" => "data_cube/dimensions#size" # number of values for a dimension in the cube.
   match "/data/*id/cube/recommended_dimensions(.:format)" => "data_cube/dimensions#recommended" # recommended dimensions to use.
