@@ -30,7 +30,7 @@
 			http://{data-site-domain}/<strong>doc</strong>/my/resource
 		%p
 			In cases where a URI identifies something that is essentially a document (an 'information resource') then we respond with a 200, as their URI and document page URL are one and the same.  This includes
-			= docs_inline_link "Datasets", "Individual Datasets"
+			= docs_inline_link "datasets", "Individual Datasets"
 			as well as ontology terms and concept schemes.
 	= documentation_subsection "Resource Formats" do
 		%p You can specify what format you want the resulting document to be in.  By default you get HTML in a human-readable form, but you can also ask for the document in one of several RDF formats: <strong>RDF/XML</strong>, <strong>N-triples</strong>, <strong>Turtle</strong> or <strong>JSON-LD</strong>.
@@ -102,7 +102,10 @@
 
 = documentation_section "Other Resource APIs" do
 	= documentation_subsection "Ways to access data" do
-		%p Alongside the URI dereferencing we offer the following additional ways of accessing data in the system. Please be sure to read the [Options and Limits](#resource-options-and-limits) section, for some background information which applies to all these APIs, such as details on data formats and pagination.
+		%p
+			Alongside the URI dereferencing we offer the following additional ways of accessing data in the system. Please be sure to read the
+			=docs_inline_link "Options and Limits", "Options and Limits"
+			section, for some background information which applies to all these APIs, such as details on data formats and pagination.
 		%p Some examples of accessing the data from our APIs using different languages follow at the end of this section.
 	= documentation_subsection "Individual Datasets" do
 		%p Dataset identifiers take the form
@@ -112,7 +115,10 @@
 		%p Dereferencing a dataset identifier responds with HTTP status code 200 and provides metadata about the dataset, including a link to where the dataset contents can be downloaded. e.g.:
 		= codeblock "uri" do
 			http://{data-site-domain}/data/my/dataset
-		%p Please also see the [Use of Named Graphs](#named-graphs) section, for how the dataset data and metadata is stored in the database.
+		%p
+			Please also see the
+			= docs_inline_link "Use of Named Graphs", "Use of Named Graphs"
+			section, for how the dataset data and metadata is stored in the database.
 	= documentation_subsection "Themes" do
 		%p Datasets are grouped into Themes. A list of all themes is available at:
 		= codeblock "uri" do
@@ -124,7 +130,9 @@
 		%p A list of all datasets is available at:
 		= codeblock "uri" do
 			http://{data-site-domain}/data
-		%p [paginatable](#resource-options-and-limits) with <code>page</code> and <code>per_page</code>.
+		%p 
+			=docs_inline_link "paginatable", "Options and Limits"
+			with <code>page</code> and <code>per_page</code>.
 		%p Lists of datasets in a single theme are available at:
 		= codeblock "uri" do
 			http://{data-site-domain}/themes/{theme-name}
@@ -150,7 +158,10 @@
 			%tbody
 				%tr
 					%td.details dataset
-					%td The <span style="font-style:italic">short name</span> of a dataset (see <a href="#individual-datasets">above</a>).
+					%td 
+						The <span style="font-style:italic">short name</span> of a dataset (see 
+						= docs_inline_link "above", "Individual Datasets"
+						).
 					%td Filters the results to only include resources in the named graph of that dataset.
 				%tr
 					%td.details type_uri
@@ -163,7 +174,7 @@
 			http://{data-site-domain}/resources?dataset=my-dataset&type_uri=http%3A%2F%2Fexample.com%2Fdef%2Fmy%2Ftype
 	= documentation_subsection "Options and Limits" do
 		= documentation_subsubsection "Formats" do
-			%p Resources accessed via our resource APIs can be accessed in the same [choice of formats](#resource-format) as for URI dereferencing (via both **format extensions** or **HTTP Accept headers**).
+			%p Resources accessed via our resource APIs can be accessed in the same [choice of formats](#resource-format) as for URI dereferencing (via both <strong>format extensions</strong> or <strong>HTTP Accept headers</strong>).
 		= documentation_subsubsection "Pagination" do
 			%p For any APIs which return collections of things, the list can be paginated using <code>page</code> (default 1) and <code>per_page</code> (default 1000) query-string parameters. The maximum allowable page size will initially be set to 1000, but we may consider increasing this (as well as the default) in the future.
 		= documentation_subsubsection "Response Size Limits" do
@@ -171,7 +182,10 @@
 	= documentation_subsection "Example: Using Ruby to get a filtered list of resources" do
 		= documentation_subsubsection "Basic Example" do
 			%p Here we use Ruby to retrieve a list of all resources of a type in a dataset as N-triples.
-			%p Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
+			%p
+				Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See
+				= docs_inline_link "the Collections of Resources section", "Collections of Resources"
+				).
 			= codeblock "uri" do
 				http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
 			%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
