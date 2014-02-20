@@ -189,9 +189,15 @@
 			= codeblock "uri" do
 				http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
 			%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
-			%p We want to get it in N-triples format, so we'll add the .nt extension. (See the [Formats section](#resource-formats)).
+			%p 
+				We want to get it in N-triples format, so we'll add the .nt extension. (See the 
+				= docs_inline_link "Formats section", "SPARQL Results formats"
+				).
 			%p The following Ruby code assigns a string of N-triples into the <code>ntriples_data</code> variable. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
-			%p We use the [RestClient](http://rubydoc.info/gems/rest-client) here, which you can install with <code>$ gem install rest-client</code>.
+			%p 
+				We use the 
+				= link_to "RestClient", "http://rubydoc.info/gems/rest-client"
+				here, which you can install with <code>$ gem install rest-client</code>.
 			= codeblock_pre "uri" do
 				= preserve do
 					:escaped
@@ -246,11 +252,17 @@
 				= link_to "Tripod.", "http://github.com/swirrl/tripod"
 	= documentation_subsection "Example: Using JavaScript to get a filtered list of resources" do
 		%p Here we use jQuery to retrieve a list of all the resources of a certain type in a dataset, as JSON-LD.
-		%p Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
+		%p
+			Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See
+			= docs_inline_link "the Collections of Resources section", "Collections of Resources"
+			).
 		= codeblock "uri" do
 			http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
 		%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
-		%p We want to get it in JSON format, so we'll add the .json extension. (See the [Formats section](#resource-formats)).
+		%p 
+			We want to get it in JSON format, so we'll add the .json extension. (See the 
+			= docs_inline_link "Formats section", "SPARQL Results formats"
+			).
 		%p The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
 		= codeblock_pre "uri" do
 			= preserve do
@@ -417,12 +429,21 @@
 		%p For requests made through the website (i.e. HTML format), the page size is defaulted to 20.
 		%p For requests to our sparql endpoint for data formats (i.e. non-HTML), there will be no defaults for these parameters (i.e. results are unlimited).
 		%p For SELECT queries, for convenience you can optionally pass the pagination parameters and we will use them to apply <code>LIMIT</code> and <code>OFFSET</code> clauses to the query. For other query types (i.e. DESCRIBE, CONSTRUCT, ASK), pagination like this doesn't make so much sense, so those parameters will be ignored.
-		%p Please also refer to the [Response Size Limits](#response-size-limits) section below, and the examples at the end of this section.
+		%p
+			Please also refer to the
+			= docs_inline_link "Response Size Limits", "Response Size Limits"
+			section below, and the examples at the end of this section.
 	= documentation_subsection "SPARQL Errors" do
 		%p If you make a SPARQL request with a malformed query in a data format (i.e. non-HTML), then we will respond with HTTP status 400, with a helpful message in the response.
-		%p Additionally, please note the [Response Size Limits](#response-size-limits), which apply to all API calls, as well as the [Errors](#errors) section.
+		%p
+			Additionally, please note the 
+			= docs_inline_link "Response Size Limits", "Response Size Limits"
+			, which apply to all API calls, as well as the [Errors](#errors) section.
 	= documentation_subsection "JSON-P" do
-		%p If you're requesting SPARQL results as JSON, you can additionally pass a <code>callback</code> parameter and the results will be wrapped in that function. This is useful for getting around cross-domain issues if you're running JavaScript on older browsers. (Please also see the [Cross-Origin Resource Sharing](#cors) section). For example:
+		%p
+			If you're requesting SPARQL results as JSON, you can additionally pass a <code>callback</code> parameter and the results will be wrapped in that function. This is useful for getting around cross-domain issues if you're running JavaScript on older browsers. (Please also see the
+			= docs_inline_link "Cross-Origin Resource Sharing", "Cross-Origin Resource Sharing (CORS)"
+			section). For example:
 		= codeblock "uri" do
 			http://{site-domain}/sparql.json?callback=myCallbackFunction&query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
 		%p Or to make a JSON-P request with jQuery, you can omit the callback parameter from the url and just set the dataType to <code>jsonp</code>.
