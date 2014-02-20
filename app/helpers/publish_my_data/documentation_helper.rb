@@ -2,21 +2,33 @@ module PublishMyData
   module DocumentationHelper
 
     def documentation_section(title, &block)
-      content_tag :section do
+      # update global data structure
+      if (@documentation_sections.nil?)
+        @documentation_sections = Array.new()
+      end
+      @documentation_sections.push({name:title,subsections:[]})
+      # output html
+      content_tag :section, id:section_title_to_id(title) do
         concat content_tag :h2, title
         concat capture &block
       end
     end
 
     def documentation_subsection(title, &block)
-      content_tag :div, class:"subsection", id:title.parameterize do
+      # update global data structure
+      @documentation_sections.last[:subsections].push({name:title,subsubsections:[]})
+      # output html
+      content_tag :div, class:"subsection", id:section_title_to_id(title) do
         concat content_tag :h3, title
         concat capture &block
       end
     end
 
     def documentation_subsubsection(title, &block)
-      content_tag :div, class:"subsubsection", id:title.parameterize do
+      # update global data structure
+      @documentation_sections.last[:subsections].last[:subsubsections].push({name:title,subsubsections:[]})
+      # output html
+      content_tag :div, class:"subsubsection", id:section_title_to_id(title) do
         concat content_tag :h4, title
         concat capture &block
       end
@@ -44,6 +56,10 @@ module PublishMyData
       content_tag :code, class:"block #{language} pre" do
         capture &block
       end
+    end
+
+    def section_title_to_id(title)
+      title.parameterize
     end
 
   end
