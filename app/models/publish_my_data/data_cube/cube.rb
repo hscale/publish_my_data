@@ -71,20 +71,17 @@ module PublishMyData
           ?uri a qb:DimensionProperty .
 
           OPTIONAL {
-            ?uri rdfs:label ?label .
-            ?uri rdfs:subPropertyOf+ ?superProperty .
+            ?uri rdfs:label ?label .           
           }
           GRAPH <#{dataset.data_graph_uri}> {
             ?s ?uri ?o .
           }
-
-          FILTER ( 
-            ?dimensionType = sdmxDim:refArea || 
-            ( 
-              bound(?superProperty) && 
-              ?superProperty = sdmxDim:refArea
-            )
-          )          
+        
+          {
+            { ?uri rdfs:subPropertyOf+ sdmxDim:refArea }
+            UNION
+            { ?uri a sdmxDim:refArea }              
+          }
         }"
 
         uris_and_labels_only(Tripod::SparqlClient::Query.select(query)).first
