@@ -1,939 +1,650 @@
-%section
-  %h2 Introduction
-
-  :markdown
-    This page describes the current version of our production API, which was deployed on 26th of June 2013. This release included only backward-compatible changes. See our [Change Log](/changelog) for more details of what changed.
-
-
-%nav.contents
-  %h2 Contents
-
-  %h3
-    1 -
-    %strong Linked Data API
-
-  %ul
-    %li
-      %a(href="#uri-dereferencing")
-        1.1
-        %strong URI Dereferencing
-    %li
-      %a(href="#resource-formats")
-        1.2
-        %strong Resource Formats
-    %li
-      %a(href="#ruby-dereferencing")
-        1.2
-        %strong Example: Dereferencing URIs with Ruby
-    %li
-      %a(href="#curl-dereferencing")
-        1.2
-        %strong Example: Dereferencing URIs with cURL
-
-  %h3
-    2 -
-    %strong Other Resource APIs
-  %ul
-    %li
-      %a(href="#individual-datasets")
-        2.1
-        %strong Individual Datasets
-    %li
-      %a(href="#themes")
-        2.2
-        %strong Themes
-    %li
-      %a(href="#dataset-collections")
-        2.3
-        %strong Collections of Datasets
-    %li
-      %a(href="#individual-resources")
-        2.4
-        %strong Individual Resources
-    %li
-      %a(href="#resource-collections")
-        2.5
-        %strong Collections of Resources
-    %li
-      %a(href="#resource-options-and-limits")
-        2.6
-        %strong Options and Limits
-    %li
-      %a(href="#ruby-resources-example")
-        2.7
-        %strong Example: Using Ruby to get a filtered list of resources
-    %li
-      %a(href="#js-resources-example")
-        2.9
-        %strong Example: Using JavaScript to get a filtered list of resources
-    %li
-      %a(href="#curl-resources-example")
-        2.9
-        %strong Example: Using cURL to get the list of datasets in a theme
-
-  %h3
-    3 -
-    %strong SPARQL
-  %ul
-    %li
-      %a(href="#sparql-introduction")
-        3.1
-        %strong Introduction to SPARQL
-    %li
-      %a(href="#sparql-results-formats")
-        3.2
-        %strong SPARQL Results Formats
-    %li
-      %a(href="#sparql-results-pagination")
-        3.3
-        %strong SPARQL Results Pagination
-    %li
-      %a(href="#sparql-errors")
-        3.4
-        %strong SPARQL Errors
-    %li
-      %a(href="#sparql-json-p")
-        3.5
-        %strong JSON-P
-    %li
-      %a(href="#named-graphs")
-        3.6
-        %strong Use of Named Graphs
-    %li
-      %a(href="#parameter-interpolation")
-        3.7
-        %strong Parameter Substitution
-    %li
-      %a(href="#ruby-sparql-example")
-        3.8
-        %strong Example: Using Ruby to request data from the SPARQL Endpoint
-    %li
-      %a(href="#js-sparql-example")
-        3.9
-        %strong Example: Using JavaScript to request data from the SPARQL Endpoint
-
-  %h3
-    4 -
-    %strong General
-  %ul
-    %li
-      %a(href="#response-size-limits")
-        4.1
-        %strong Response Size Limits
-    %li
-      %a(href="#errors")
-        4.2
-        %strong Errors
-    %li
-      %a(href="#cors")
-        4.3
-        %strong CORS
-    %li
-      %a(href="#discontinued-datasets")
-        4.4
-        %strong Discontinued Datasets
-    %li
-      %a(href="#api-keys")
-        4.5
-        %strong API Keys
-
-%section
-  %h2 1 - Linked Data API
-
-  .subsection#uri-dereferencing
-    %h3
-      1.1
-      %strong URI Dereferencing
-    %p Following the standard practices for Linked Data, we distinguish between a 'real-world' resource and documents about that resource. <strong>Identifiers (URIs)</strong> for the resources follow the pattern:
-    %code.block http://{data-site-domain}/<strong>id</strong>/{...}
-    %p When you look them up you get redirected to the corresponding document about that thing. The <strong>document URLs</strong> follow the pattern:
-    %code.block http://{data-site-domain}/<strong>doc</strong>/{...}
-    %p For example, for a URI identified by a URI:
-    %code.block http://{data-site-domain}/<strong>id</strong>/my/resource
-    %p If you put it into your browser you get redirected, with an HTTP status code of 303 ("See Other"), to an HTML page about that resource
-    %code.block http://{data-site-domain}/<strong>doc</strong>/my/resource
-
-    :markdown
-      In cases where a URI identifies something that is essentially a document (an 'information resource') then we respond with a 200, as their URI and document page URL are one and the same.  This includes [Datasets](#individual-datasets) as well as ontology terms and concept schemes.
-
-  .subsection#resource-formats
-    %h3
-      1.2
-      %strong Resource Formats
-    :markdown
-      You can specify what format you want the resulting document to be in.  By default you get HTML in a human-readable form, but you can also ask for the document in one of several RDF formats: <strong>RDF/XML</strong>, <strong>N-triples</strong>, <strong>Turtle</strong> or <strong>JSON-LD</strong>.
-
-    :markdown
-      There are two ways to specify which format you want: you can append a <strong>format extension</strong> to the document page's URL or you can use an <Strong>HTTP Accept header</strong> with the resource's URI or document page's URL.
-
-
-    %table
-      %thead
-        %tr
-          %th Format
-          %th Extensions
-          %th Accept Headers
-      %tbody
-        %tr
-          %td.details RDF/XML
-          %td .rdf
-          %td.hardwrap application/rdf+xml
-        %tr
-          %td.details n-triples
-          %td .nt, .txt, .text
-          %td.hardwrap
-            application/n-triples,
-            text/plain
-        %tr
-          %td.details Turtle
-          %td .ttl
-          %td.hardwrap text/turtle
-        %tr
-          %td.details JSON-LD
-          %td .json
-          %td.hardwrap
-            application/ld+json,
-            application/json
-    %br
-
-  .subsection#ruby-dereferencing
-    %h3
-      1.3
-      %strong Example: Dereferencing URIs with Ruby
-    :markdown
-      Here's an example of dereferencing a URI using the [RestClient](http://rubydoc.info/gems/rest-client) library. Similar approaches can be taken in other languages.  This assumes you already have Ruby set up on your system. Also, if you don't already have it, you'll need to install the gem:
-
-      <code class="block">$ gem install rest-client</code>
-
-      ... and require it in your script.
-
-      <code class="block">require 'rest-client'</code>
-
-    %h4
-      1.3.1
-      %strong Specifying the format in an accept header - in this case RDF/XML
-
-    :markdown
-      If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. RestClient looks after that for you.
-
-    %code.prettyprint.lang-ruby.block
-      :preserve
-        RestClient.get 'http://{data-site-domain}/id/my/resource, :accept=>'application/rdf+xml'
-
-    :markdown
-      You can also request the document page directly:
-
-    %code.prettyprint.lang-ruby.block
-      :preserve
-        RestClient.get 'http://{data-site-domain}/doc/my/resource', :accept=>'application/rdf+xml'
-
-    %h4
-      1.3.2
-      %strong Specifing the format as an extension - in this case JSON
-
-    :markdown
-      If using an extension, you must request the document page directly (as '.json' is not part of the URI)
-
-    %code.prettyprint.lang-ruby.block
-      RestClient.get 'http://{data-site-domain}/doc/my/resource.json'
-
-  .subsection#curl-dereferencing
-    %h3
-      1.4
-      %strong Example: Dereferencing URIs with cURL
-    :markdown
-      Here's an example of dereferencing a URI using the widely available [cURL](http://curl.haxx.se) command line program.
-
-    %h4
-      1.4.1
-      %strong Specifying the format in an accept header (in this case, Turtle)
-
-    :markdown
-      If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. cURL looks after that for you if you use the <code>-L</code> option.
-
-    %code.prettyprint.block
-      :preserve
-        curl -L -H "Accept: text/turtle" http://{data-site-domain}/id/my/resource
-
-    :markdown
-      You can also request the document page directly
-
-    %code.prettyprint.block
-      curl -H "Accept: text/turtle" http://{data-site-domain}/id/my/resource
-
-    %h4
-      1.4.2
-      %strong Specifing the format as an extension - in this case N-triples
-
-    :markdown
-      If using an extension, you must request the document page directly (as '.nt' is not part of the URI)
-
-    %code.prettyprint.lang-ruby.block
-      curl http://{data-site-domain}/doc/my/resource.nt
-
-
-%section
-  %h2 2 - Other Resource APIs
-
-  :markdown
-    Alongside the URI dereferencing we offer the following additional ways of accessing data in the system. Please be sure to read the [Options and Limits](#resource-options-and-limits) section, for some background information which applies to all these APIs, such as details on data formats and pagination.
-
-    Some examples of accessing the data from our APIs using different languages follow at the end of this section.
-
-  .subsection#individual-datasets
-    %h3
-      2.1
-      %strong Individual Datasets
-    :markdown
-      Dataset identifiers take the form <code>http://example.com/data/{dataset-short-name}</code>, where <code>{dataset-short-name}</code> is a URI section that uniquely identifies the dataset. The short name can contain lower-case letters, numbers, slashes, and hyphens.
-
-      Dereferencing a dataset identifier responds with HTTP status code 200 and provides metadata about the dataset, including a link to where the dataset contents can be downloaded. e.g.:
-      
-      <code class="block">http://{data-site-domain}/data/my/dataset</code>
-
-      Please also see the [Use of Named Graphs](#named-graphs) section, for how the dataset data and metadata is stored in the database.
-
-  .subsection#themes
-    %h3
-      2.2
-      %strong Themes
-    :markdown
-      Datasets are grouped into Themes. A list of all themes is available at: <code>http://{data-site-domain}/themes</code>.
-
-      Information about a particular theme can be accessed by [dereferencing](#uri-dereferencing) the theme's URI. e.g.
-
-      <code class="block">http://{data-site-domain}/def/concept/themes/my/theme</code>
-
-  .subsection#dataset-collections
-    %h3
-      2.3
-      %strong Collections of Datasets
-    :markdown
-      A list of all datasets is available at:
-      <code>http://{data-site-domain}/data</code>, [paginatable](#resource-options-and-limits) with <code>page</code> and <code>per_page</code>.
-
-      Lists of datasets in a single theme are available at: <code>http://{data-site-domain}/themes/{theme-name}</code>, where <code>{theme-name}</code> is the part of the theme URI after <code>/themes/</code>
-
-  .subsection#individual-resources
-    %h3
-      2.4
-      %strong Individual Resources
-    :markdown
-      As well as using [URI dereferencing](#uri-dereferencing) to access information about individual resources, you can use the following URL pattern:
-
-      <code class="block">http://{data-site-domain}/resource?uri={resource-uri}</code>
-
-      This is especially useful for resources for which we have information in our database, but which aren't in the site's domain (i.e. so you can't dereference them in this site). e.g.
-      
-      <code class="block">http://{data-site-domain}/resource?uri=http://another.domain/id/external/resource</code>
-
-      If using a format extension to request a particular format for the resource, the extension is added immediately after '/resource', for example to get a JSON-LD version of the above postcode
-
-      <code class="block">http://{data-site-domain}/resource.json?uri={resource-uri}</code>
-
-  .subsection#resource-collections
-    %h3
-      2.5
-      %strong Collections of Resources
-    :markdown
-      Collections of resources can be retrieved from <code>/resources</code> by supplying filters. For now, we just support filters for <code>dataset</code> and <code>type_uri</code>.
-
-    %table
-      %thead
-        %tr
-          %th Filter parameter
-          %th Expected value
-          %th Behaviour
-      %tbody
-        %tr
-          %td.details dataset
-          %td The <span style="font-style:italic">short name</span> of a dataset (see <a href="#individual-datasets">above</a>).
-          %td Filters the results to only include resources in the named graph of that dataset.
-        %tr
-          %td.details type_uri
-          %td The URI of a resource type.
-          %td Filters the results to only include resources of the type identified by that URI.
-    %br
-
-    :markdown
-      e.g.
-
-      <code class="block">http://{data-site-domain}/resources?dataset={dataset-name}&type_uri={URL-encoded type URI}</code>
-
-      <code class="block">http://{data-site-domain}/resources?dataset=my-dataset&type_uri=http%3A%2F%2Fexample.com%2Fdef%2Fmy%2Ftype</code>
-
-  .subsection#resource-options-and-limits
-    %h3
-      2.6
-      %strong Options and Limits
-
-    %h4
-      2.6.1
-      %strong Formats
-    :markdown
-      Resources accessed via our resource APIs can be accessed in the same [choice of formats](#resource-format) as for URI dereferencing (via both **format extensions** or **HTTP Accept headers**).
-
-    %h4
-      2.6.2
-      %strong Pagination
-    :markdown
-      For any APIs which return collections of things, the list can be paginated using <code>page</code>
-      (default 1) and <code>per_page</code> (default 1000) query-string parameters. The maximum allowable page size will initially be set to 1000, but we may consider increasing this (as well as the default) in the future.
-
-    %h4
-      2.6.3
-      %strong Response Size Limits
-
-    :markdown
-      All requests to our APIs are subject to the [response size limits](#response-size-limits).
-
-  .subsection#ruby-resources-example
-    %h3
-      2.7
-      %strong Example: Using Ruby to get a filtered list of resources
-
-    %h4
-      2.7.1
-      %strong Basic Example
-
-    :markdown
-      Here we use Ruby to retrieve a list of all resources of a type in a dataset as N-triples.
-
-      Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
-
-      <code class="block">http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation</code>
-
-      If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
-
-      We want to get it in N-triples format, so we'll add the .nt extension. (See the [Formats section](#resource-formats)).
-
-      The following Ruby code assigns a string of N-triples into the <code>ntriples_data</code> variable. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
-
-      We use the [RestClient](http://rubydoc.info/gems/rest-client) here, which you can install with <code>$ gem install rest-client</code>.
-
-    %code.prettyprint.lang-ruby.pre
-      = preserve do
-        :escaped
-          require 'rest-client'
-
-          url = "http://{site-domain}/resources.nt"
-
-          ntriples_data = ""
-          page = 1
-          done = false
-
-          while !done
-            puts "requesting page \#{page}..."
-            response = RestClient.get url, {:params =>
-              {
-                :page => page,
-                :per_page => 1000,
-                :dataset => "my/dataset",
-                :type_uri => "http://purl.org/linked-data/cube#Observation"
-              }
-            }
-
-            if response.length > 0
-              ntriples_data += response
-              page += 1
-            else
-              puts "no more data"
-              done = true
-            end
-          end
-
-          puts "data:"
-          puts ntriples_data
-
-    %h4
-      2.7.2
-      %strong Extension: parsing the n-triples into an array of statements.
-
-    :markdown
-      The [ruby-rdf](http://rubydoc.info/github/ruby-rdf/rdf/master/) library is useful for parsing various rdf formats. Install it with <code>$ gem install rdf</code>. The following code reads our string of ntriples data into an array of <code>RDF::Statement</code>s.
-
-    %code.prettyprint.lang-ruby.pre
-      =preserve do
-        :escaped
-          require 'rdf'
-
-          statements = []
-          RDF::Reader.for(:ntriples).new(ntriples_data) {|r| r.each {|s| statements << s}}
-
-          puts "parsed \#{statements.length} triples"
-
-    :markdown
-      **Note**: If you're doing a lot of work with RDF in Ruby, you might want to look at using [Swirrl](http://swirrl.com)'s open-source SPARQL ORM for Ruby, [Tripod](http://github.com/swirrl/tripod).
-
-  .subsection#js-resources-example
-    %h3
-      2.8
-      %strong Example: Using JavaScript to get a filtered list of resources
-
-    :markdown
-      Here we use jQuery to retrieve a list of all the resources of a certain type in a dataset, as JSON-LD.
-
-      Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
-
-      <code class="block">http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation</code>
-
-      If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
-
-      We want to get it in JSON format, so we'll add the .json extension. (See the [Formats section](#resource-formats)).
-
-      The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
-
-    %code.prettyprint.lang-js.pre
-      = preserve do
-        :escaped
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-            </head>
-            <body>
-              <script type="text/javascript">
-                var perPage = 100;
-                var typeUri = "http://purl.org/linked-data/cube#Observation";
-                var dataset = "my/dataset";
-
-                var baseUrl = "http://{site-domain}/resources.json?"
-                baseUrl += "per_page=" + perPage.toString();
-                baseUrl += "&dataset=" + encodeURIComponent(dataset);
-                baseUrl += "&type_uri=" + encodeURIComponent(typeUri);
-
-                var page = 1;
-                var results = [];
-
-                function callAjaxPaging() {
-                  console.log("trying page: " + page.toString());
-                  url = baseUrl + "&page=" + page.toString();
-
-                  $.ajax({
-                    dataType: 'json',
-                    url: url,
-                    success: function(pageOfData) {
-                      results = results.concat(pageOfData);
-                      console.log("got " + results.length.toString() + " so far");
-
-                      if (pageOfData.length == perPage) {
-                        // this page was full. There might be more.
-                        page += 1;
-                        console.log("trying next page");
-                        callAjaxPaging();
-                      } else {
-                        // no more pages.
-                        alert('finished with ' + results.length.toString() + " results");
-                      }
-                    }
-                  });
-                }
-
-                alert('press OK to begin');
-                callAjaxPaging();
-              </script>
-            </body>
-          </html>
-
-  .subsection#curl-resources-example
-    %h3
-      2.9
-      %strong Example: Using cURL to get the list of datasets in a theme
-
-    :markdown
-      Here we use the [cURL](http://curl.haxx.se/) command line program to get a list of datasets in the a theme, as JSON-LD.
-
-      Let's assume the theme's name is <code>my/theme</code> is, so the URL we need to call is as follows. (See the [Collections of Datasets section](#dataset-collections)).
-
-      <code class="block">http://{site-domain}/themes/my/theme</code>
-
-      We'll use the Accept header to tell the server we want the response as JSON.
-
-    %code.prettyprint.block
-      curl -H "Accept: application/json" http://{site-domain}/themes/my/theme
-
-%section
-  %h2 3 - SPARQL
-
-  .subsection#sparql-introduction
-    %h3
-      3.1
-      %strong Introduction to SPARQL
-    :markdown
-
-      The most flexible way to access the data is by using SPARQL. Pronounced "sparkle", SPARQL stands for **S**parql **P**rotocol and **R**DF **Q**uery **L**anguage. It's a query language, analagous to SQL for relational databases, for retrieving and manipulating data from triple-stores like ours. We support [SPARQL 1.1](http://www.w3.org/TR/2013/REC-sparql11-query-20130321/) query syntax.
-
-      To submit a SPARQL query from your code, issue an HTTP GET request to our **endpoint**:
-
-    %code.block http://{site-domain}/sparql?query={URL-encoded query}
-
-    %p For example, to run this simple query...
-
-    %code.prettyprint.lang-sparql.pre
-      = preserve do
-        :escaped
-          SELECT * WHERE {?s ?p ?o} LIMIT 10
-
-    %p ...and get the results as JSON, you could GET the following URL (note the <code>.json</code> extension):
-
-    %code.block http://{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
-
-    :markdown
-      See below for <a href="#sparql-results-formats">details of SPARQL Results Formats</a> and examples in a variety of languages (at the end of this section).
-
-  .subsection#sparql-results-formats
-    %h3
-      3.2
-      %strong SPARQL Results formats
-
-    :markdown
-      As with other aspects of our API, to get the data in different formats, you can use either format extensions or HTTP Accept headers.
-
-      The available formats depend on the type of SPARQL query. A SPARQL query can be one of four main forms: <strong>SELECT</strong>, <strong>ASK</strong>, <strong>CONSTRUCT</strong> or <strong>DESCRIBE</strong>.
-
-    %table
-      %thead
-        %tr
-          %th Query Type
-          %th Format
-          %th Extension
-          %th Accept Headers
-      %tbody
-        %tr
-          %td.details(rowspan=4) SELECT
-          %td xml
-          %td .xml
-          %td.hardwrap
-            application/xml,
-            application/sparql-results+xml
-        %tr
-          %td json
-          %td .json
-          %td.hardwrap
-            application/json,
-            application/sparql-results+json
-        %tr
-          %td text
-          %td .txt, .text
-          %td.hardwrap text/plain
-        %tr
-          %td csv
-          %td .csv
-          %td.hardwrap text/csv
-        %tr
-          %td.details(rowspan=3) ASK
-          %td json
-          %td .json
-          %td.hardwrap
-            application/json,
-            application/sparql-results+json
-        %tr
-          %td xml
-          %td .xml
-          %td.hardwrap
-            application/xml,
-            application/sparql-results+json
-        %tr
-          %td text
-          %td .txt, .text
-          %td.hardwrap text/plain
-        %tr
-          %td.details(rowspan=3) CONSTRUCT
-          %td RDF/XML
-          %td .rdf
-          %td.hardwrap application/rdf+xml
-        %tr
-          %td N-triples
-          %td .nt, .txt, .text
-          %td.hardwrap
-            text/plain,
-            application/n-triples
-        %tr
-          %td Turtle
-          %td .ttl
-          %td.hardwrap text/turtle
-        %tr
-          %td.details(rowspan=3) DESCRIBE
-          %td RDF/XML
-          %td .rdf
-          %td.hardwrap application/rdf+xml
-        %tr
-          %td N-triples
-          %td .nt, .txt, .text
-          %td.hardwrap
-            text/plain,
-            application/n-triples
-        %tr
-          %td Turtle
-          %td .ttl
-          %td.hardwrap text/turtle
-
-  .subsection#sparql-results-pagination
-    %h3
-      3.3
-      %strong SPARQL Results Pagination
-
-    :markdown
-      We will accept <code>page</code> and <code>per_page</code> query-string parameters for paginating the results of SELECT queries.
-
-      For requests made through the website (i.e. HTML format), the page size is defaulted to 20.
-
-      For requests to our sparql endpoint for data formats (i.e. non-HTML), there will be no defaults for these parameters (i.e. results are unlimited).
-
-      For SELECT queries, for convenience you can optionally pass the pagination parameters and we will use them to apply <code>LIMIT</code> and <code>OFFSET</code> clauses to the query. For other query types (i.e. DESCRIBE, CONSTRUCT, ASK), pagination like this doesn't make so much sense, so those parameters will be ignored.
-
-      Please also refer to the [Response Size Limits](#response-size-limits) section below, and the examples at the end of this section.
-
-  .subsection#sparql-errors
-    %h3
-      3.4
-      %strong SPARQL Errors
-
-    :markdown
-      If you make a SPARQL request with a malformed query in a data format (i.e. non-HTML), then we will respond with HTTP status 400, with a helpful message in the response.
-
-      Additionally, please note the [Response Size Limits](#response-size-limits), which apply to all API calls, as well as the [Errors](#errors) section.
-
-  .subsection#sparql-json-p
-    %h3
-      3.5
-      %strong JSON-P
-
-    :markdown
-      If you're requesting SPARQL results as JSON, you can additionally pass a <code>callback</code> parameter and the results will be wrapped in that function. This is useful for getting around cross-domain issues if you're running JavaScript on older browsers. (Please also see the [Cross-Origin Resource Sharing](#cors) section).
-
-      For example:
-
-    %code.block
-      http://{site-domain}/sparql.json?callback=myCallbackFunction&query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
-
-    :markdown
-      Or to make a JSON-P request with jQuery, you can omit the callback parameter from the url and just set the dataType to <code>jsonp</code>.
-
-    %code.prettyprint.lang-js.pre
-      = preserve do
-        :escaped
-          queryUrl = '{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10'
-
-          $.ajax({
-            dataType: 'jsonp',
-            url: queryUrl,
-            success: function(data) {
-              // callback code here
-              alert('success!');
-            }
-          });
-
-  .subsection#named-graphs
-    %h3
-      3.6
-      %strong Use of Named graphs
-
-    %h4
-      3.6.1
-      %strong Dataset Data
-
-    %p The data for each dataset is contained within a separate named graph. The dataset itself has a URI, for example
-
-    %code.block http://{site-domain}/data/<strong>my/dataset</strong>
-
-    %p The web page for the dataset lists the named graph that contains the dataset, in this case
-
-    %code http://{site-domain}/graph/<strong>my/dataset</strong>
-
-    %p The graph name for the dataset is contained in the dataset metadata, using a predicate called <code>http://publishmydata.com/def/dataset#graph</code> and can be obtained by a query like this:
-
-    %code.prettyprint.lang-sparql.pre
-      = preserve do
-        :escaped
-          SELECT ?graph
-            WHERE {
-              <http://example.com/data/my/dataset> <http://publishmydata.com/def/dataset#graph> ?graph
-            }
-
-    %h4
-      3.6.2
-      %strong Dataset Metadata
-
-    :markdown
-      The metadata we store about the [dataset](#individual-datasets) itself (that is returned by dereferencing its URI), is stored its own separate graph, for example:
-
-    %code.block http://{site-domain}/graph/<strong>my/dataset</strong>/metadata
-
-    :markdown
-      We also use named graphs for each concept scheme and ontology.
-
-  .subsection#parameter-interpolation
-    %h3
-      3.7
-      %strong Parameter Substitution
-
-    %p You can parameterise your SPARQL by including %{tokens} in your queries, and providing values for the tokens on the url query string.
-
-    %code.block http://{site-domain}/sparql?query=URL-encoded-SPARQL-query?token1=value-for-token1&token2=value-for-token2
-
-    :markdown
-      Note that the following tokens are reserved and cannot be used as parameters for substitution.
-
-      - controller
-      - action
-      - page
-      - per_page
-      - id
-      - commit
-      - utf8
-      - query
-
-
-
-
-  .subsection#ruby-sparql-example
-    %h3
-      3.8
-      %strong Example: Using Ruby to request data from the SPARQL Endpoint
-
-    :markdown
-      This sample Ruby makes a request to our SPARQL endpoint (as JSON) and then puts the result in a Hash.
-
-    %code.prettyprint.lang-ruby.pre
-      = preserve do
-        :escaped
-          require 'rest-client'
-          require 'json'
-
-          query = 'SELECT * WHERE {?s ?p ?o} LIMIT 10'
-          site_domain = "example.com"
-          url = "http://\#{site_domain}/sparql.json"
-
-          results_str = RestClient.get url, {:params => {:query => query}}
-          results_hash = JSON.parse results_str
-          results_array = results_hash["results"]["bindings"]
-
-          puts "total number of results: \#{results_array.length}"
-
-    :markdown
-      **Note**: If you're doing a lot of work with RDF in Ruby, you might want to look at using [Swirrl](http://swirrl.com)'s open-source SPARQL ORM for Ruby, [Tripod](http://github.com/swirrl/tripod).
-
-  .subsection#js-sparql-example
-    %h3
-      3.8
-      %strong Example: Using JavaScript to request data from the SPARQL Endpoint
-
-    :markdown
-      This example HTML page uses jQuery to make a request to our SPARQL endpoint for all resources of type Unitary Authority (as JSON) and log the results.
-
-    %code.prettyprint.lang-html.pre
-      = preserve do
-        :escaped
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-            </head>
-            <body>
-              <script type="text/javascript">
-                var siteDomain = "example.com"
-                var query = "SELECT * WHERE {?s ?p ?o} LIMIT 10";
-                var url = "http://" + siteDomain + "/sparql.json?query=";
-                url += encodeURIComponent(query);
-                $.ajax({
-                  dataType: 'json',
-                  url: url,
-                  success: function(data) {
-                    alert('success: ' + data.results.bindings.length + ' results');
-                    console.log(data);
-                  }
-                });
-              </script>
-            </body>
-          </html>
-    :markdown
-      **Note**: See the [Cross-Origin Resource Sharing](#cors) section for a note about accessing data from from other domains.
-%section
-  %h2 4 - General
-
-  .subsection#response-size-limits
-    %h3
-      4.1
-      %strong Response Size Limits
-
-    :markdown
-      For all requests to our API, if the request issues a request to the database which causes more than 5MB of data to be returned, we will respond with HTTP status code 400, with the a message in the response body including the phrase <code>Response too large</code>. Note that full pre-canned dumps of all datasets will be available (in zipped n-triples format) at URLs defined in the [dataset metadata](#individual-datasets).
-
-  .subsection#errors
-    %h3
-      4.2
-      %strong Errors
-
-    %table
-      %thead
-        %tr
-          %th Error type
-          %th HTTP status code
-          %th Notes
-      %tbody
-        %tr
-          %td Response too large
-          %td 400
-          %td We will include a text message in the response body including the phrase "Response too large."
-        %tr
-          %td SPARQL Syntax Error
-          %td 400
-          %td We will include a text message in the response body with details of the error.
-        %tr
-          %td Resource Not Found
-          %td 404
-          %td Returned if you request a resource or URL that doesn't exist
-        %tr
-          %td Not Acceptable
-          %td 406
-          %td Returned if you request a non-supported data format
-        %tr
-          %td Unexpected Errors
-          %td 500
-          %td
-        %tr
-          %td Query Timeouts
-          %td 503
-          %td The timeout for requesting data from our database will initially be set to 10 seconds.
-    %br
-
-  .subsection#cors
-    %h3
-      4.3
-      %strong Cross-Origin Resource Sharing (CORS)
-    :markdown
-      Our web server is configured to allow access from all domains (by adding the following line to our nginx configuration):
-
-    <code class="block">add_header Access-Control-Allow-Origin "*";</code>
-
-    :markdown
-      This means that if you're writing JavaScript to request data from our server in to a web page hosted on another domain, your browser should check this header and allow it.
-
-      ####**A Note about Browser Support for CORS:**
-
-      Modern browsers (such as recent versions of Internet Explorer Firefox, Chrome and Safari) have full CORS support. It is not supported in Internet Explorer 6 and 7. Versions 8 & 9 of Internet Explorer offer limited support. If you need to support older browsers, consider making requests for data via SPARQL, with [JSON-P](#sparql-json-p).
-
-  .subsection#discontinued-datasets
-    %h3
-      4.4
-      %strong Discontinued Datasets
-
-    :markdown
-      A dataset can be marked as 'discontinued'. This approach is most often used in cases where a dataset uses an outdated vocabulary or outdated naming convention for URIs. This is similar to the concept of deprecation (in computer software).
-
-      A discontinued dataset is assigned a type of <code>http://publishmydata.com/def/dataset#DeprecatedDataset</code> as well as the usual <code>http://publishmydata.com/def/dataset#Dataset</code>. The discontinued-status is indicated on the list of datasets in the user interface and on the individual dataset page.
-
-      Optionally, a discontinued dataset may be replaced by another dataset. In this case a link to the new dataset appears on the dataset web page and the dataset metadata contains the triple:
-
-    %code.pre
-      = preserve do
-        :escaped
-          <{discontinued dataset URI}> <http://purl.org/dc/terms/isReplacedBy> <{new dataset URI}> .
-
-    :markdown
-      The contents of discontinued datasets are still available via SPARQL queries and other APIs. This allows us to update the way that data is represented without breaking external applications that use it. Discontinued datasets will generally be removed completely after some period of time. Information about planned deletion will be provided in the 'Further Information' section on the dataset web page.
-
-
-:javascript
-  prettyPrint();
+-# -------------------------------------------------------------------
+-#  FULL WIDTH INTRODUCTION
+-# -------------------------------------------------------------------
+
+- content_for :docs_intro do
+	%h1 Developer Documentation
+	%p This page describes the current version of our production API, which was deployed on 26th of June 2013.
+
+-# -------------------------------------------------------------------
+-#  MAIN CONTENT
+-#
+-#	Note that if you change a section title, you should check you
+-#	have also updated any inline links to it
+-#
+-# -------------------------------------------------------------------
+
+= documentation_section "Linked Data API" do
+	= documentation_subsection "URI Dereferencing" do
+		%p Following the standard practices for Linked Data, we distinguish between a 'real-world' resource and documents about that resource. <strong>Identifiers (URIs)</strong> for the resources follow the pattern:
+		= codeblock "uri" do
+			http://{data-site-domain}/<strong>id</strong>/{...}
+		%p When you look them up you get redirected to the corresponding document about that thing. The <strong>document URLs</strong> follow the pattern:
+		= codeblock "uri" do
+			http://{data-site-domain}/<strong>doc</strong>/{...}
+		%p For example, for a URI identified by a URI:
+		= codeblock "uri" do
+			http://{data-site-domain}/<strong>id</strong>/my/resource
+		%p If you put it into your browser you get redirected, with an HTTP status code of 303 ("See Other"), to an HTML page about that resource
+		= codeblock "uri" do
+			http://{data-site-domain}/<strong>doc</strong>/my/resource
+		%p
+			In cases where a URI identifies something that is essentially a document (an 'information resource') then we respond with a 200, as their URI and document page URL are one and the same.  This includes
+			= docs_inline_link "datasets", "Individual Datasets"
+			as well as ontology terms and concept schemes.
+	= documentation_subsection "Resource Formats" do
+		%p You can specify what format you want the resulting document to be in.  By default you get HTML in a human-readable form, but you can also ask for the document in one of several RDF formats: <strong>RDF/XML</strong>, <strong>N-triples</strong>, <strong>Turtle</strong> or <strong>JSON-LD</strong>.
+		%p There are two ways to specify which format you want: you can append a <strong>format extension</strong> to the document page's URL or you can use an <strong>HTTP Accept header</strong> with the resource's URI or document page's URL.
+		%table
+			%thead
+				%tr
+					%th Format
+					%th Extensions
+					%th Accept Headers
+			%tbody
+				%tr
+					%td.details RDF/XML
+					%td .rdf
+					%td.hardwrap application/rdf+xml
+				%tr
+					%td.details n-triples
+					%td .nt, .txt, .text
+					%td.hardwrap
+						application/n-triples,
+						text/plain
+				%tr
+					%td.details Turtle
+					%td .ttl
+					%td.hardwrap text/turtle
+				%tr
+					%td.details JSON-LD
+					%td .json
+					%td.hardwrap
+						application/ld+json,
+						application/json
+	= documentation_subsection "Example: Dereferencing URIs with Ruby" do
+		%p
+			Here's an example of dereferencing a URI using the
+			= link_to "RestClient", "http://rubydoc.info/gems/rest-client"
+			library. Similar approaches can be taken in other languages. This assumes you already have Ruby set up on your system. Also, if you don't already have it, you'll need to install the gem:
+		= codeblock "ruby" do
+			$ gem install rest-client
+		%p &hellip; and require it in your script.
+		= codeblock "ruby" do
+			require 'rest-client'
+		= documentation_subsubsection "Specifying the format in an accept header - in this case RDF/XML" do
+			%p If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. RestClient looks after that for you.
+			= codeblock "ruby" do
+				RestClient.get 'http://{data-site-domain}/id/my/resource, :accept=>'application/rdf+xml'
+			%p You can also request the document page directly:
+			= codeblock "ruby" do
+				RestClient.get 'http://{data-site-domain}/doc/my/resource', :accept=>'application/rdf+xml'
+		= documentation_subsubsection "Specifing the format as an extension - in this case JSON" do
+			%p If using an extension, you must request the document page directly (as '.json' is not part of the URI)
+			= codeblock "ruby" do
+				RestClient.get 'http://{data-site-domain}/doc/my/resource.json'
+	= documentation_subsection "Example: Dereferencing URIs with cURL" do
+		%p
+			Here's an example of dereferencing a URI using the widely available
+			= link_to "cURL", "http://curl.haxx.se"
+			command line program.
+		= documentation_subsubsection "Specifying the format in an accept header (in this case, Turtle)" do
+			%p If you're using the accept header, you can directly request the URI. This involves two requests, because doing an HTTP GET on the resource identifier gives you a 303 redirect to the appropriate document page. cURL looks after that for you if you use the <code>-L</code> option.
+			= codeblock "terminal" do
+				curl -L -H "Accept: text/turtle" http://{data-site-domain}/id/my/resource
+			%p You can also request the document page directly
+			= codeblock "terminal" do
+				curl -H "Accept: text/turtle" http://{data-site-domain}/id/my/resource
+		= documentation_subsubsection "Specifing the format as an extension (in this case N-triples)" do
+			%p If using an extension, you must request the document page directly (as '.nt' is not part of the URI)
+			= codeblock "terminal" do
+				curl http://{data-site-domain}/doc/my/resource.nt
+
+= documentation_section "Other Resource APIs" do
+	= documentation_subsection "Ways to access data" do
+		%p
+			Alongside the URI dereferencing we offer the following additional ways of accessing data in the system. Please be sure to read the
+			=docs_inline_link "Options and Limits", "Options and Limits"
+			section, for some background information which applies to all these APIs, such as details on data formats and pagination.
+		%p Some examples of accessing the data from our APIs using different languages follow at the end of this section.
+	= documentation_subsection "Individual Datasets" do
+		%p Dataset identifiers take the form
+		= codeblock "uri" do
+			http://example.com/data/{dataset-short-name}
+		%p where <code>{dataset-short-name}</code> is a URI section that uniquely identifies the dataset. The short name can contain lower-case letters, numbers, slashes, and hyphens.
+		%p Dereferencing a dataset identifier responds with HTTP status code 200 and provides metadata about the dataset, including a link to where the dataset contents can be downloaded. e.g.:
+		= codeblock "uri" do
+			http://{data-site-domain}/data/my/dataset
+		%p
+			Please also see the
+			= docs_inline_link "Use of Named Graphs", "Use of Named Graphs"
+			section, for how the dataset data and metadata is stored in the database.
+	= documentation_subsection "Themes" do
+		%p Datasets are grouped into Themes. A list of all themes is available at:
+		= codeblock "uri" do
+			http://{data-site-domain}/themes
+		%p
+			Information about a particular theme can be accessed by
+			= docs_inline_link "dereferencing", "URI Dereferencing"
+			the theme's URI. e.g.
+		= codeblock "uri" do
+			http://{data-site-domain}/def/concept/themes/my/theme
+	= documentation_subsection "Collections of Datasets" do
+		%p A list of all datasets is available at:
+		= codeblock "uri" do
+			http://{data-site-domain}/data
+		%p 
+			=docs_inline_link "paginatable", "Options and Limits"
+			with <code>page</code> and <code>per_page</code>.
+		%p Lists of datasets in a single theme are available at:
+		= codeblock "uri" do
+			http://{data-site-domain}/themes/{theme-name}
+		%p where <code>{theme-name}</code> is the part of the theme URI after <code>/themes/</code>
+	= documentation_subsection "Individual Resources" do
+		%p
+			As well as using 
+			= docs_inline_link "dereferencing", "URI Dereferencing"
+			to access information about individual resources, you can use the following URL pattern:
+		= codeblock "uri" do
+			http://{data-site-domain}/resource?uri={resource-uri}
+		%p This is especially useful for resources for which we have information in our database, but which aren't in the site's domain (i.e. so you can't dereference them in this site). e.g.
+		= codeblock "uri" do
+			http://{data-site-domain}/resource?uri=http://another.domain/id/external/resource
+		%p If using a format extension to request a particular format for the resource, the extension is added immediately after '/resource', for example to get a JSON-LD version of the above postcode
+		= codeblock "uri" do
+			http://{data-site-domain}/resource.json?uri={resource-uri}
+	= documentation_subsection "Collections of Resources" do
+		%p Collections of resources can be retrieved from <code>/resources</code> by supplying filters. For now, we just support filters for <code>dataset</code> and <code>type_uri</code>.
+		%table
+			%thead
+				%tr
+					%th Filter parameter
+					%th Expected value
+					%th Behaviour
+			%tbody
+				%tr
+					%td.details dataset
+					%td 
+						The <span style="font-style:italic">short name</span> of a dataset (see 
+						= docs_inline_link "above", "Individual Datasets"
+						).
+					%td Filters the results to only include resources in the named graph of that dataset.
+				%tr
+					%td.details type_uri
+					%td The URI of a resource type.
+					%td Filters the results to only include resources of the type identified by that URI.
+		%p e.g.
+		= codeblock "uri" do
+			http://{data-site-domain}/resources?dataset={dataset-name}&type_uri={URL-encoded type URI}
+		= codeblock "uri" do
+			http://{data-site-domain}/resources?dataset=my-dataset&type_uri=http%3A%2F%2Fexample.com%2Fdef%2Fmy%2Ftype
+	= documentation_subsection "Options and Limits" do
+		= documentation_subsubsection "Formats" do
+			%p
+				Resources accessed via our resource APIs can be accessed in the same
+				= docs_inline_link "choice of formats", "Results Formats"
+				as for URI dereferencing (via both <strong>format extensions</strong> or <strong>HTTP Accept headers</strong>).
+		= documentation_subsubsection "Pagination" do
+			%p For any APIs which return collections of things, the list can be paginated using <code>page</code> (default 1) and <code>per_page</code> (default 1000) query-string parameters. The maximum allowable page size will initially be set to 1000, but we may consider increasing this (as well as the default) in the future.
+		= documentation_subsubsection "Response Size Limits" do
+			%p
+				All requests to our APIs are subject to the
+				= docs_inline_link "response size limits.", "Response Size Limits"
+	= documentation_subsection "Example: Using Ruby to get a filtered list of resources" do
+		= documentation_subsubsection "Basic Example" do
+			%p Here we use Ruby to retrieve a list of all resources of a type in a dataset as N-triples.
+			%p
+				Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See
+				= docs_inline_link "the Collections of Resources section", "Collections of Resources"
+				).
+			= codeblock "uri" do
+				http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
+			%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
+			%p 
+				We want to get it in N-triples format, so we'll add the .nt extension. (See the 
+				= docs_inline_link "Formats section", "Results Formats"
+				).
+			%p
+				The following Ruby code assigns a string of N-triples into the <code>ntriples_data</code> variable. Note that as the
+				= docs_inline_link "maximum page size", "Options and Limits"
+				is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
+			%p 
+				We use the 
+				= link_to "RestClient", "http://rubydoc.info/gems/rest-client"
+				here, which you can install with <code>$ gem install rest-client</code>.
+			= codeblock_pre "uri" do
+				= preserve do
+					:escaped
+						require 'rest-client'
+
+						url = "http://{site-domain}/resources.nt"
+
+						ntriples_data = ""
+						page = 1
+						done = false
+
+						while !done
+							puts "requesting page \#{page}..."
+							response = RestClient.get url, {:params =>
+								{
+									:page => page,
+									:per_page => 1000,
+									:dataset => "my/dataset",
+									:type_uri => "http://purl.org/linked-data/cube#Observation"
+								}
+							}
+
+							if response.length > 0
+								ntriples_data += response
+								page += 1
+							else
+								puts "no more data"
+								done = true
+							end
+						end
+
+						puts "data:"
+						puts ntriples_data
+		= documentation_subsubsection "Extension: parsing the n-triples into an array of statements" do
+			%p 
+				The 
+				= link_to "ruby-rdf", "http://rubydoc.info/github/ruby-rdf/rdf/master/"
+				library is useful for parsing various rdf formats. Install it with <code>$ gem install rdf</code>. The following code reads our string of ntriples data into an array of <code>RDF::Statement</code>s.
+			= codeblock_pre "uri" do
+				= preserve do
+					:escaped
+						require 'rdf'
+
+						statements = []
+						RDF::Reader.for(:ntriples).new(ntriples_data) {|r| r.each {|s| statements << s}}
+
+						puts "parsed \#{statements.length} triples"
+			%p 
+				<strong>Note</strong>: If you're doing a lot of work with RDF in Ruby, you might want to look at using
+				= link_to "Swirrl", "http://swirrl.com"
+				's open-source SPARQL ORM for Ruby, 
+				= link_to "Tripod.", "http://github.com/swirrl/tripod"
+	= documentation_subsection "Example: Using JavaScript to get a filtered list of resources" do
+		%p Here we use jQuery to retrieve a list of all the resources of a certain type in a dataset, as JSON-LD.
+		%p
+			Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See
+			= docs_inline_link "the Collections of Resources section", "Collections of Resources"
+			).
+		= codeblock "uri" do
+			http://{site-domain}/resources?dataset=my%2Fdatase&type_uri=http%3A%2F%2Fpurl.org%2Flinked-data%2Fcube%23Observation
+		%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
+		%p 
+			We want to get it in JSON format, so we'll add the .json extension. (See the 
+			= docs_inline_link "Formats section", "Results Formats"
+			).
+		%p
+			The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the
+			= docs_inline_link "maximum page size", "Options and Limits"
+			is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
+		= codeblock_pre "uri" do
+			= preserve do
+				:escaped
+					<!DOCTYPE html>
+					<html>
+						<head>
+							<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+						</head>
+						<body>
+							<script type="text/javascript">
+								var perPage = 100;
+								var typeUri = "http://purl.org/linked-data/cube#Observation";
+								var dataset = "my/dataset";
+
+								var baseUrl = "http://{site-domain}/resources.json?"
+								baseUrl += "per_page=" + perPage.toString();
+								baseUrl += "&dataset=" + encodeURIComponent(dataset);
+								baseUrl += "&type_uri=" + encodeURIComponent(typeUri);
+
+								var page = 1;
+								var results = [];
+
+								function callAjaxPaging() {
+									console.log("trying page: " + page.toString());
+									url = baseUrl + "&page=" + page.toString();
+
+									$.ajax({
+										dataType: 'json',
+										url: url,
+										success: function(pageOfData) {
+											results = results.concat(pageOfData);
+											console.log("got " + results.length.toString() + " so far");
+
+											if (pageOfData.length == perPage) {
+												// this page was full. There might be more.
+												page += 1;
+												console.log("trying next page");
+												callAjaxPaging();
+											} else {
+												// no more pages.
+												alert('finished with ' + results.length.toString() + " results");
+											}
+										}
+									});
+								}
+
+								alert('press OK to begin');
+								callAjaxPaging();
+							</script>
+						</body>
+					</html>
+	= documentation_subsection "Example: Using cURL to get the list of datasets in a theme" do
+		%p
+			Here we use the 
+			= link_to "cURL", "http://curl.haxx.se"
+			command line program to get a list of datasets in the a theme, as JSON-LD.
+		%p
+			Let's assume the theme's name is <code>my/theme</code> is, so the URL we need to call is as follows. (See the
+			=docs_inline_link "Collections of Datasets section", "Collections of Datasets"
+			).
+		= codeblock "uri" do
+			http://{site-domain}/themes/my/theme
+		%p We'll use the Accept header to tell the server we want the response as JSON.
+		= codeblock "terminal" do
+			curl -H "Accept: application/json" http://{site-domain}/themes/my/theme
+
+= documentation_section "SPARQL" do
+	= documentation_subsection "Introduction to SPARQL" do
+		%p
+			The most flexible way to access the data is by using SPARQL. Pronounced "sparkle", SPARQL stands for <strong>S</strong>parql <strong>P</strong>rotocol and <strong>R</strong>DF <strong>Q</strong>uery <strong>L</strong>anguage. It's a query language, analagous to SQL for relational databases, for retrieving and manipulating data from triple-stores like ours. We support 
+			= link_to "SPARQL 1.1", "http://www.w3.org/TR/2013/REC-sparql11-query-20130321/"
+			query syntax.
+		%p To submit a SPARQL query from your code, issue an HTTP GET request to our **endpoint**:
+		= codeblock "uri" do
+			http://{site-domain}/sparql?query={URL-encoded query}
+		%p For example, to run this simple query...
+		= codeblock_pre "sparql" do
+			= preserve do
+				:escaped
+					SELECT * WHERE {?s ?p ?o} LIMIT 10
+
+		%p ...and get the results as JSON, you could GET the following URL (note the <code>.json</code> extension):
+		= codeblock "uri" do
+			http://{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
+	= documentation_subsection "SPARQL Results formats" do
+		%p As with other aspects of our API, to get the data in different formats, you can use either format extensions or HTTP Accept headers.
+		%p The available formats depend on the type of SPARQL query. A SPARQL query can be one of four main forms: <strong>SELECT</strong>, <strong>ASK</strong>, <strong>CONSTRUCT</strong> or <strong>DESCRIBE</strong>.
+		%table
+			%thead
+				%tr
+					%th Query Type
+					%th Format
+					%th Extension
+					%th Accept Headers
+			%tbody
+				%tr
+					%td.details(rowspan=4) SELECT
+					%td xml
+					%td .xml
+					%td.hardwrap
+						application/xml,
+						application/sparql-results+xml
+				%tr
+					%td json
+					%td .json
+					%td.hardwrap
+						application/json,
+						application/sparql-results+json
+				%tr
+					%td text
+					%td .txt, .text
+					%td.hardwrap text/plain
+				%tr
+					%td csv
+					%td .csv
+					%td.hardwrap text/csv
+				%tr
+					%td.details(rowspan=3) ASK
+					%td json
+					%td .json
+					%td.hardwrap
+						application/json,
+						application/sparql-results+json
+				%tr
+					%td xml
+					%td .xml
+					%td.hardwrap
+						application/xml,
+						application/sparql-results+json
+				%tr
+					%td text
+					%td .txt, .text
+					%td.hardwrap text/plain
+				%tr
+					%td.details(rowspan=3) CONSTRUCT
+					%td RDF/XML
+					%td .rdf
+					%td.hardwrap application/rdf+xml
+				%tr
+					%td N-triples
+					%td .nt, .txt, .text
+					%td.hardwrap
+						text/plain,
+						application/n-triples
+				%tr
+					%td Turtle
+					%td .ttl
+					%td.hardwrap text/turtle
+				%tr
+					%td.details(rowspan=3) DESCRIBE
+					%td RDF/XML
+					%td .rdf
+					%td.hardwrap application/rdf+xml
+				%tr
+					%td N-triples
+					%td .nt, .txt, .text
+					%td.hardwrap
+						text/plain,
+						application/n-triples
+				%tr
+					%td Turtle
+					%td .ttl
+					%td.hardwrap text/turtle
+	= documentation_subsection "SPARQL Results Pagination" do
+		%p We will accept <code>page</code> and <code>per_page</code> query-string parameters for paginating the results of SELECT queries.
+		%p For requests made through the website (i.e. HTML format), the page size is defaulted to 20.
+		%p For requests to our sparql endpoint for data formats (i.e. non-HTML), there will be no defaults for these parameters (i.e. results are unlimited).
+		%p For SELECT queries, for convenience you can optionally pass the pagination parameters and we will use them to apply <code>LIMIT</code> and <code>OFFSET</code> clauses to the query. For other query types (i.e. DESCRIBE, CONSTRUCT, ASK), pagination like this doesn't make so much sense, so those parameters will be ignored.
+		%p
+			Please also refer to the
+			= docs_inline_link "Response Size Limits", "Response Size Limits"
+			section below, and the examples at the end of this section.
+	= documentation_subsection "SPARQL Errors" do
+		%p If you make a SPARQL request with a malformed query in a data format (i.e. non-HTML), then we will respond with HTTP status 400, with a helpful message in the response.
+		%p
+			Additionally, please note the 
+			= docs_inline_link "Response Size Limits", "Response Size Limits"
+			, which apply to all API calls, as well as the 
+			= docs_inline_link "Errors", "Errors" 
+			section.
+	= documentation_subsection "JSON-P" do
+		%p
+			If you're requesting SPARQL results as JSON, you can additionally pass a <code>callback</code> parameter and the results will be wrapped in that function. This is useful for getting around cross-domain issues if you're running JavaScript on older browsers. (Please also see the
+			= docs_inline_link "Cross-Origin Resource Sharing", "Cross-Origin Resource Sharing (CORS)"
+			section). For example:
+		= codeblock "uri" do
+			http://{site-domain}/sparql.json?callback=myCallbackFunction&query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
+		%p Or to make a JSON-P request with jQuery, you can omit the callback parameter from the url and just set the dataType to <code>jsonp</code>.
+		= codeblock_pre "javascript" do
+			= preserve do
+				:escaped
+					queryUrl = '{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10'
+
+					$.ajax({
+						dataType: 'jsonp',
+						url: queryUrl,
+						success: function(data) {
+							// callback code here
+							alert('success!');
+						}
+					});
+	= documentation_subsection "Use of Named Graphs" do
+		= documentation_subsubsection "Dataset Data" do
+			%p The data for each dataset is contained within a separate named graph. The dataset itself has a URI, for example
+			= codeblock "uri" do
+				http://{site-domain}/data/<strong>my/dataset</strong>
+			%p The web page for the dataset lists the named graph that contains the dataset, in this case
+			= codeblock "uri" do
+				http://{site-domain}/graph/<strong>my/dataset</strong>
+			%p The graph name for the dataset is contained in the dataset metadata, using a predicate called <code>http://publishmydata.com/def/dataset#graph</code> and can be obtained by a query like this:
+			= codeblock_pre "sparql" do
+				= preserve do
+					:escaped
+						SELECT ?graph
+							WHERE {
+								<http://example.com/data/my/dataset> <http://publishmydata.com/def/dataset#graph> ?graph
+							}
+		= documentation_subsubsection "Dataset Metaata" do
+			%p
+				The metadata we store about the
+				= docs_inline_link "dataset", "Individual Datasets"
+				itself (that is returned by dereferencing its URI), is stored its own separate graph, for example:
+			= codeblock "uri" do
+				http://{site-domain}/graph/<strong>my/dataset</strong>/metadata
+			%p We also use named graphs for each concept scheme and ontology.
+	= documentation_subsection "Parameter Substitution" do
+		%p You can parameterise your SPARQL by including <code>%{tokens}</code> in your queries, and providing values for the tokens on the url query string.
+		= codeblock "uri" do
+			http://{site-domain}/sparql?query=URL-encoded-SPARQL-query?token1=value-for-token1&token2=value-for-token2
+		%p Note that the following tokens are reserved and cannot be used as parameters for substitution.
+		%ul
+			%li controller
+			%li action
+			%li page
+			%li per_page
+			%li id
+			%li commit
+			%li utf8
+			%li query
+	= documentation_subsection "Example: Using Ruby to request data from the SPARQL Endpoint" do
+		%p This sample Ruby makes a request to our SPARQL endpoint (as JSON) and then puts the result in a Hash.
+		= codeblock_pre "ruby" do
+			= preserve do
+				:escaped
+					require 'rest-client'
+					require 'json'
+
+					query = 'SELECT * WHERE {?s ?p ?o} LIMIT 10'
+					site_domain = "example.com"
+					url = "http://\#{site_domain}/sparql.json"
+
+					results_str = RestClient.get url, {:params => {:query => query}}
+					results_hash = JSON.parse results_str
+					results_array = results_hash["results"]["bindings"]
+
+					puts "total number of results: \#{results_array.length}"
+
+		%p
+			<strong>Note</strong>: If you're doing a lot of work with RDF in Ruby, you might want to look at using
+			= link_to "Swirrl", "http://swirrl.com"
+			's open-source SPARQL ORM for Ruby, 
+			= link_to "Tripod.", "http://github.com/swirrl/tripod"
+
+	= documentation_subsection "Example: Using JavaScript to request data from the SPARQL Endpoint" do
+		%p This example HTML page uses jQuery to make a request to our SPARQL endpoint.
+		= codeblock_pre "javascript" do
+			= preserve do
+				:escaped
+					<!DOCTYPE html>
+					<html>
+						<head>
+							<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+						</head>
+						<body>
+							<script type="text/javascript">
+								var siteDomain = "example.com"
+								var query = "SELECT * WHERE {?s ?p ?o} LIMIT 10";
+								var url = "http://" + siteDomain + "/sparql.json?query=";
+								url += encodeURIComponent(query);
+								$.ajax({
+									dataType: 'json',
+									url: url,
+									success: function(data) {
+										alert('success: ' + data.results.bindings.length + ' results');
+										console.log(data);
+									}
+								});
+							</script>
+						</body>
+					</html>
+		%p
+			<strong>Note</strong>: See the
+			= docs_inline_link "Cross-Origin Resource Sharing", "Cross-Origin Resource Sharing (CORS)"
+			section for a note about accessing data from from other domains.
+
+= documentation_section "General" do
+	= documentation_subsection "Response Size Limits" do 
+		%p
+			For all requests to our API, if the request issues a request to the database which causes more than 5MB of data to be returned, we will respond with HTTP status code 400, with the a message in the response body including the phrase <code>Response too large</code>. Note that full pre-canned dumps of all datasets will be available (in zipped n-triples format) at URLs defined in the
+			= docs_inline_link "dataset metadata.", "Individual Datasets"
+	= documentation_subsection "Errors" do
+		%table
+			%thead
+				%tr
+					%th Error type
+					%th HTTP status code
+					%th Notes
+			%tbody
+				%tr
+					%td Response too large
+					%td 400
+					%td We will include a text message in the response body including the phrase "Response too large."
+				%tr
+					%td SPARQL Syntax Error
+					%td 400
+					%td We will include a text message in the response body with details of the error.
+				%tr
+					%td Resource Not Found
+					%td 404
+					%td Returned if you request a resource or URL that doesn't exist
+				%tr
+					%td Not Acceptable
+					%td 406
+					%td Returned if you request a non-supported data format
+				%tr
+					%td Unexpected Errors
+					%td 500
+					%td
+				%tr
+					%td Query Timeouts
+					%td 503
+					%td The timeout for requesting data from our database will initially be set to 10 seconds.
+	= documentation_subsection "Cross-Origin Resource Sharing (CORS)" do
+		%p Our web server is configured to allow access from all domains (by adding the following line to our nginx configuration):
+		= codeblock_pre "text" do
+			add_header Access-Control-Allow-Origin "*";
+		%p This means that if you're writing JavaScript to request data from our server in to a web page hosted on another domain, your browser should check this header and allow it.
+		= documentation_subsubsection "A Note about Browser Support for CORS" do
+			%p 
+				Modern browsers (such as recent versions of Internet Explorer Firefox, Chrome and Safari) have full CORS support. It is not supported in Internet Explorer 6 and 7. Versions 8 & 9 of Internet Explorer offer limited support. If you need to support older browsers, consider making requests for data via SPARQL, with
+				= docs_inline_link "JSON-P.", "JSON-P"
+	= documentation_subsection "Discontinued Datasets" do
+		%p A dataset can be marked as 'discontinued'. This approach is most often used in cases where a dataset uses an outdated vocabulary or outdated naming convention for URIs. This is similar to the concept of deprecation (in computer software).
+		%p A discontinued dataset is assigned a type of <code>http://publishmydata.com/def/dataset#DeprecatedDataset</code> as well as the usual <code>http://publishmydata.com/def/dataset#Dataset</code>. The discontinued-status is indicated on the list of datasets in the user interface and on the individual dataset page.
+		%p Optionally, a discontinued dataset may be replaced by another dataset. In this case a link to the new dataset appears on the dataset web page and the dataset metadata contains the triple:
+		= codeblock "rdf" do
+			<{discontinued dataset URI}> <http://purl.org/dc/terms/isReplacedBy> <{new dataset URI}> .
+		%p The contents of discontinued datasets are still available via SPARQL queries and other APIs. This allows us to update the way that data is represented without breaking external applications that use it. Discontinued datasets will generally be removed completely after some period of time. Information about planned deletion will be provided in the 'Further Information' section on the dataset web page.
+
+-# -------------------------------------------------------------------
+-#  CONTENTS NAVIGATION
+-# -------------------------------------------------------------------
+
+- content_for :docs_contents do
+	%nav.contents
+		%h2 Contents
+		- @documentation_sections.each do |section|
+			%h3= section[:name]
+			%ul
+			- section[:subsections].each do |subsection|
+				%li= docs_inline_link subsection[:name], subsection[:name]
+				/ 
+					- # don't include subsubsections in nav
+					- if (subsection[:subsubsections].length > 0)
+						%ul
+						- subsection[:subsubsections].each do |subsubsection|
+							%li= docs_inline_link subsubsection[:name], subsubsection[:name]
