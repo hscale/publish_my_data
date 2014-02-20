@@ -1,0 +1,19 @@
+= inside_layout 'application' do
+
+	%main.pmd.documentation
+		= render 'publish_my_data/stripes/subnav'
+		= render 'publish_my_data/stripes/status'
+
+		%article
+			%header
+				=fullwidth do
+					= yield :docs_intro
+				=fullwidth do
+					- # for now, inline - in future, perhaps in a sidebar or something...
+					= yield :docs_contents
+			.content
+				=fullwidth do
+					= yield
+
+		= render 'publish_my_data/stripes/footer'
+		= render 'publish_my_data/shared/google_analytics'

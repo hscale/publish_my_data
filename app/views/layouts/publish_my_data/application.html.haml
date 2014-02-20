@@ -1,3 +1,12 @@
-You need to make an layouts/publish_my_data/application.html.haml (or erb) template in your app!
+= inside_layout 'application' do
 
-= render template: 'layouts/publish_my_data/pmd_layout'
+	%main.pmd
+		= render 'publish_my_data/stripes/subnav'
+		= render 'publish_my_data/stripes/status'
+		
+		%article
+			= yield
+			= render 'publish_my_data/stripes/formats'
+		
+		= render 'publish_my_data/stripes/footer'
+		= render 'publish_my_data/shared/google_analytics'
