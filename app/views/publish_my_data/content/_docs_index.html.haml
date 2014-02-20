@@ -568,3 +568,9 @@
 			%ul
 			- section[:subsections].each do |subsection|
 				%li= link_to subsection[:name], "##{section_title_to_id(subsection[:name])}"
+				/ 
+					- # don't include subsubsections in nav
+					- if (subsection[:subsubsections].length > 0)
+						%ul
+						- subsection[:subsubsections].each do |subsubsection|
+							%li= link_to subsubsection[:name], "##{section_title_to_id(subsubsection[:name])}"
