@@ -62,5 +62,9 @@ module PublishMyData
       title.parameterize
     end
 
+    def docs_inline_link(clickable,title)
+      link_to clickable, "##{section_title_to_id(title)}"
+    end
+
   end
 end

@@ -4,10 +4,14 @@
 
 - content_for :docs_intro do
 	%h1 Developer Documentation
-	%p This page describes the current version of our production API, which was deployed on 26th of June 2013. This release included only backward-compatible changes. See our [Change Log](/changelog) for more details of what changed.
+	%p This page describes the current version of our production API, which was deployed on 26th of June 2013.
 
 -# -------------------------------------------------------------------
 -#  MAIN CONTENT
+-#
+-#	Note that if you change a section title, you should check you
+-#	have also updated any inline links to it
+-#
 -# -------------------------------------------------------------------
 
 = documentation_section "Linked Data API" do
@@ -24,7 +28,10 @@
 		%p If you put it into your browser you get redirected, with an HTTP status code of 303 ("See Other"), to an HTML page about that resource
 		= codeblock "uri" do
 			http://{data-site-domain}/<strong>doc</strong>/my/resource
-		%p In cases where a URI identifies something that is essentially a document (an 'information resource') then we respond with a 200, as their URI and document page URL are one and the same.  This includes [Datasets](#individual-datasets) as well as ontology terms and concept schemes.
+		%p
+			In cases where a URI identifies something that is essentially a document (an 'information resource') then we respond with a 200, as their URI and document page URL are one and the same.  This includes
+			= docs_inline_link "Datasets", "Individual Datasets"
+			as well as ontology terms and concept schemes.
 	= documentation_subsection "Resource Formats" do
 		%p You can specify what format you want the resulting document to be in.  By default you get HTML in a human-readable form, but you can also ask for the document in one of several RDF formats: <strong>RDF/XML</strong>, <strong>N-triples</strong>, <strong>Turtle</strong> or <strong>JSON-LD</strong>.
 		%p There are two ways to specify which format you want: you can append a <strong>format extension</strong> to the document page's URL or you can use an <strong>HTTP Accept header</strong> with the resource's URI or document page's URL.
@@ -567,10 +574,10 @@
 			%h3= section[:name]
 			%ul
 			- section[:subsections].each do |subsection|
-				%li= link_to subsection[:name], "##{section_title_to_id(subsection[:name])}"
+				%li= docs_inline_link subsection[:name], subsection[:name]
 				/ 
 					- # don't include subsubsections in nav
 					- if (subsection[:subsubsections].length > 0)
 						%ul
 						- subsection[:subsubsections].each do |subsubsection|
-							%li= link_to subsubsection[:name], "##{section_title_to_id(subsubsection[:name])}"
+							%li= docs_inline_link subsubsection[:name], subsubsection[:name]
