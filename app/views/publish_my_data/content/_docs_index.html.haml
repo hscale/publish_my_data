@@ -7,143 +7,6 @@
 	%p This page describes the current version of our production API, which was deployed on 26th of June 2013. This release included only backward-compatible changes. See our [Change Log](/changelog) for more details of what changed.
 
 -# -------------------------------------------------------------------
--#  CONTENTS NAVIGATION
--# -------------------------------------------------------------------
-
-- content_for :docs_contents do
-	%nav.contents
-		%h2 Contents
-
-		%h3
-			1 -
-			%strong Linked Data API
-
-		%ul
-			%li
-				%a(href="#uri-dereferencing")
-					1.1
-					%strong URI Dereferencing
-			%li
-				%a(href="#resource-formats")
-					1.2
-					%strong Resource Formats
-			%li
-				%a(href="#ruby-dereferencing")
-					1.2
-					%strong Example: Dereferencing URIs with Ruby
-			%li
-				%a(href="#curl-dereferencing")
-					1.2
-					%strong Example: Dereferencing URIs with cURL
-
-		%h3
-			2 -
-			%strong Other Resource APIs
-		%ul
-			%li
-				%a(href="#individual-datasets")
-					2.1
-					%strong Individual Datasets
-			%li
-				%a(href="#themes")
-					2.2
-					%strong Themes
-			%li
-				%a(href="#dataset-collections")
-					2.3
-					%strong Collections of Datasets
-			%li
-				%a(href="#individual-resources")
-					2.4
-					%strong Individual Resources
-			%li
-				%a(href="#resource-collections")
-					2.5
-					%strong Collections of Resources
-			%li
-				%a(href="#resource-options-and-limits")
-					2.6
-					%strong Options and Limits
-			%li
-				%a(href="#ruby-resources-example")
-					2.7
-					%strong Example: Using Ruby to get a filtered list of resources
-			%li
-				%a(href="#js-resources-example")
-					2.9
-					%strong Example: Using JavaScript to get a filtered list of resources
-			%li
-				%a(href="#curl-resources-example")
-					2.9
-					%strong Example: Using cURL to get the list of datasets in a theme
-
-		%h3
-			3 -
-			%strong SPARQL
-		%ul
-			%li
-				%a(href="#sparql-introduction")
-					3.1
-					%strong Introduction to SPARQL
-			%li
-				%a(href="#sparql-results-formats")
-					3.2
-					%strong SPARQL Results Formats
-			%li
-				%a(href="#sparql-results-pagination")
-					3.3
-					%strong SPARQL Results Pagination
-			%li
-				%a(href="#sparql-errors")
-					3.4
-					%strong SPARQL Errors
-			%li
-				%a(href="#sparql-json-p")
-					3.5
-					%strong JSON-P
-			%li
-				%a(href="#named-graphs")
-					3.6
-					%strong Use of Named Graphs
-			%li
-				%a(href="#parameter-interpolation")
-					3.7
-					%strong Parameter Substitution
-			%li
-				%a(href="#ruby-sparql-example")
-					3.8
-					%strong Example: Using Ruby to request data from the SPARQL Endpoint
-			%li
-				%a(href="#js-sparql-example")
-					3.9
-					%strong Example: Using JavaScript to request data from the SPARQL Endpoint
-
-		%h3
-			4 -
-			%strong General
-		%ul
-			%li
-				%a(href="#response-size-limits")
-					4.1
-					%strong Response Size Limits
-			%li
-				%a(href="#errors")
-					4.2
-					%strong Errors
-			%li
-				%a(href="#cors")
-					4.3
-					%strong CORS
-			%li
-				%a(href="#discontinued-datasets")
-					4.4
-					%strong Discontinued Datasets
-			%li
-				%a(href="#api-keys")
-					4.5
-					%strong API Keys
-
--# -------------------------------------------------------------------
 -#  MAIN CONTENT
 -# -------------------------------------------------------------------
 
@@ -542,7 +405,7 @@
 		= codeblock "uri" do
 			http://{site-domain}/sparql.json?callback=myCallbackFunction&query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
 		%p Or to make a JSON-P request with jQuery, you can omit the callback parameter from the url and just set the dataType to <code>jsonp</code>.
-		= codeblock_pre "sparql" do
+		= codeblock_pre "javascript" do
 			= preserve do
 				:escaped
 					queryUrl = '{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10'
@@ -592,7 +455,7 @@
 			%li query
 	= documentation_subsection "Example: Using Ruby to request data from the SPARQL Endpoint" do
 		%p This sample Ruby makes a request to our SPARQL endpoint (as JSON) and then puts the result in a Hash.
-		= codeblock_pre "sparql" do
+		= codeblock_pre "ruby" do
 			= preserve do
 				:escaped
 					require 'rest-client'
@@ -614,9 +477,218 @@
 			's open-source SPARQL ORM for Ruby, 
 			= link_to "Tripod.", "http://github.com/swirrl/tripod"
 
-
-
-
+	= documentation_subsection "Example: Using JavaScript to request data from the SPARQL Endpoint" do
+		%p This example HTML page uses jQuery to make a request to our SPARQL endpoint.
+		= codeblock_pre "javascript" do
+			= preserve do
+				:escaped
+					<!DOCTYPE html>
+					<html>
+						<head>
+							<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+						</head>
+						<body>
+							<script type="text/javascript">
+								var siteDomain = "example.com"
+								var query = "SELECT * WHERE {?s ?p ?o} LIMIT 10";
+								var url = "http://" + siteDomain + "/sparql.json?query=";
+								url += encodeURIComponent(query);
+								$.ajax({
+									dataType: 'json',
+									url: url,
+									success: function(data) {
+										alert('success: ' + data.results.bindings.length + ' results');
+										console.log(data);
+									}
+								});
+							</script>
+						</body>
+					</html>
+		%p <strong>Note</strong>: See the [Cross-Origin Resource Sharing](#cors) section for a note about accessing data from from other domains.
 
 = documentation_section "General" do
-	TODO
+	= documentation_subsection "Response Size Limits" do 
+		%p For all requests to our API, if the request issues a request to the database which causes more than 5MB of data to be returned, we will respond with HTTP status code 400, with the a message in the response body including the phrase <code>Response too large</code>. Note that full pre-canned dumps of all datasets will be available (in zipped n-triples format) at URLs defined in the [dataset metadata](#individual-datasets).
+	= documentation_subsection "Errors" do
+		%table
+			%thead
+				%tr
+					%th Error type
+					%th HTTP status code
+					%th Notes
+			%tbody
+				%tr
+					%td Response too large
+					%td 400
+					%td We will include a text message in the response body including the phrase "Response too large."
+				%tr
+					%td SPARQL Syntax Error
+					%td 400
+					%td We will include a text message in the response body with details of the error.
+				%tr
+					%td Resource Not Found
+					%td 404
+					%td Returned if you request a resource or URL that doesn't exist
+				%tr
+					%td Not Acceptable
+					%td 406
+					%td Returned if you request a non-supported data format
+				%tr
+					%td Unexpected Errors
+					%td 500
+					%td
+				%tr
+					%td Query Timeouts
+					%td 503
+					%td The timeout for requesting data from our database will initially be set to 10 seconds.
+	= documentation_subsection "Cross-Origin Resource Sharing (CORS)" do
+		%p Our web server is configured to allow access from all domains (by adding the following line to our nginx configuration):
+		= codeblock_pre "text" do
+			add_header Access-Control-Allow-Origin "*";
+		%p This means that if you're writing JavaScript to request data from our server in to a web page hosted on another domain, your browser should check this header and allow it.
+		= documentation_subsubsection "A Note about Browser Support for CORS" do
+			%p Modern browsers (such as recent versions of Internet Explorer Firefox, Chrome and Safari) have full CORS support. It is not supported in Internet Explorer 6 and 7. Versions 8 & 9 of Internet Explorer offer limited support. If you need to support older browsers, consider making requests for data via SPARQL, with [JSON-P](#sparql-json-p).
+	= documentation_subsection "Discontinued Datasets" do
+		%p A dataset can be marked as 'discontinued'. This approach is most often used in cases where a dataset uses an outdated vocabulary or outdated naming convention for URIs. This is similar to the concept of deprecation (in computer software).
+		%p A discontinued dataset is assigned a type of <code>http://publishmydata.com/def/dataset#DeprecatedDataset</code> as well as the usual <code>http://publishmydata.com/def/dataset#Dataset</code>. The discontinued-status is indicated on the list of datasets in the user interface and on the individual dataset page.
+		%p Optionally, a discontinued dataset may be replaced by another dataset. In this case a link to the new dataset appears on the dataset web page and the dataset metadata contains the triple:
+		= codeblock "rdf" do
+			<{discontinued dataset URI}> <http://purl.org/dc/terms/isReplacedBy> <{new dataset URI}> .
+		%p The contents of discontinued datasets are still available via SPARQL queries and other APIs. This allows us to update the way that data is represented without breaking external applications that use it. Discontinued datasets will generally be removed completely after some period of time. Information about planned deletion will be provided in the 'Further Information' section on the dataset web page.
+
+-# -------------------------------------------------------------------
+-#  CONTENTS NAVIGATION
+-# -------------------------------------------------------------------
+
+- content_for :docs_contents do
+	%nav.contents
+		%h2 Contents
+
+		%h3
+			1 -
+			%strong Linked Data API
+
+		%ul
+			%li
+				%a(href="#uri-dereferencing")
+					1.1
+					%strong URI Dereferencing
+			%li
+				%a(href="#resource-formats")
+					1.2
+					%strong Resource Formats
+			%li
+				%a(href="#ruby-dereferencing")
+					1.2
+					%strong Example: Dereferencing URIs with Ruby
+			%li
+				%a(href="#curl-dereferencing")
+					1.2
+					%strong Example: Dereferencing URIs with cURL
+
+		%h3
+			2 -
+			%strong Other Resource APIs
+		%ul
+			%li
+				%a(href="#individual-datasets")
+					2.1
+					%strong Individual Datasets
+			%li
+				%a(href="#themes")
+					2.2
+					%strong Themes
+			%li
+				%a(href="#dataset-collections")
+					2.3
+					%strong Collections of Datasets
+			%li
+				%a(href="#individual-resources")
+					2.4
+					%strong Individual Resources
+			%li
+				%a(href="#resource-collections")
+					2.5
+					%strong Collections of Resources
+			%li
+				%a(href="#resource-options-and-limits")
+					2.6
+					%strong Options and Limits
+			%li
+				%a(href="#ruby-resources-example")
+					2.7
+					%strong Example: Using Ruby to get a filtered list of resources
+			%li
+				%a(href="#js-resources-example")
+					2.9
+					%strong Example: Using JavaScript to get a filtered list of resources
+			%li
+				%a(href="#curl-resources-example")
+					2.9
+					%strong Example: Using cURL to get the list of datasets in a theme
+
+		%h3
+			3 -
+			%strong SPARQL
+		%ul
+			%li
+				%a(href="#sparql-introduction")
+					3.1
+					%strong Introduction to SPARQL
+			%li
+				%a(href="#sparql-results-formats")
+					3.2
+					%strong SPARQL Results Formats
+			%li
+				%a(href="#sparql-results-pagination")
+					3.3
+					%strong SPARQL Results Pagination
+			%li
+				%a(href="#sparql-errors")
+					3.4
+					%strong SPARQL Errors
+			%li
+				%a(href="#sparql-json-p")
+					3.5
+					%strong JSON-P
+			%li
+				%a(href="#named-graphs")
+					3.6
+					%strong Use of Named Graphs
+			%li
+				%a(href="#parameter-interpolation")
+					3.7
+					%strong Parameter Substitution
+			%li
+				%a(href="#ruby-sparql-example")
+					3.8
+					%strong Example: Using Ruby to request data from the SPARQL Endpoint
+			%li
+				%a(href="#js-sparql-example")
+					3.9
+					%strong Example: Using JavaScript to request data from the SPARQL Endpoint
+
+		%h3
+			4 -
+			%strong General
+		%ul
+			%li
+				%a(href="#response-size-limits")
+					4.1
+					%strong Response Size Limits
+			%li
+				%a(href="#errors")
+					4.2
+					%strong Errors
+			%li
+				%a(href="#cors")
+					4.3
+					%strong CORS
+			%li
+				%a(href="#discontinued-datasets")
+					4.4
+					%strong Discontinued Datasets
+			%li
+				%a(href="#api-keys")
+					4.5
+					%strong API Keys
