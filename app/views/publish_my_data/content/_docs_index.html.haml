@@ -263,7 +263,10 @@
 			We want to get it in JSON format, so we'll add the .json extension. (See the 
 			= docs_inline_link "Formats section", "SPARQL Results formats"
 			).
-		%p The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
+		%p
+			The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the
+			= docs_inline_link "maximum page size", "Options and Limits"
+			is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
 		= codeblock_pre "uri" do
 			= preserve do
 				:escaped
@@ -320,7 +323,10 @@
 			Here we use the 
 			= link_to "cURL", "http://curl.haxx.se"
 			command line program to get a list of datasets in the a theme, as JSON-LD.
-		%p Let's assume the theme's name is <code>my/theme</code> is, so the URL we need to call is as follows. (See the [Collections of Datasets section](#dataset-collections)).
+		%p
+			Let's assume the theme's name is <code>my/theme</code> is, so the URL we need to call is as follows. (See the
+			=docs_inline_link "Collections of Datasets section", "Collections of Datasets"
+			).
 		= codeblock "uri" do
 			http://{site-domain}/themes/my/theme
 		%p We'll use the Accept header to tell the server we want the response as JSON.
@@ -438,7 +444,9 @@
 		%p
 			Additionally, please note the 
 			= docs_inline_link "Response Size Limits", "Response Size Limits"
-			, which apply to all API calls, as well as the [Errors](#errors) section.
+			, which apply to all API calls, as well as the 
+			= docs_inline_link "Errors", "Errors" 
+			section.
 	= documentation_subsection "JSON-P" do
 		%p
 			If you're requesting SPARQL results as JSON, you can additionally pass a <code>callback</code> parameter and the results will be wrapped in that function. This is useful for getting around cross-domain issues if you're running JavaScript on older browsers. (Please also see the
@@ -477,12 +485,15 @@
 								<http://example.com/data/my/dataset> <http://publishmydata.com/def/dataset#graph> ?graph
 							}
 		= documentation_subsubsection "Dataset Metaata" do
-			%p The metadata we store about the [dataset](#individual-datasets) itself (that is returned by dereferencing its URI), is stored its own separate graph, for example:
+			%p
+				The metadata we store about the
+				= docs_inline_link "dataset", "Individual Datasets"
+				itself (that is returned by dereferencing its URI), is stored its own separate graph, for example:
 			= codeblock "uri" do
 				http://{site-domain}/graph/<strong>my/dataset</strong>/metadata
 			%p We also use named graphs for each concept scheme and ontology.
 	= documentation_subsection "Parameter Substitution" do
-		%p You can parameterise your SPARQL by including %{tokens} in your queries, and providing values for the tokens on the url query string.
+		%p You can parameterise your SPARQL by including <code>%{tokens}</code> in your queries, and providing values for the tokens on the url query string.
 		= codeblock "uri" do
 			http://{site-domain}/sparql?query=URL-encoded-SPARQL-query?token1=value-for-token1&token2=value-for-token2
 		%p Note that the following tokens are reserved and cannot be used as parameters for substitution.
@@ -546,11 +557,16 @@
 							</script>
 						</body>
 					</html>
-		%p <strong>Note</strong>: See the [Cross-Origin Resource Sharing](#cors) section for a note about accessing data from from other domains.
+		%p
+			<strong>Note</strong>: See the
+			= docs_inline_link "Cross-Origin Resource Sharing", "Cross-Origin Resource Sharing (CORS)"
+			section for a note about accessing data from from other domains.
 
 = documentation_section "General" do
 	= documentation_subsection "Response Size Limits" do 
-		%p For all requests to our API, if the request issues a request to the database which causes more than 5MB of data to be returned, we will respond with HTTP status code 400, with the a message in the response body including the phrase <code>Response too large</code>. Note that full pre-canned dumps of all datasets will be available (in zipped n-triples format) at URLs defined in the [dataset metadata](#individual-datasets).
+		%p
+			For all requests to our API, if the request issues a request to the database which causes more than 5MB of data to be returned, we will respond with HTTP status code 400, with the a message in the response body including the phrase <code>Response too large</code>. Note that full pre-canned dumps of all datasets will be available (in zipped n-triples format) at URLs defined in the
+			= docs_inline_link "dataset metadata.", "Individual Datasets"
 	= documentation_subsection "Errors" do
 		%table
 			%thead
@@ -589,7 +605,9 @@
 			add_header Access-Control-Allow-Origin "*";
 		%p This means that if you're writing JavaScript to request data from our server in to a web page hosted on another domain, your browser should check this header and allow it.
 		= documentation_subsubsection "A Note about Browser Support for CORS" do
-			%p Modern browsers (such as recent versions of Internet Explorer Firefox, Chrome and Safari) have full CORS support. It is not supported in Internet Explorer 6 and 7. Versions 8 & 9 of Internet Explorer offer limited support. If you need to support older browsers, consider making requests for data via SPARQL, with [JSON-P](#sparql-json-p).
+			%p 
+				Modern browsers (such as recent versions of Internet Explorer Firefox, Chrome and Safari) have full CORS support. It is not supported in Internet Explorer 6 and 7. Versions 8 & 9 of Internet Explorer offer limited support. If you need to support older browsers, consider making requests for data via SPARQL, with
+				= docs_inline_link "JSON-P.", "JSON-P"
 	= documentation_subsection "Discontinued Datasets" do
 		%p A dataset can be marked as 'discontinued'. This approach is most often used in cases where a dataset uses an outdated vocabulary or outdated naming convention for URIs. This is similar to the concept of deprecation (in computer software).
 		%p A discontinued dataset is assigned a type of <code>http://publishmydata.com/def/dataset#DeprecatedDataset</code> as well as the usual <code>http://publishmydata.com/def/dataset#Dataset</code>. The discontinued-status is indicated on the list of datasets in the user interface and on the individual dataset page.
