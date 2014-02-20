@@ -123,7 +123,10 @@
 		%p Datasets are grouped into Themes. A list of all themes is available at:
 		= codeblock "uri" do
 			http://{data-site-domain}/themes
-		%p Information about a particular theme can be accessed by [dereferencing](#uri-dereferencing) the theme's URI. e.g.
+		%p
+			Information about a particular theme can be accessed by
+			= docs_inline_link "dereferencing", "URI Dereferencing"
+			the theme's URI. e.g.
 		= codeblock "uri" do
 			http://{data-site-domain}/def/concept/themes/my/theme
 	= documentation_subsection "Collections of Datasets" do
@@ -138,7 +141,10 @@
 			http://{data-site-domain}/themes/{theme-name}
 		%p where <code>{theme-name}</code> is the part of the theme URI after <code>/themes/</code>
 	= documentation_subsection "Individual Resources" do
-		%p As well as using [URI dereferencing](#uri-dereferencing) to access information about individual resources, you can use the following URL pattern:
+		%p
+			As well as using 
+			= docs_inline_link "dereferencing", "URI Dereferencing"
+			to access information about individual resources, you can use the following URL pattern:
 		= codeblock "uri" do
 			http://{data-site-domain}/resource?uri={resource-uri}
 		%p This is especially useful for resources for which we have information in our database, but which aren't in the site's domain (i.e. so you can't dereference them in this site). e.g.
@@ -174,11 +180,16 @@
 			http://{data-site-domain}/resources?dataset=my-dataset&type_uri=http%3A%2F%2Fexample.com%2Fdef%2Fmy%2Ftype
 	= documentation_subsection "Options and Limits" do
 		= documentation_subsubsection "Formats" do
-			%p Resources accessed via our resource APIs can be accessed in the same [choice of formats](#resource-format) as for URI dereferencing (via both <strong>format extensions</strong> or <strong>HTTP Accept headers</strong>).
+			%p
+				Resources accessed via our resource APIs can be accessed in the same
+				= docs_inline_link "choice of formats", "Results Formats"
+				as for URI dereferencing (via both <strong>format extensions</strong> or <strong>HTTP Accept headers</strong>).
 		= documentation_subsubsection "Pagination" do
 			%p For any APIs which return collections of things, the list can be paginated using <code>page</code> (default 1) and <code>per_page</code> (default 1000) query-string parameters. The maximum allowable page size will initially be set to 1000, but we may consider increasing this (as well as the default) in the future.
 		= documentation_subsubsection "Response Size Limits" do
-			%p All requests to our APIs are subject to the [response size limits](#response-size-limits).
+			%p
+				All requests to our APIs are subject to the
+				= docs_inline_link "response size limits.", "Response Size Limits"
 	= documentation_subsection "Example: Using Ruby to get a filtered list of resources" do
 		= documentation_subsubsection "Basic Example" do
 			%p Here we use Ruby to retrieve a list of all resources of a type in a dataset as N-triples.
@@ -191,9 +202,12 @@
 			%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
 			%p 
 				We want to get it in N-triples format, so we'll add the .nt extension. (See the 
-				= docs_inline_link "Formats section", "SPARQL Results formats"
+				= docs_inline_link "Formats section", "Results Formats"
 				).
-			%p The following Ruby code assigns a string of N-triples into the <code>ntriples_data</code> variable. Note that as the [maximum page size](#resource-options-and-limits) is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
+			%p
+				The following Ruby code assigns a string of N-triples into the <code>ntriples_data</code> variable. Note that as the
+				= docs_inline_link "maximum page size", "Options and Limits"
+				is 1000, and there are over 1000 resoures of that type in the dataset, we'll need to make multiple requests.
 			%p 
 				We use the 
 				= link_to "RestClient", "http://rubydoc.info/gems/rest-client"
@@ -261,7 +275,7 @@
 		%p If you visited that URL in your browser (substituting the site domain, dataset name and type uri for real values), you'd see a paginated list of the resources. You can try this by clicking on the links in the footers of the sample resource tables on dataset pages.
 		%p 
 			We want to get it in JSON format, so we'll add the .json extension. (See the 
-			= docs_inline_link "Formats section", "SPARQL Results formats"
+			= docs_inline_link "Formats section", "Results Formats"
 			).
 		%p
 			The following HTML page uses JavaScript to request the data as JSON and add it to the <code>results</code> array. Note that as the
