@@ -342,7 +342,10 @@
 						puts "data:"
 						puts ntriples_data
 		= documentation_subsubsection "Extension: parsing the n-triples into an array of statements" do
-			%p The [ruby-rdf](http://rubydoc.info/github/ruby-rdf/rdf/master/) library is useful for parsing various rdf formats. Install it with <code>$ gem install rdf</code>. The following code reads our string of ntriples data into an array of <code>RDF::Statement</code>s.
+			%p 
+				The 
+				= link_to "ruby-rdf", "http://rubydoc.info/github/ruby-rdf/rdf/master/"
+				library is useful for parsing various rdf formats. Install it with <code>$ gem install rdf</code>. The following code reads our string of ntriples data into an array of <code>RDF::Statement</code>s.
 			= codeblock_pre "uri" do
 				= preserve do
 					:escaped
@@ -352,7 +355,11 @@
 						RDF::Reader.for(:ntriples).new(ntriples_data) {|r| r.each {|s| statements << s}}
 
 						puts "parsed \#{statements.length} triples"
-			%p <strong>Note</strong>: If you're doing a lot of work with RDF in Ruby, you might want to look at using [Swirrl](http://swirrl.com)'s open-source SPARQL ORM for Ruby, [Tripod](http://github.com/swirrl/tripod).
+			%p 
+				<strong>Note</strong>: If you're doing a lot of work with RDF in Ruby, you might want to look at using
+				= link_to "Swirrl", "http://swirrl.com"
+				's open-source SPARQL ORM for Ruby, 
+				= link_to "Tripod.", "http://github.com/swirrl/tripod"
 	= documentation_subsection "Example: Using JavaScript to get a filtered list of resources" do
 		%p Here we use jQuery to retrieve a list of all the resources of a certain type in a dataset, as JSON-LD.
 		%p Let's assume the short name for that dataset is <code>my/dataset</code>, and the URI for the type is <code>http://purl.org/linked-data/cube#Observation</code>, so the URL we need to call is as follows. (See [the Collections of Resources section](#resource-collections)).
@@ -424,10 +431,39 @@
 		= codeblock "terminal" do
 			curl -H "Accept: application/json" http://{site-domain}/themes/my/theme
 
-
-
 = documentation_section "SPARQL" do
-	TODO
+	= documentation_subsection "Introduction to SPARQL" do
+		%p
+			The most flexible way to access the data is by using SPARQL. Pronounced "sparkle", SPARQL stands for <strong>S</strong>parql <strong>P</strong>rotocol and <strong>R</strong>DF <strong>Q</strong>uery <strong>L</strong>anguage. It's a query language, analagous to SQL for relational databases, for retrieving and manipulating data from triple-stores like ours. We support 
+			= link_to "SPARQL 1.1", "http://www.w3.org/TR/2013/REC-sparql11-query-20130321/"
+			query syntax.
+		%p To submit a SPARQL query from your code, issue an HTTP GET request to our **endpoint**:
+		= codeblock "uri" do
+			http://{site-domain}/sparql?query={URL-encoded query}
+		%p For example, to run this simple query...
+		= codeblock_pre "sparql" do
+			= preserve do
+				:escaped
+					SELECT * WHERE {?s ?p ?o} LIMIT 10
+
+		%p ...and get the results as JSON, you could GET the following URL (note the <code>.json</code> extension):
+		= codeblock "uri" do
+			http://{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
+		%p See below for (#sparql-results-formats")[details of SPARQL Results Formats] and examples in a variety of languages (at the end of this section).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 = documentation_section "General" do
 	TODO
