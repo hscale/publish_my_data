@@ -22,12 +22,24 @@ module PublishMyData
       end
     end
 
+    # generate a block level code element - if you want inline code just do <code> whatever </code>
+    # note that language isn't used as yet
     def codeblock(language, &block)
       content_tag :code, class:"block #{language}" do
         capture &block
       end
     end
 
+    # generate a *multiline* block of code with indentation.
+    # eg
+    #
+    #     = codeblock_pre "c" do
+    #       = preserve do
+    #        :escaped
+    #           void main(){
+    #             ...indented code ...
+    #           }
+    # use codeblock(language, &block) if you don't need to preserve whitespace
     def codeblock_pre(language, &block)
       content_tag :code, class:"block #{language} pre" do
         capture &block

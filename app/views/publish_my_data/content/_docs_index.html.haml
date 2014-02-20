@@ -449,17 +449,170 @@
 		%p ...and get the results as JSON, you could GET the following URL (note the <code>.json</code> extension):
 		= codeblock "uri" do
 			http://{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
-		%p See below for (#sparql-results-formats")[details of SPARQL Results Formats] and examples in a variety of languages (at the end of this section).
+	= documentation_subsection "SPARQL Results formats" do
+		%p As with other aspects of our API, to get the data in different formats, you can use either format extensions or HTTP Accept headers.
+		%p The available formats depend on the type of SPARQL query. A SPARQL query can be one of four main forms: <strong>SELECT</strong>, <strong>ASK</strong>, <strong>CONSTRUCT</strong> or <strong>DESCRIBE</strong>.
+		%table
+			%thead
+				%tr
+					%th Query Type
+					%th Format
+					%th Extension
+					%th Accept Headers
+			%tbody
+				%tr
+					%td.details(rowspan=4) SELECT
+					%td xml
+					%td .xml
+					%td.hardwrap
+						application/xml,
+						application/sparql-results+xml
+				%tr
+					%td json
+					%td .json
+					%td.hardwrap
+						application/json,
+						application/sparql-results+json
+				%tr
+					%td text
+					%td .txt, .text
+					%td.hardwrap text/plain
+				%tr
+					%td csv
+					%td .csv
+					%td.hardwrap text/csv
+				%tr
+					%td.details(rowspan=3) ASK
+					%td json
+					%td .json
+					%td.hardwrap
+						application/json,
+						application/sparql-results+json
+				%tr
+					%td xml
+					%td .xml
+					%td.hardwrap
+						application/xml,
+						application/sparql-results+json
+				%tr
+					%td text
+					%td .txt, .text
+					%td.hardwrap text/plain
+				%tr
+					%td.details(rowspan=3) CONSTRUCT
+					%td RDF/XML
+					%td .rdf
+					%td.hardwrap application/rdf+xml
+				%tr
+					%td N-triples
+					%td .nt, .txt, .text
+					%td.hardwrap
+						text/plain,
+						application/n-triples
+				%tr
+					%td Turtle
+					%td .ttl
+					%td.hardwrap text/turtle
+				%tr
+					%td.details(rowspan=3) DESCRIBE
+					%td RDF/XML
+					%td .rdf
+					%td.hardwrap application/rdf+xml
+				%tr
+					%td N-triples
+					%td .nt, .txt, .text
+					%td.hardwrap
+						text/plain,
+						application/n-triples
+				%tr
+					%td Turtle
+					%td .ttl
+					%td.hardwrap text/turtle
+	= documentation_subsection "SPARQL Results Pagination" do
+		%p We will accept <code>page</code> and <code>per_page</code> query-string parameters for paginating the results of SELECT queries.
+		%p For requests made through the website (i.e. HTML format), the page size is defaulted to 20.
+		%p For requests to our sparql endpoint for data formats (i.e. non-HTML), there will be no defaults for these parameters (i.e. results are unlimited).
+		%p For SELECT queries, for convenience you can optionally pass the pagination parameters and we will use them to apply <code>LIMIT</code> and <code>OFFSET</code> clauses to the query. For other query types (i.e. DESCRIBE, CONSTRUCT, ASK), pagination like this doesn't make so much sense, so those parameters will be ignored.
+		%p Please also refer to the [Response Size Limits](#response-size-limits) section below, and the examples at the end of this section.
+	= documentation_subsection "SPARQL Errors" do
+		%p If you make a SPARQL request with a malformed query in a data format (i.e. non-HTML), then we will respond with HTTP status 400, with a helpful message in the response.
+		%p Additionally, please note the [Response Size Limits](#response-size-limits), which apply to all API calls, as well as the [Errors](#errors) section.
+	= documentation_subsection "JSON-P" do
+		%p If you're requesting SPARQL results as JSON, you can additionally pass a <code>callback</code> parameter and the results will be wrapped in that function. This is useful for getting around cross-domain issues if you're running JavaScript on older browsers. (Please also see the [Cross-Origin Resource Sharing](#cors) section). For example:
+		= codeblock "uri" do
+			http://{site-domain}/sparql.json?callback=myCallbackFunction&query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10
+		%p Or to make a JSON-P request with jQuery, you can omit the callback parameter from the url and just set the dataType to <code>jsonp</code>.
+		= codeblock_pre "sparql" do
+			= preserve do
+				:escaped
+					queryUrl = '{site-domain}/sparql.json?query=SELECT+%2A+WHERE+%7B%3Fs+%3Fp+%3Fo%7D+LIMIT+10'
 
+					$.ajax({
+						dataType: 'jsonp',
+						url: queryUrl,
+						success: function(data) {
+							// callback code here
+							alert('success!');
+						}
+					});
+	= documentation_subsection "Use of Named Graphs" do
+		= documentation_subsubsection "Dataset Data" do
+			%p The data for each dataset is contained within a separate named graph. The dataset itself has a URI, for example
+			= codeblock "uri" do
+				http://{site-domain}/data/<strong>my/dataset</strong>
+			%p The web page for the dataset lists the named graph that contains the dataset, in this case
+			= codeblock "uri" do
+				http://{site-domain}/graph/<strong>my/dataset</strong>
+			%p The graph name for the dataset is contained in the dataset metadata, using a predicate called <code>http://publishmydata.com/def/dataset#graph</code> and can be obtained by a query like this:
+			= codeblock_pre "sparql" do
+				= preserve do
+					:escaped
+						SELECT ?graph
+							WHERE {
+								<http://example.com/data/my/dataset> <http://publishmydata.com/def/dataset#graph> ?graph
+							}
+		= documentation_subsubsection "Dataset Metaata" do
+			%p The metadata we store about the [dataset](#individual-datasets) itself (that is returned by dereferencing its URI), is stored its own separate graph, for example:
+			= codeblock "uri" do
+				http://{site-domain}/graph/<strong>my/dataset</strong>/metadata
+			%p We also use named graphs for each concept scheme and ontology.
+	= documentation_subsection "Parameter Substitution" do
+		%p You can parameterise your SPARQL by including %{tokens} in your queries, and providing values for the tokens on the url query string.
+		= codeblock "uri" do
+			http://{site-domain}/sparql?query=URL-encoded-SPARQL-query?token1=value-for-token1&token2=value-for-token2
+		%p Note that the following tokens are reserved and cannot be used as parameters for substitution.
+		%ul
+			%li controller
+			%li action
+			%li page
+			%li per_page
+			%li id
+			%li commit
+			%li utf8
+			%li query
+	= documentation_subsection "Example: Using Ruby to request data from the SPARQL Endpoint" do
+		%p This sample Ruby makes a request to our SPARQL endpoint (as JSON) and then puts the result in a Hash.
+		= codeblock_pre "sparql" do
+			= preserve do
+				:escaped
+					require 'rest-client'
+					require 'json'
 
+					query = 'SELECT * WHERE {?s ?p ?o} LIMIT 10'
+					site_domain = "example.com"
+					url = "http://\#{site_domain}/sparql.json"
 
+					results_str = RestClient.get url, {:params => {:query => query}}
+					results_hash = JSON.parse results_str
+					results_array = results_hash["results"]["bindings"]
 
+					puts "total number of results: \#{results_array.length}"
 
-
-
-
-
-
+		%p
+			<strong>Note</strong>: If you're doing a lot of work with RDF in Ruby, you might want to look at using
+			= link_to "Swirrl", "http://swirrl.com"
+			's open-source SPARQL ORM for Ruby, 
+			= link_to "Tripod.", "http://github.com/swirrl/tripod"
 
 
 
