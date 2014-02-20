@@ -153,7 +153,7 @@ If you want to issue a patch, bug fix or feature, please just issue a pull reque
 
 We roughly try to follow [Github's Ruby Style Guide](https://github.com/styleguide/ruby).
 
-#### HAML & Sass
+#### CSS
 
 We also try to stick to [Idiomatic CSS](https://github.com/necolas/idiomatic-css).
 
