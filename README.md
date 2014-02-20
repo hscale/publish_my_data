@@ -155,7 +155,7 @@ We roughly try to follow [Github's Ruby Style Guide](https://github.com/stylegui
 
 #### HAML & Sass
 
-Style guidelines for HAML & Sass coming soon
+We also try to stick to [Idiomatic CSS](https://github.com/necolas/idiomatic-css).
 
 
 
