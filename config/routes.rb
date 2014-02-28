@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 PublishMyData::Engine.routes.draw do
 
   # resource show
@@ -58,5 +59,5 @@ PublishMyData::Engine.routes.draw do
   #match "/search"                       => "searches#index",        :as => 'search'
 
   #http://techoctave.com/c7/posts/36-rails-3-0-rescue-from-routing-error-solution
-  match '*a', :to => 'errors#routing'
+  match '*path', :to => 'resources#attempt_local_dereference'
 end
