@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require_dependency "publish_my_data/application_controller"
 
 module PublishMyData
@@ -25,16 +26,11 @@ module PublishMyData
     # /resource?uri=http://foo.bar
     def show
       # RubyProf.start
-
       uri = params[:uri]
 
       if uri.present?
         begin
-          resource = PublishMyData::Resource.find(uri, local: uri.starts_with?('http://' + PublishMyData.local_domain))
-          
-          respond_with(resource) do |format|
-            format.html { render_resource(resource) }
-          end
+          find_and_render_resource(uri, local: uri.starts_with?('http://' + PublishMyData.local_domain))
         rescue Tripod::Errors::ResourceNotFound
           # if it's not there
           respond_to do |format|
@@ -53,7 +49,7 @@ module PublishMyData
     # http://example.com/id/blah
     def id
       respond_to do |format|
-        format.any(:html, :rdf, :ttl, :nt, :json) do |format|
+        format.any(:html, :rdf, :ttl, :nt, :json) do
           redirect_to "/doc/#{params[:path]}", :status=> 303
         end
       end
@@ -62,11 +58,15 @@ module PublishMyData
     # http://example.com/doc/blah
     def doc
       uri = Resource.uri_from_host_and_doc_path(request.host, params[:path], params[:format])
-      resource = PublishMyData::Resource.find(uri, local: true)
-      
-      respond_with(resource) do |format|
-        format.html { render_resource(resource) }
-      end
+      find_and_render_resource(uri, local: true)
+    end
+
+    # Make a last ditch attempt to dereference the requested url as
+    # the resource uri.  If it's not found we 404 with ResourceNotFound.
+    #
+    # routes.rb maps this as the final catch-all route.
+    def attempt_local_dereference
+      find_and_render_resource(request.original_url, local: true)
     end
 
     private
@@ -90,7 +90,15 @@ module PublishMyData
       criteria
     end
 
+    # Attempt to find the resource with uri, and render it as HTML if
+    # it is found.  If it's not found a
+    # ResourceNotFound exception will be thrown.
+    def find_and_render_resource(uri, opts)
+      resource = PublishMyData::Resource.find(uri, local: true)
+
+      respond_with(resource) do |format|
+        format.html { render_resource(resource) }
+      end
+    end
   end
-
-
 end

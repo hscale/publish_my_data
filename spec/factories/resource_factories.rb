@@ -55,4 +55,15 @@ FactoryGirl.define do
       res.write_predicate(RDF::RDFS.label, 'Observation')
     end
   end
+
+  factory :arbitrary_local_resource, class: PublishMyData::Resource do
+    initialize_with { new(uri, graph_uri) }
+    ignore do
+      uri { "http://#{PublishMyData.local_domain}/arbitrary/uri/pattern" }
+      graph_uri { "http://#{PublishMyData.local_domain}/graph/unicorns" }
+    end
+    after(:build) do |res|
+      res.write_predicate(RDF::RDFS.label, 'An arbitrary local resource that can be dereferenced')
+    end
+  end
 end
