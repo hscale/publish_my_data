@@ -27,7 +27,7 @@ module PublishMyData
     def badge(s)
       content_tag :div, :class => "pmd_badge badge_#{to_css_name(s)}" do
         s
-      end      
+      end
     end
 
     def row &block
@@ -56,7 +56,7 @@ module PublishMyData
       @highlight_in_menu = str.downcase
     end
 
-    def title_uri(uri)      
+    def title_uri(uri)
       html_str = label 'URI'
       html_str += content_tag :h2, :class => "code click_to_select" do
         uri.to_s
@@ -74,7 +74,7 @@ module PublishMyData
     def page_title(text)
       content_tag :h1 do
         text
-      end      
+      end
     end
 
     def section_title(text, show_icon = true)
@@ -87,25 +87,13 @@ module PublishMyData
           end
           str += text
           str
-        end      
+        end
       else
         content_tag :h2 do
           text
         end
-        
+
       end
-    end
-
-    def logo
-      image_tag(PublishMyData.logo_small)
-    end
-
-    def big_logo
-      image_tag(PublishMyData.logo_large)
-    end
-
-    def data_tab_name
-      "The Data"
     end
 
     def additional_format(format, link)
@@ -146,7 +134,7 @@ module PublishMyData
             content_tag :small do
               "(Defined by ontology: #{link_to ontology.label || ontology.uri.to_s, resource_path_from_uri(ontology.uri)})".html_safe
             end
-          end            
+          end
         end
       end
 
@@ -157,11 +145,11 @@ module PublishMyData
             content_tag :small do
               "(In concept scheme: #{link_to concept_scheme.label || concept_scheme.uri.to_s, resource_path_from_uri(concept_scheme.uri)})".html_safe
             end
-          end            
+          end
         end
       end
 
-      return 
+      return
 
     end
 

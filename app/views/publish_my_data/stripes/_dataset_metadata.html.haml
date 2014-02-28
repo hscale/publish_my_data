@@ -4,8 +4,6 @@
 			- if dataset.comment.present?
 				= label "Abstract"
 				%p= auto_link(dataset.comment.to_s)
-			- if dataset.description.present?
-				= render partial: 'publish_my_data/shared/description', locals:{container:dataset}
 			- if dataset.publisher.present?
 				= label "Publisher"
 				%p= resource_uri_or_label(dataset, dataset.publisher)

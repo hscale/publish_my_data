@@ -1,0 +1,25 @@
+%section
+	= row do
+		.pmd_box_has_sidebar
+			= section_title("Using this linked data", false)
+			= label "What is this?"
+			%p
+				= raw "This is a linked data <strong><em>#{resource_class_name}</em></strong>."
+			- if resource_class_name == "dataset"
+				:markdown
+					Data in this site is organised into datasets, which contain RDF triples about a particular topic. RDF triples in datasets are updated atomically, and share some metadata.
+
+			- if resource_class_name == "ontology"
+				:markdown
+					An <strong><em>ontology</em></strong> is a set of <strong><em>classes</em></strong> and <strong><em>properties</em></strong> about a certain topic area. These can be used for resources' types and properties (predicates) respectively.</p>
+
+			- if resource_class_name == "concept scheme"
+				:markdown
+					A <strong><em>concept scheme</em></strong> is a collection of <strong><em>concepts</em></strong> about a topic. A Concept scheme can act as a list of possible values for a certain property of a resource (i.e. possible objects for RDF triples).</p>
+
+			-if resource.data_graph_uri
+				= label "Named Graph"
+				= content_tag :kbd, resource.data_graph_uri, class:'click_to_select', style:"font-size:1em; margin-bottom:12px; display:block;"
+				%p
+					= "Resources in this #{resource_class_name} are stored a named graph. Use this in SPARQL queries to restrict results to this #{resource_class_name}."
+					= link_to_sparql_tool_with_graph(resource.data_graph_uri)
