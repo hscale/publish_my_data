@@ -2,7 +2,7 @@
 - set_page_title "Dataset: #{dataset.title}"
 - page_description dataset.comment
 - page_kind 'dataset metadata'
-- bodyclass 'dataset'
+- set_pmd_page_class 'dataset'
 
 - additional_formats_for_resource(dataset.uri)
 - format_options = {only_path:false, uri:dataset.uri}

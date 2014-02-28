@@ -7,8 +7,8 @@ module PublishMyData
       render template: layout
     end
 
-    def bodyclass(c)
-      @bodyclass = c;
+    def set_pmd_page_class(c)
+      @pmd_page_class = c;
     end
 
     def set_page_title(title=nil)

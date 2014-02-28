@@ -3,7 +3,7 @@
 - rdf_type_label = PublishMyData::RdfType.find(@type_filter).label rescue nil
 - highlight_in_menu "catalogue"
 - page_kind 'page of resources'
-- bodyclass ''
+- set_pmd_page_class ''
 
 - format_options = {only_path:false, page: @pagination_params.page, per_page: @pagination_params.per_page}
 - additional_format('N-triples', url_for(format_options.merge(format: 'nt')))
