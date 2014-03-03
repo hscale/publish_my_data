@@ -13,6 +13,10 @@
 			- if dataset.contact_email.present?
 				= label "Contact"
 				%p= auto_link dataset.contact_email.to_s.gsub('mailto:','')
+			- if dataset.description.present?
+				=label "Description"
+				:markdown
+					#{dataset.description.to_s}
 		.pmd_box_sidebar
 			- if dataset.issued.present?
 				=label "Issued"

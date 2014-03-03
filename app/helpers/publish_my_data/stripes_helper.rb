@@ -122,7 +122,7 @@ module PublishMyData
         LIMIT 20"
       q = PublishMyData::SparqlQuery.new(sparql,:interpolations=>{:graph=>graph_uri})
       querystring = CGI.escape(q.query)
-      link_to "(Open SPARQL tool at this graph)", "#{publish_my_data.sparql_endpoint_path}?&query=#{querystring}"
+      link_to "open the SPARQL tool at this graph", "#{publish_my_data.sparql_endpoint_path}?&query=#{querystring}"
     end
 
     def maybe_link_to_vocabulary(dataset, obj)
