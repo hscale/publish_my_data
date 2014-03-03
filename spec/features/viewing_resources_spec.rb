@@ -93,4 +93,22 @@ feature 'Viewing resources' do
       page.should have_content(concept_scheme.concepts.first.label)
     end
   end
+
+  context 'Given an arbitrary local resource' do
+    given(:resource) { FactoryGirl.create(:arbitrary_local_resource) }
+
+    scenario 'Visitor dereferences the uri' do
+      visit resource.uri
+      page.should have_content 'An arbitrary local resource that can be dereferenced'
+    end
+  end
+
+  context 'When requesting an unknown resource in arbitrary local resource style' do
+    scenario 'Visitor dereferences the uri' do
+      visit "/an/arbitrary/unknown/resource"
+      expect(page.status_code).to eq(404)
+      expect(page).to have_content("Resource not found")
+    end
+  end
+
 end
