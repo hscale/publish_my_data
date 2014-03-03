@@ -1,30 +1,31 @@
--# set locals:{container:} as either a dataset, concept scheme or ontology
-
 %section
+	= fullwidth do
+		= section_title("Linked Data", true)
+		%p
+			This is a linked data dataset containing
+			%strong
+				- if (resource.size)
+					= number_to_human(resource.size).downcase
+			RDF triples about the topic, which can be queried using our <a href="/docs#ways-to-access-data">APIs</a> or <a  href="/sparql">SPARQL endpoint</a>.
+		%p
+			RDF triples in datasets are updated atomically, and share descriptive metadata.
 	= row do
 		.pmd_box_half
-			= section_title("Linked Data", false)
-			%p This is a linked data <strong>dataset</strong>: it contains RDF triples about a particular topic, which can be queried using our <a href="/docs#ways-to-access-data">APIs</a> or <a  href="/sparql">SPARQL endpoint</a>. RDF triples in datasets are updated atomically, and share descriptive metadata.
+			= section_title("Named Graph", false)
 			- if resource.data_graph_uri
-				%h4 Named Graph
+				%p
+					Resources in this dataset are stored a named graph. This graph can be used in SPARQL queries to restrict results to this dataset."
 				= content_tag :kbd, resource.data_graph_uri, class:'click_to_select', style:"font-size:1em; margin-bottom:12px; display:block;"
 				%p
-					= "Resources in this #{resource_class_name} are stored a named graph. This graph can be used in SPARQL queries to restrict results to this #{resource_class_name}."
-					For a live demonstration of how to do this,
+					For a live example of how to use this,
 					= link_to_sparql_tool_with_graph(resource.data_graph_uri)
 					\.
+			- else
+				%p
+					No named graph is available.
 		.pmd_box_half
-
-			- case resource_class_name
-			- when "dataset"
-				= section_title("What is a dataset?", false)
-				%p
-					Data in this site is organised into datasets, which contain RDF triples about a particular topic. RDF triples in datasets are updated atomically, and share some metadata.
-			- when "ontology"
-				= section_title("What is an ontology?", false)
-				%p
-					An <strong><em>ontology</em></strong> is a set of <strong><em>classes</em></strong> and <strong><em>properties</em></strong> about a certain topic area. These can be used for resources' types and properties (predicates) respectively.</p>
-			- when "concept scheme"
-				= section_title("What is a concept scheme?", false)
-				%p
-					A <strong><em>concept scheme</em></strong> is a collection of <strong><em>concepts</em></strong> about a topic. A Concept scheme can act as a list of possible values for a certain property of a resource (i.e. possible objects for RDF triples).</p>
+			= section_title("Download the data", false)
+			%p
+				The complete dataset is also available for download:
+			= link_to resource.data_dump.to_s, class:"btn icon-box-add type-a" do
+				<span>N-Triples<small>(#{resource.size || "all"}  triples)</small></span>
