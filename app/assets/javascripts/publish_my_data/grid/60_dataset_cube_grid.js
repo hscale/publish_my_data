@@ -164,7 +164,7 @@
     });
 
     var gridInitializedHandler = function (e, args) {
-      cubeDimensionsControls = new Swirrl.CubeDimensionsControls(cubeGrid, "#dimensions_controls");
+      cubeDimensionsControls = new Swirrl.CubeDimensionsControls(cubeGrid, ".dimensions_controls");
       wireUpCubeDimensionsEvents();
       cubeDimensionsControls.init();
       cubeGrid.onGridInitialized.unsubscribe(gridInitializedHandler);// only do 1st time round.

@@ -75,6 +75,9 @@
           // 1. the label
           ////////////////////
           var field = $('<div class="field"></div>');
+            
+          console.log(lockedDimensionsSelector);
+          
           $(lockedDimensionsSelector).append(field);
 
           // 1. the label for this dimension
@@ -94,6 +97,7 @@
           valuesDropdown.disable(); // create as disbaled
 
           // add it to our collection
+          console.log(valuesDropdown);
           lockedDimensionValuesDropdowns.push(valuesDropdown);
 
           // use the special locked dimension wirer-upper for the locked dims.
