@@ -4,8 +4,6 @@
 			- if dataset.comment.present?
 				= label "Abstract"
 				%p= auto_link(dataset.comment.to_s)
-			- if dataset.description.present?
-				= render partial: 'publish_my_data/shared/description', locals:{container:dataset}
 			- if dataset.publisher.present?
 				= label "Publisher"
 				%p= resource_uri_or_label(dataset, dataset.publisher)
@@ -15,6 +13,10 @@
 			- if dataset.contact_email.present?
 				= label "Contact"
 				%p= auto_link dataset.contact_email.to_s.gsub('mailto:','')
+			- if dataset.description.present?
+				=label "Description"
+				:markdown
+					#{dataset.description.to_s}
 		.pmd_box_sidebar
 			- if dataset.issued.present?
 				=label "Issued"
