@@ -2,7 +2,7 @@
 - # - break up list of properties by graph
 - # - show inbound links
 
-- title = resource.label || resource.uri
+- title = resource.human_readable_name
 - rdf_type_label = PublishMyData::RdfType.find(resource.rdf_type.first.to_s).label rescue nil
 
 - highlight_in_menu "catalogue"
@@ -16,7 +16,7 @@
 	= fullwidth do
 		= badge("resource")
 		= page_title(title)
-		= title_uri resource.uri
+		= title_uri resource.uri.to_s
 	= fullwidth do
 		=label(resource.read_predicate(RDF.type).many? ? 'Types' : 'Type')
 		%p= resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe

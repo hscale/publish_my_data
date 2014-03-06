@@ -7,7 +7,7 @@
 				%tr
 					%td
 						%h4= resource_uri_or_label(resource, resource.uri)
-						%h5.click_to_select.uri= resource.uri
+						%h5.click_to_select.uri= resource.uri.to_s
 						%p= resource.comment
 
 		- if (@pagination_params) && (pagination_required?(resources, @pagination_params))
