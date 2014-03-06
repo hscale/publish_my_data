@@ -5,7 +5,7 @@
 - title = resource.label || resource.uri
 - rdf_type_label = PublishMyData::RdfType.find(resource.rdf_type.first.to_s).label rescue nil
 
-- highlight_in_menu "browse"
+- highlight_in_menu "catalogue"
 - set_page_title("Resource: #{title}")
 - page_kind 'resource'
 - set_pmd_page_class 'resource'
