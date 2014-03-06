@@ -40,5 +40,9 @@ module PublishMyData
       Dataset.find(Dataset.uri_from_data_graph_uri(self.graph_uri)) rescue nil
     end
 
+    def human_readable_name
+        label || uri.to_s
+    end
+
   end
 end
