@@ -58,11 +58,18 @@ module PublishMyData
   mattr_accessor :application_name
   @@application_name = "Your Application Name"
 
-  mattr_accessor :logo_small
-  @@logo_small = "/assets/publish_my_data/logo-placeholder.png"
-
-  mattr_accessor :logo_large
-  @@logo_large = "/assets/publish_my_data/logo-placeholder-large.png"
+  # default set of prefixes injected into sparql tool
+  # for discussion: would URI.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#") be preferable?
+  mattr_accessor :prefixes
+  @@prefixes = {
+     :dcterms => "http://purl.org/dc/terms/",
+     :owl => "http://www.w3.org/2002/07/owl#",
+     :qb => "http://purl.org/linked-data/cube#",
+     :rdf => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+     :rdfs => "http://www.w3.org/2000/01/rdf-schema#",
+     :skos => "http://www.w3.org/2004/02/skos/core#",
+     :xsd => "http://www.w3.org/2001/XMLSchema#"
+  }
 
   # Use +configure+ to override PublishMyData configuration in an app, e.g.:
   # (defaults shown)

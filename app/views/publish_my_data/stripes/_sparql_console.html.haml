@@ -5,7 +5,7 @@
 		=section_title("#{ @sparql_query ? 'Edit' : 'Enter' } query")
 	=fullwidth do
 		= form_tag sparql_endpoint_path, method: :get do
-			= text_area_tag :query, @query_text || "SELECT * WHERE { ?s ?p ?o } LIMIT 20"
+			= text_area_tag :query, @query_text || default_query
 			- # interpolated variables - ie anything in %{} in the query
 			- # example query to generate interpolations:
 			- #		SELECT * WHERE { ?%{foo}  ?p ?o}

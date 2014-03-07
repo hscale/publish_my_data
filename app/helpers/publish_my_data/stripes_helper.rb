@@ -112,14 +112,7 @@ module PublishMyData
     end
 
     def link_to_sparql_tool_with_graph(graph_uri)
-      sparql ="
-        SELECT *
-        WHERE {
-            GRAPH <%{graph}> {
-              ?s ?p ?o
-            }
-        }
-        LIMIT 20"
+      sparql = default_query_with_graph
       q = PublishMyData::SparqlQuery.new(sparql,:interpolations=>{:graph=>graph_uri})
       querystring = CGI.escape(q.query)
       link_to "open the SPARQL tool at this graph", "#{publish_my_data.sparql_endpoint_path}?&query=#{querystring}"

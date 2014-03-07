@@ -11,5 +11,21 @@ module PublishMyData
       url_for interpolations
     end
 
+    def default_prefixes
+      prefix_string = ""
+      PublishMyData.prefixes.each do |key, value|
+          prefix_string += "PREFIX #{key}: <#{value}>\n"
+      end
+      prefix_string
+    end
+
+    def default_query()
+        default_prefixes + "\nSELECT DISTINCT *\nWHERE {\n\t?s ?p ?o\n}\nLIMIT 20"
+    end
+
+    def default_query_with_graph
+        default_prefixes + "\nSELECT DISTINCT *\nWHERE {\n\tGRAPH <%{graph}> {\n\t\t?s ?p ?o\n\t}\n}\nLIMIT 20"
+    end
+
   end
 end
