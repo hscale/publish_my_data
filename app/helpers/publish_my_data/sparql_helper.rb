@@ -20,11 +20,11 @@ module PublishMyData
     end
 
     def default_query()
-        default_prefixes + "\nSELECT DISTINCT *\nWHERE {\n\t?s ?p ?o\n}\nLIMIT 20"
+      default_prefixes + "\nSELECT DISTINCT *\nWHERE {\n  ?s ?p ?o\n}\nLIMIT 20"
     end
 
     def default_query_with_graph
-        default_prefixes + "\nSELECT DISTINCT *\nWHERE {\n\tGRAPH <%{graph}> {\n\t\t?s ?p ?o\n\t}\n}\nLIMIT 20"
+      default_prefixes + "\nSELECT DISTINCT *\nWHERE {\n  GRAPH <%{graph}> {\n    ?s ?p ?o\n  }\n}\nLIMIT 20"
     end
 
   end
