@@ -111,7 +111,7 @@ code.scrolling{
 		list-style-type: none;
 		padding:0;
 	}
-	
+
 	section {
 		padding: 0 0 $pmdconfig_space_vertical 0;
 	}
@@ -126,7 +126,8 @@ code.scrolling{
 
 	h2{
 		width:100%;
-		border-bottom:2px solid black;
+		padding-bottom:12px;
+		border-bottom:2px solid #eee;
 	}
 
 	h4{
