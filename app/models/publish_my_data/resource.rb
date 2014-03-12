@@ -40,8 +40,16 @@ module PublishMyData
       Dataset.find(Dataset.uri_from_data_graph_uri(self.graph_uri)) rescue nil
     end
 
+    def human_readable_label
+        label #TODO fall back to other name-like predicates
+    end
+
     def human_readable_name
-        label || uri.to_s
+        human_readable_label || uri.to_s
+    end
+
+    def human_readable_name_is_uri?
+        human_readable_label ? false : true;
     end
 
   end

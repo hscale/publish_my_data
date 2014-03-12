@@ -97,10 +97,15 @@ code.scrolling{
 	font-size: 0.9em;
 }
 
+.pmd_uri_inline{
+	word-break: break-all;
+}
+
 .uri{
 	font-family: Monaco, Consolas, "Lucida Console", monospace;
 	word-break: break-all;
 }
+
 
 /* 5100 - DOCUMENTATION
    ========================================================================== */

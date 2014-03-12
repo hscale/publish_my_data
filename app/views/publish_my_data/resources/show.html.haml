@@ -2,7 +2,7 @@
 - # - break up list of properties by graph
 - # - show inbound links
 
-- title = resource.human_readable_name
+- title = human_readable_name(resource)
 - rdf_type_label = PublishMyData::RdfType.find(resource.rdf_type.first.to_s).label rescue nil
 
 - highlight_in_menu "catalogue"

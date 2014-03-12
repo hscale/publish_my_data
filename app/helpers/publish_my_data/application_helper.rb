@@ -36,5 +36,17 @@ module PublishMyData
       (resources.total_count > pagination_params.per_page)
     end
 
+    def human_readable_name(resource)
+        name = resource.human_readable_name
+        if resource.human_readable_name_is_uri?
+            name = annotate_as_uri(name)
+        end
+        return name
+    end
+
+    def annotate_as_uri(s)
+        raw("<span class='pmd_inline_uri'>#{s}</span>")
+    end
+
   end
 end
