@@ -13,13 +13,15 @@ $font-family-sans-serif:	$pmdconfig_typeface_bodycopy;
 $font-family-base:			$pmdconfig_typeface_bodycopy;
 $font-family-monospace:		$pmdconfig_typeface_monospace;
 
-@import "vendor/bootstrap/bootstrap";
+.pmd{
+    @import "vendor/bootstrap/bootstrap";
+}
 
 // Responsive breakpoints
 // ========================================================================== */
 
 // in pixels, the width above which we switch from single into multi-column view;
-$pmd_breakpoint_mobile: $screen-md; 
+$pmd_breakpoint_mobile: 0; // $screen-md;
 
 // Grid
 // ========================================================================== */
