@@ -21,7 +21,7 @@ $font-family-monospace:		$pmdconfig_typeface_monospace;
 // ========================================================================== */
 
 // in pixels, the width above which we switch from single into multi-column view;
-$pmd_breakpoint_mobile: 0; // $screen-md;
+$pmd_breakpoint_mobile: 992px; // bootstrap's default $screen-md;
 
 // Grid
 // ========================================================================== */
