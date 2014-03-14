@@ -41,15 +41,15 @@ module PublishMyData
     end
 
     def human_readable_label
-        label #TODO fall back to other name-like predicates
+      label #TODO fall back to other name-like predicates
     end
 
     def human_readable_name
-        human_readable_label || uri.to_s
+      human_readable_label || uri.to_s
     end
 
     def human_readable_name_is_uri?
-        human_readable_label ? false : true;
+      human_readable_label ? false : true;
     end
 
   end
