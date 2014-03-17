@@ -13,7 +13,7 @@ $font-family-sans-serif:	$pmdconfig_typeface_bodycopy;
 $font-family-base:			$pmdconfig_typeface_bodycopy;
 $font-family-monospace:		$pmdconfig_typeface_monospace;
 
-.pmd{
+#{$scope}{
     @import "vendor/bootstrap/bootstrap";
 }
 

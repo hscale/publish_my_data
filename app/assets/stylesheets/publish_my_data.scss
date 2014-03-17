@@ -83,6 +83,37 @@ $pmdconfig_colour_slickgrid_content_links:			$pmdconfig_colour_link !default;
 $pmdconfig_colour_slickgrid_content_links_hover:	$pmdconfig_colour_link_hover !default;
 
 // ==========================================================================
+//   SCOPE - just style PMD, or style whole page
+// ==========================================================================
+
+// if $pmdconfig_scope_control is true, pmd styles will be scoped inside the
+// class, otherwise, they will be in global scope.
+
+// STOMP on global styles
+// set $pmdconfig_scope_global: true...
+// when you want the framework and/or html reset to spill out
+//
+// ie when you're not providing another stylesheet and want to use pmd
+// as the basis of the whole site's styles without reimcluding the framework
+
+// NOSTOMP on global styles
+// set $pmdconfig_scope_global: false...
+// when you are including a sitewide stylesheet
+//
+// eg when re-using a pre-existing navigation and its styles (read: Wordpress skin)
+// so the framework and reset don't stomp on the site's styling
+
+$pmdconfig_scope_global: false !default;
+$scope: "";
+
+@if $pmdconfig_scope_global{
+	$scope: "html";
+} @else {
+	$scope: ".pmd"
+}
+
+
+// ==========================================================================
 //   FRAMEWORK (add a facade to sit PMD on your favorite css framework)
 // ==========================================================================
 
