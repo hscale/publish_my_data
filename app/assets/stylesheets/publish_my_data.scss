@@ -2,17 +2,17 @@
 
 	     ____  __  ______  __    _________ __  __
 	    / __ \/ / / / __ )/ /   /  _/ ___// / / /
-	   / /_/ / / / / __  / /    / / \__ \/ /_/ / 
-	  / ____/ /_/ / /_/ / /____/ / ___/ / __  /  
-	 /_/    \____/_____/_____/___//____/_/ /_/   
+	   / /_/ / / / / __  / /    / / \__ \/ /_/ /
+	  / ____/ /_/ / /_/ / /____/ / ___/ / __  /
+	 /_/    \____/_____/_____/___//____/_/ /_/
 
 	     __  _____  __
 	    /  |/  /\ \/ /
-	   / /|_/ /  \  / 
-	  / /  / /   / /  
-	 /_/  /_/   /_/   
+	   / /|_/ /  \  /
+	  / /  / /   / /
+	 /_/  /_/   /_/
 
-	     ____  ___  _________ 
+	     ____  ___  _________
 	    / __ \/   |/_  __/   |
 	   / / / / /| | / / / /| |
 	  / /_/ / ___ |/ / / ___ |
@@ -23,7 +23,7 @@
 ****************************************************************************/
 
 // NB - including stylsheet should specify @charset "UTF-8" to support icons
- 
+
 // ==========================================================================
 //   DEFAULTS (override these in your application .scss)
 // ==========================================================================
@@ -83,6 +83,36 @@ $pmdconfig_colour_slickgrid_content_links:			$pmdconfig_colour_link !default;
 $pmdconfig_colour_slickgrid_content_links_hover:	$pmdconfig_colour_link_hover !default;
 
 // ==========================================================================
+//   SCOPE - just style PMD, or style whole page
+// ==========================================================================
+
+// if $pmdconfig_scope_control is true, pmd styles will be scoped inside the
+// class, otherwise, they will be in global scope.
+
+// STOMP on global styles
+// set $pmdconfig_scope_global: true...
+// when you want the framework and/or html reset to spill out
+//
+// ie when you're not providing another stylesheet and want to use pmd
+// as the basis of the whole site's styles without reimcluding the framework
+
+// NOSTOMP on global styles
+// set $pmdconfig_scope_global: false...
+// when you are including a sitewide stylesheet
+//
+// eg when re-using a pre-existing navigation and its styles (read: Wordpress skin)
+// so the framework and reset don't stomp on the site's styling
+
+$pmdconfig_scope_global: false !default;
+$scope: "";
+
+@if $pmdconfig_scope_global{
+	$scope: "html";
+} @else {
+	$scope: ".pmd"
+}
+
+// ==========================================================================
 //   FRAMEWORK (add a facade to sit PMD on your favorite css framework)
 // ==========================================================================
 
@@ -92,15 +122,19 @@ $pmdconfig_colour_slickgrid_content_links_hover:	$pmdconfig_colour_link_hover !d
 //   REQUIRED PMD STYLING COMPONENTS
 // ==========================================================================
 
-@import "publish_my_data/core/1000-utilities";
-@import "publish_my_data/core/1500-icons";
-@import "publish_my_data/core/2000-elements";
-@import "publish_my_data/core/4000-layout";
-@import "publish_my_data/core/5000-styling";
-@import "publish_my_data/core/6000-datagrid";
-@import "publish_my_data/core/6200-sparqlconsole";
-@import "publish_my_data/core/7000-experimental";
-@import "publish_my_data/core/8000-colour";
+@import "publish_my_data/core/0500-icon-font";
+
+#{$scope}{
+	@import "publish_my_data/core/1000-utilities";
+	@import "publish_my_data/core/1500-icons";
+	@import "publish_my_data/core/2000-elements";
+	@import "publish_my_data/core/4000-layout";
+	@import "publish_my_data/core/5000-styling";
+	@import "publish_my_data/core/6000-datagrid";
+	@import "publish_my_data/core/6200-sparqlconsole";
+	@import "publish_my_data/core/7000-experimental";
+	@import "publish_my_data/core/8000-colour";
+}
 
 // ==========================================================================
 //   TODO list
