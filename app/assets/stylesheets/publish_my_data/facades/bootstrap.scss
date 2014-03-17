@@ -13,8 +13,16 @@ $font-family-sans-serif:	$pmdconfig_typeface_bodycopy;
 $font-family-base:			$pmdconfig_typeface_bodycopy;
 $font-family-monospace:		$pmdconfig_typeface_monospace;
 
+// these styles are scoped to the body in bootstrap, so need scoping to pmd
+@if $pmdconfig_scope_global != true {
+	.pmd {
+		font-family: $font-family-base;
+		font-size: $font-size-base;
+	}
+}
+
 #{$scope}{
-    @import "vendor/bootstrap/bootstrap";
+	@import "vendor/bootstrap/bootstrap";
 }
 
 // Responsive breakpoints

@@ -123,16 +123,19 @@ $scope: "";
 //   REQUIRED PMD STYLING COMPONENTS
 // ==========================================================================
 
-@import "publish_my_data/core/1000-utilities";
-@import "publish_my_data/core/1500-icons";
-@import "publish_my_data/core/2000-elements";
-@import "publish_my_data/core/4000-layout";
-@import "publish_my_data/core/5000-styling";
-@import "publish_my_data/core/6000-datagrid";
-@import "publish_my_data/core/6200-sparqlconsole";
-@import "publish_my_data/core/7000-experimental";
-@import "publish_my_data/core/8000-colour";
+@import "publish_my_data/core/0500-icon-font";
 
+#{$scope}{
+	@import "publish_my_data/core/1000-utilities";
+	@import "publish_my_data/core/1500-icons";
+	@import "publish_my_data/core/2000-elements";
+	@import "publish_my_data/core/4000-layout";
+	@import "publish_my_data/core/5000-styling";
+	@import "publish_my_data/core/6000-datagrid";
+	@import "publish_my_data/core/6200-sparqlconsole";
+	@import "publish_my_data/core/7000-experimental";
+	@import "publish_my_data/core/8000-colour";
+}
 
 // ==========================================================================
 //   TODO list

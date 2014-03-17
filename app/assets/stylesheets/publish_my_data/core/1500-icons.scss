@@ -2,17 +2,6 @@
 	§1500 - ICONS (via icomoon)
    ========================================================================== */
 
-@font-face {
-	font-family: 'pmd';
-	src:url('pmd.eot?ba8fya');
-	src:url('pmd.eot?#iefixba8fya') format('embedded-opentype'),
-		url('pmd.woff?ba8fya') format('woff'),
-		url('pmd.ttf?ba8fya') format('truetype'),
-		url('pmd.svg?ba8fya#pmd') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
 [class^="icon-"], [class*=" icon-"] {
 	@extend .icon;
 }
