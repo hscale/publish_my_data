@@ -123,9 +123,9 @@ $scope: "";
 // ==========================================================================
 
 @import "publish_my_data/core/0500-icon-font";
+@import "publish_my_data/core/1000-utilities";
 
 #{$scope}{
-	@import "publish_my_data/core/1000-utilities";
 	@import "publish_my_data/core/1500-icons";
 	@import "publish_my_data/core/2000-elements";
 	@import "publish_my_data/core/4000-layout";
