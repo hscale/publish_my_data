@@ -4,7 +4,7 @@
 
 PublishMyData is a [Rails Engine](http://guides.rubyonrails.org/engines.html) that adds Linked Data functionality to your Rails app including:
 
-* URI dereferencing 
+* URI dereferencing
 * displaying resources outside your site domain
 * dataset pages to describe graphs of data with additional metadata
 * A SPARQL Endpoint
@@ -30,7 +30,7 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
         rails new hello_world -O -T
 
 2. Add publish_my_data to your Gemfile. The minimal contents of the gemfile are as follows
-        
+
         source 'https://rubygems.org'
         gem 'rails', '3.2.15'
         gem 'publish_my_data'
@@ -43,7 +43,7 @@ Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've alre
         Fetching gem metadata from https://rubygems.org/..
         Resolving dependencies...
         ...
-        Installing publish_my_data (1.2.0) 
+        Installing publish_my_data (1.2.0)
         Your bundle is updated!
 
 If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bundle update publish_my_data`
@@ -63,18 +63,18 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
         end
 
 6. Mount it in your `routes.rb`
-      
-        # Note that there is no default home page route for publish_my_data. You need to define your own. e.g.        
- 
+
+        # Note that there is no default home page route for publish_my_data. You need to define your own. e.g.
+
         get '/', to: redirect('/data'), as: :home # use the data catalogue
 
         # # or:
         # match '/' => 'home#home', as: 'home'
-        
 
-        mount PublishMyData::Engine, at: "/" 
 
-6. In order for PublishMyData provided-views to be able to use helpers defined by our app, add the following to your `application.rb`:     
+        mount PublishMyData::Engine, at: "/"
+
+6. In order for PublishMyData provided-views to be able to use helpers defined by our app, add the following to your `application.rb`:
 
         config.to_prepare do
           # include only the ApplicationHelper module in the PMD engine
@@ -93,7 +93,7 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
             %title
               = appname
               = yield :page_title
-            
+
             = yield :page_description
 
             = javascript_include_tag :modernizr
@@ -108,7 +108,7 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
 9. Add the helpers in your app's `ApplicationController`, and derive from the PublishMyData engines application controller
 
         class ApplicationController < PublishMyData::ApplicationController
-          protect_from_forgery 
+          protect_from_forgery
           helper PublishMyData::Engine.helpers
           helper :all
         end
@@ -127,9 +127,34 @@ If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bu
             = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_tools}
             = render partial:'publish_my_data/shared/subnav_box', locals:{menu:alternative_menu_docs} # <-- # e.g. this line changed:
             = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_pmd}
-      
+
 If you define a new helper method to provide the locals (e.g. in our case `alternative_menu_docs`), it can build upon, and adapt the data stucture provided by the existing helpers in `publish_my_data/subnavigation_helper.rb`.
 
+## Best practice: Developing with multiple Gemfiles
+
+Sometimes when developing an application and the gem concurrently you may prefer to work against a local copy of PublishMyData.
+If you don't want to risk accidentally committing a Gemfile which uses a local gem, there's a useful pattern to follow:
+
+1) Make a new file at `local/Gemfile`. (You can put this anywhere, the `local/` part is just our convention).
+
+2) Add something like the following to it
+
+    # LOCAL GEMFILE
+    # to use instead of defaul Gemfile:
+    #
+    # "bundle install --gemfile='local/Gemfile'"
+    # "BUNDLE_GEMFILE=local/Gemfile bundle exec rails server"
+
+    source 'https://rubygems.org'
+
+    gem 'rails', '3.2.17'
+    gem 'publish_my_data', :path => '../../publish_my_data'
+
+Optionally, you may wish to gitignore this.
+
+3) Do `bundle install --gemfile='local/Gemfile'` to create `local/Gemfile.lock`
+
+4) Run your app with eg `BUNDLE_GEMFILE=local/Gemfile bundle exec rails server`
 
 ##Licence
 
@@ -155,8 +180,4 @@ We roughly try to follow [Github's Ruby Style Guide](https://github.com/stylegui
 
 #### CSS
 
-We also try to stick to [Idiomatic CSS](https://github.com/necolas/idiomatic-css).
-
-
-
-
+We use [Idiomatic CSS](https://github.com/necolas/idiomatic-css).
