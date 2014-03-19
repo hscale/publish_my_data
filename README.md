@@ -158,7 +158,21 @@ Optionally, you may wish to gitignore this.
 
 ##Licence
 
-Source code is licensed under the MIT-LICENSE included in this distribution.
+All source code is copyright Swirrl IT Limited.
+
+This project's source code is licensed under a dual license model: AGPL v3 and commercial. 
+
+#### 1. The AGPL License
+
+See the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.html) for full details.
+
+AGPL is like GPL, but goes a bit further. The AGPL is a Free Software license that obligates you to make all the source code of your service available to users of that service. For example, if you are using PublishMyData on your server, to provide a SaaS service, you would have to give away all of your source code.
+
+For example, this means that if you use PublishMyData to power a publicly accessible Rails app, you need to release the code for that app (under AGPL).
+
+#### 2. A Commercial License
+
+If you are not able to comply with the terms of the AGPL license, you can request an exemption or a commercial license by [contacting Swirrl](http://swirrl.com).
 
 ###Attribution
 
@@ -170,7 +184,7 @@ The Swirrl logo, which is the mark of Swirrl IT Limited and is copyright ©2013-
 
 ##Contributing
 
-If you want to issue a patch, bug fix or feature, please just issue a pull request (with tests where appropriate). Before accepting your first pull request, we ask you to send us an email agreeing to assigning to Swirrl the copyright for all project contributions. We will release any contibutions under the MIT license.
+If you want to issue a patch, bug fix or feature, please just issue a pull request (with tests where appropriate). Before accepting your first pull request, we ask you to send us an email agreeing to assigning to Swirrl the copyright for all project contributions. We will release any accepted contibutions under the AGPL license.
 
 ###Style Guidelines
 
