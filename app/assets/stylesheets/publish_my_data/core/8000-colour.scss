@@ -103,39 +103,6 @@ a:hover, a:hover * {
 	color: $pmdconfig_colour_nav_selected_text;
 }
 
-/* 8004 - ARTICLE TOP STRIPE is coloured by body tag
-   ========================================================================== */
-
-.dataset article{
-	border-top-color: $pmdconfig_colour_page_dataset;
-	border-bottom-color: $pmdconfig_colour_page_dataset;
-}
-
-.theme article{
-	border-top-color: $pmdconfig_colour_page_theme;
-	border-bottom-color: $pmdconfig_colour_page_theme;
-}
-
-.concept article,
-.concept_scheme article{
-	border-top-color: $pmdconfig_colour_page_concept;
-	border-bottom-color: $pmdconfig_colour_page_concept;
-}
-
-.resource article{
-	border-top-color: $pmdconfig_colour_page_resource;
-	border-bottom-color: $pmdconfig_colour_page_resource;
-}
-
-.ontology article{
-	border-top-color: $pmdconfig_colour_page_ontology;
-	border-bottom-color: $pmdconfig_colour_page_ontology;
-}
-
-.type article{
-	border-top-color: $pmdconfig_colour_page_type;
-	border-bottom-color: $pmdconfig_colour_page_type;
-}
 
 // in the future, a page might have more than one of these so can't just inherit from body class
 

@@ -18,7 +18,7 @@
 	  / /_/ / ___ |/ / / ___ |
 	 /_____/_/  |_/_/ /_/  |_|
 
-	 By SWIRRL, baby. v2.0.2 2014
+	 By SWIRRL, baby. v2.5 2014
 
 ****************************************************************************/
 
@@ -135,6 +135,8 @@ $scope: "";
 	@import "publish_my_data/core/7000-experimental";
 	@import "publish_my_data/core/8000-colour";
 }
+
+@import "publish_my_data/core/8500-colourbars";
 
 // ==========================================================================
 //   TODO list
