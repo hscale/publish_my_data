@@ -639,11 +639,11 @@
 		- @documentation_sections.each do |section|
 			%h3= section[:name]
 			%ul
-			- section[:subsections].each do |subsection|
-				%li= docs_inline_link subsection[:name], subsection[:name]
-				/ 
-					- # don't include subsubsections in nav
-					- if (subsection[:subsubsections].length > 0)
-						%ul
-						- subsection[:subsubsections].each do |subsubsection|
-							%li= docs_inline_link subsubsection[:name], subsubsection[:name]
+				- section[:subsections].each do |subsection|
+					%li= docs_inline_link subsection[:name], subsection[:name]
+					/ 
+						- # don't include subsubsections in nav
+						- if (subsection[:subsubsections].length > 0)
+							%ul
+							- subsection[:subsubsections].each do |subsubsection|
+								%li= docs_inline_link subsubsection[:name], subsubsection[:name]
