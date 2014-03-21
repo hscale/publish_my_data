@@ -1,10 +1,10 @@
 = inside_layout 'application' do
 
-	%main.pmd.documentation
+	%main.pmd
 		= render 'publish_my_data/stripes/subnav'
 		= render 'publish_my_data/stripes/status'
 
-		%article
+		%article.documentation
 			%header
 				=fullwidth do
 					= yield :docs_intro
