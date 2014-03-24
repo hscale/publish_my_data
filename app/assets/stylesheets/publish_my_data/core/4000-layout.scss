@@ -149,6 +149,17 @@ th.centred {
 	margin-right: 10px;
 }
 
+// on dataset_sample_data stripe
+.resource_links_list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.resource_links_list li{
+	margin-top: 4px;
+}
+
 /* 4100 - EXPERIMENTAL huge monitor support (most useful for SPARQL tool)
    ========================================================================== */
 
