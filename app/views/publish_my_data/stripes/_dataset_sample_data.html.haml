@@ -12,7 +12,7 @@
 						%tr
 							%td(colspan="2")
 								=label resource.read_predicate(RDF.type).many? ? 'Types' : 'Type'
-								%h3= resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join(", ").html_safe
+								%h4{style:"line-height:1.2em;"}= resource.read_predicate(RDF.type).map { |t| resource_uri_or_label(resource, t) }.join("<br>").html_safe
 								%h5
 									Subject:
 									= link_to (resource.label || resource.uri), resource_path_from_uri(resource.uri)
@@ -36,12 +36,13 @@
 									= link_to show_resource_path(uri: resource.uri, format: 'ttl'), target: 'blank' do
 										Raw data for this resource (.ttl)
 										%i.icon-popup
-								- types_for_example_resource(dataset, resource).each do |type|
-									View 
-									= link_to list_resources_path(dataset: dataset, type_uri: type) do
-										all
-										= dataset.type_count(type.uri)
-										resources of type
-										%strong
-											= type.label.nil? ? type.uri : type.label
-										%br
+								%ul.resource_links_list
+									- types_for_example_resource(dataset, resource).each do |type|
+										%li
+											View 
+											= link_to list_resources_path(dataset: dataset, type_uri: type) do
+												all
+												= dataset.type_count(type.uri)
+												resources of type
+												%strong
+													= type.label.nil? ? type.uri : type.label
