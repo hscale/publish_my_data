@@ -124,8 +124,7 @@
       cubeGrid.onCubeDimensionsReady.unsubscribe(setInitialGridStatus);
 
       if (queryStringHasInitialDimensions()) {
-        console.log("LOADING DIMENSIONS FROM QUERY STRING");
-        var initialDimensions = parseQueryStringForInitialDimensions();
+        var initialDimensions = getDimensionsFromParams();
         loadInitialDimensions(initialDimensions);
       } else {
         // we'll need to load in the default dimensions then
@@ -148,11 +147,11 @@
 
     Example query string:
 
-    http://127.0.0.1:3000/data/school-attainment/cube/observations.csv?rows_dimension=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSCQFLevel&columns_dimension=http%3A%2F%2Fdata.opendatascotland.org%2Fdef%2Fstatistical-dimensions%2FrefPeriod&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefQualificationsAwarded=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fqualifications-awarded%2F5-or-more&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSchoolSet=http%3A%2F%2Flinked.glasgow.gov.uk%2Fid%2Furban-assets%2Fschools%2Fschool-set%2Fglasgow&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefYearGroup=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fyear-group%2Fs4
+    http://127.0.0.1:3000/data/school-attainment?rows_dimension=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSCQFLevel&columns_dimension=http%3A%2F%2Fdata.opendatascotland.org%2Fdef%2Fstatistical-dimensions%2FrefPeriod&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefQualificationsAwarded=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fqualifications-awarded%2F5-or-more&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSchoolSet=http%3A%2F%2Flinked.glasgow.gov.uk%2Fid%2Furban-assets%2Fschools%2Fschool-set%2Fglasgow&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefYearGroup=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fyear-group%2Fs4
 
     or (same thing again, with friendlier formatting)
 
-    http://127.0.0.1:3000/data/school-attainment/cube/observations.csv?
+    http://127.0.0.1:3000/data/school-attainment?
     rows_dimension=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSCQFLevel
    &columns_dimension=http%3A%2F%2Fdata.opendatascotland.org%2Fdef%2Fstatistical-dimensions%2FrefPeriod
    &http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefQualificationsAwarded=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fqualifications-awarded%2F5-or-more
@@ -161,42 +160,41 @@
 
     */
 
-    function parseQueryStringForRowsDimension(){
-      return "http://linked.glasgow.gov.uk/def/refSCQFLevel";
+    function getRowsDimensionFromParams(){
+      return params.rows_dimension;
     }
 
-    function parseQueryStringForColsDimension(){
-      return "http://linked.glasgow.gov.uk/def/refQualificationsAwarded";
+    function getColsDimensionFromParams(){
+      return params.columns_dimension;
     }
 
-    function parseQueryStringForlockedDimensions(){
-      return {
-        "http://linked.glasgow.gov.uk/def/refSchoolSet": "http://linked.glasgow.gov.uk/id/urban-assets/schools/school-set/glasgow",
-        "http://data.opendatascotland.org/def/statistical-dimensions/refPeriod": "http://reference.data.gov.uk/id/year/2010",
-        "http://linked.glasgow.gov.uk/def/refYearGroup": "http://linked.glasgow.gov.uk/def/concept/schools/year-group/s4"
+    function getLockedDimensionsFromParams(){
+      var locked = {};
+      for(var key in params){
+        if (looksLikePredicate(key)){
+          var predicate = decodeURIComponent(key);
+          var val = decodeURIComponent(params[key]);
+          locked[predicate] = val;
+        }
       }
+      return locked;
     }
 
-    function parseQueryStringForInitialDimensions(){
+    function looksLikePredicate(candidate){
+      if (candidate === "rows_dimension") return false;
+      if (candidate === "columns_dimension") return false
+      return true; // TODO - assumes that we don't have any other query params probably better to actually look for something that begins http://
+    }
+
+    function getDimensionsFromParams(){
       var initalDimensions = {};
-      initalDimensions["rows_dimension"] = parseQueryStringForRowsDimension();
-      initalDimensions["columns_dimension"] = parseQueryStringForColsDimension();
-      initalDimensions["locked_dimensions"] = parseQueryStringForlockedDimensions();
+      initalDimensions["rows_dimension"] = decodeURIComponent(getRowsDimensionFromParams());
+      initalDimensions["columns_dimension"] = decodeURIComponent(getColsDimensionFromParams());
+      initalDimensions["locked_dimensions"] = getLockedDimensionsFromParams();
       return initalDimensions;
     }
-
-    function getQueryVariable(variable){
-       var query = window.location.search.substring(1);
-       var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-         var pair = vars[i].split("=");
-         if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-    }
-
     function queryStringHasInitialDimensions(){
-      return (parseQueryStringForRowsDimension() && parseQueryStringForColsDimension());
+      return(getColsDimensionFromParams() && getColsDimensionFromParams());
     }
 
     function loadInitialDimensions(initalDimensions){
@@ -213,9 +211,22 @@
       cubeGrid.showCSVDownloadLink();
     }
 
+    function decomposeQueryString(){
+      var params = {};
+      var qs = window.location.search.substring(1);
+      var qss = qs.split("&");
+      for (var i=0;i<qss.length;i++) {
+        var q = qss[i].split("=");
+        params[q[0]]=q[1];
+      }
+      return params;
+    }
+
     // set initial status
     setTitle('&nbsp;');
     setGridStatus('Initializing grid...', true);
+
+    var params = decomposeQueryString();
 
     var cubeGrid = new Swirrl.CubeGrid(elementSelector, siteDomain, datasetSlug, pageSize);
 
