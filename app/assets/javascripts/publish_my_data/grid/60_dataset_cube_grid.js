@@ -123,34 +123,110 @@
       // unsubscribe
       cubeGrid.onCubeDimensionsReady.unsubscribe(setInitialGridStatus);
 
-      $.ajax({
-        url: "http://" +  siteDomain + "/data/" + datasetSlug + "/cube/recommended_dimensions.json",
-        dataType: 'json',
-        success: function(recommendedDimensions){
+      if (queryStringHasInitialDimensions()) {
+        var initialDimensions = getDimensionsFromParams();
+        loadInitialDimensions(initialDimensions);
+      } else {
+        // we'll need to load in the default dimensions then
+         $.ajax({
+            url: "http://" +  siteDomain + "/data/" + datasetSlug + "/cube/recommended_dimensions.json",
+            dataType: 'json',
+            success: function(recommendedDimensions){
+              loadInitialDimensions(recommendedDimensions);
+            },
+            error: function(jqXHR, _, _) {
+              setGridError(jqXHR.status);
+            }
+          });
+      }
+    }
 
-          // for locked dims, just set the uris
-          for ( var dim in recommendedDimensions.locked_dimensions ) {
-            cubeGrid.setLockedDimensionValue( dim, recommendedDimensions.locked_dimensions[dim] )
-          }
+    /*
 
-          // for the other dimensions, find the appropriate object
-          var columnsDimension = cubeGrid.getDimensionWithUri(recommendedDimensions.columns_dimension);
-          var rowsDimension = cubeGrid.getDimensionWithUri(recommendedDimensions.rows_dimension);
+    The grid viewer will attempt to load initial settings from the query string failing this, it requests default dimensions via ajax.
 
-          cubeGrid.setColumnsDimension(columnsDimension);
-          cubeGrid.setRowsDimension(rowsDimension);
-          cubeGrid.showCSVDownloadLink();
-        },
-        error: function(jqXHR, _, _) {
-          setGridError(jqXHR.status);
+    Example query string:
+
+    http://127.0.0.1:3000/data/school-attainment?rows_dimension=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSCQFLevel&columns_dimension=http%3A%2F%2Fdata.opendatascotland.org%2Fdef%2Fstatistical-dimensions%2FrefPeriod&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefQualificationsAwarded=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fqualifications-awarded%2F5-or-more&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSchoolSet=http%3A%2F%2Flinked.glasgow.gov.uk%2Fid%2Furban-assets%2Fschools%2Fschool-set%2Fglasgow&http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefYearGroup=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fyear-group%2Fs4
+
+    or (same thing again, with friendlier formatting)
+
+    http://127.0.0.1:3000/data/school-attainment?
+    rows_dimension=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSCQFLevel
+   &columns_dimension=http%3A%2F%2Fdata.opendatascotland.org%2Fdef%2Fstatistical-dimensions%2FrefPeriod
+   &http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefQualificationsAwarded=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fqualifications-awarded%2F5-or-more
+   &http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefSchoolSet=http%3A%2F%2Flinked.glasgow.gov.uk%2Fid%2Furban-assets%2Fschools%2Fschool-set%2Fglasgow
+   &http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2FrefYearGroup=http%3A%2F%2Flinked.glasgow.gov.uk%2Fdef%2Fconcept%2Fschools%2Fyear-group%2Fs4
+
+    */
+
+    function getRowsDimensionFromParams(){
+      return params.rows_dimension;
+    }
+
+    function getColsDimensionFromParams(){
+      return params.columns_dimension;
+    }
+
+    function getLockedDimensionsFromParams(){
+      var locked = {};
+      for(var key in params){
+        if (looksLikePredicate(key)){
+          var predicate = decodeURIComponent(key);
+          var val = decodeURIComponent(params[key]);
+          locked[predicate] = val;
         }
-      });
+      }
+      return locked;
+    }
 
+    function looksLikePredicate(candidate){
+      if (candidate === "rows_dimension") return false;
+      if (candidate === "columns_dimension") return false
+      return true; // TODO - assumes that we don't have any other query params probably better to actually look for something that begins http://
+    }
+
+    function getDimensionsFromParams(){
+      var initalDimensions = {};
+      initalDimensions["rows_dimension"] = decodeURIComponent(getRowsDimensionFromParams());
+      initalDimensions["columns_dimension"] = decodeURIComponent(getColsDimensionFromParams());
+      initalDimensions["locked_dimensions"] = getLockedDimensionsFromParams();
+      return initalDimensions;
+    }
+    function queryStringHasInitialDimensions(){
+      return(getColsDimensionFromParams() && getColsDimensionFromParams());
+    }
+
+    function loadInitialDimensions(initalDimensions){
+      // for locked dims, just set the uris
+      for ( var dim in initalDimensions.locked_dimensions ) {
+        cubeGrid.setLockedDimensionValue( dim, initalDimensions.locked_dimensions[dim] )
+      }
+      // for the other dimensions, find the appropriate object
+      var columnsDimension = cubeGrid.getDimensionWithUri(initalDimensions.columns_dimension);
+      var rowsDimension = cubeGrid.getDimensionWithUri(initalDimensions.rows_dimension);
+
+      cubeGrid.setColumnsDimension(columnsDimension);
+      cubeGrid.setRowsDimension(rowsDimension);
+      cubeGrid.showCSVDownloadLink();
+    }
+
+    function decomposeQueryString(){
+      var params = {};
+      var qs = window.location.search.substring(1);
+      var qss = qs.split("&");
+      for (var i=0;i<qss.length;i++) {
+        var q = qss[i].split("=");
+        params[q[0]]=q[1];
+      }
+      return params;
     }
 
     // set initial status
     setTitle('&nbsp;');
     setGridStatus('Initializing grid...', true);
+
+    var params = decomposeQueryString();
 
     var cubeGrid = new Swirrl.CubeGrid(elementSelector, siteDomain, datasetSlug, pageSize);
 
