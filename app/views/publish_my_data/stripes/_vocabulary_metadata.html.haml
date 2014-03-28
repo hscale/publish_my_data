@@ -14,7 +14,9 @@
 				=label "Contact"
 				%p= auto_link vocabulary.contact_email.to_s.gsub('mailto:','')
 			- if vocabulary.description.present?
-				= render partial: 'publish_my_data/shared/description', locals: {container:vocabulary}
+				=label "Description"
+				:markdown
+					#{vocabulary.description.to_s}
 
 		.pmd_box_sidebar
 			/
