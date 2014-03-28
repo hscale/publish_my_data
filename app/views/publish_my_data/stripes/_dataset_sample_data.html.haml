@@ -23,12 +23,12 @@
 						%tr
 							%td{style:"width:50%;"}
 								= resource_uri_or_label(resource, pred)
-								= maybe_link_to_vocabulary(dataset,pred)
+								=# maybe_link_to_vocabulary(dataset,pred)
 							%td{style:"width:50%;"}
 								- resource.read_predicate(pred).each do |obj|
 									%div
 										= resource_uri_or_label(resource, obj)
-										= maybe_link_to_vocabulary(dataset,obj)
+										=# maybe_link_to_vocabulary(dataset,obj)
 					%tfoot
 						%tr
 							%th(colspan="2")
