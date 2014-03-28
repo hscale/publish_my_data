@@ -24,8 +24,8 @@
 			%h4 Named Graph
 			- if resource.data_graph_uri
 				%p
-					Resources in this dataset are stored a named graph. This graph can be used in SPARQL queries to restrict results to this dataset."
-				= content_tag :kbd, resource.data_graph_uri, class:'click_to_select', style:"font-size:1em; margin-bottom:12px; display:block;"
+					Resources in this dataset are stored a named graph. This graph can be used in SPARQL queries to restrict results to this dataset.
+				= content_tag :code, resource.data_graph_uri, class:'click_to_select block'
 				%p
 					For a live example of how to use this,
 					= link_to_sparql_tool_with_graph(resource.data_graph_uri)
