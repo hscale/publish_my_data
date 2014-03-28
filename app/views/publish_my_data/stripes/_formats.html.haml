@@ -11,7 +11,7 @@
 			.hidden_when_javascript_available
 				- @additional_formats.each do |f|
 					= label(f[:format])
-					.codesmall.click_to_select=f[:link]
+					%code.codesmall.block.click_to_select=f[:link]
 					=link_to "(download #{f[:format]})", f[:link]
 
 :javascript
