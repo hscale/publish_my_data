@@ -11,5 +11,4 @@
 						%p= resource.comment
 
 		- if (@pagination_params) && (pagination_required?(resources, @pagination_params))
-			Page
 			= paginate resources
