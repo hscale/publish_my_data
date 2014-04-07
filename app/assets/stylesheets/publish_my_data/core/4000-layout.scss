@@ -64,6 +64,10 @@
 	display: block;
 }
 
+.pmd_nav_sub li{
+	list-style-position: outside;
+}
+
 .pmd_nav_sub a{
 	display: inline-block;
 	line-height: 1.4em;
