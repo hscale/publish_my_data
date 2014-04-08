@@ -137,7 +137,11 @@ $scope: "";
 }
 
 @import "publish_my_data/core/8500-colourbars";
-
+@import "vendor/codemirror/codemirror.css";
+.CodeMirror{
+	border:2px solid #ccc !important;
+	padding:10px;
+}
 // ==========================================================================
 //   TODO list
 // ==========================================================================
