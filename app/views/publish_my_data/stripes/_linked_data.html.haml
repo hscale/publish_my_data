@@ -7,7 +7,7 @@
 					This is a linked data dataset containing
 					%strong
 						- if (resource.size)
-							= number_to_human(resource.size).downcase
+							= number_with_delimiter(resource.size)
 					RDF triples about the topic, which can be queried using our <a href="/docs#ways-to-access-data">APIs</a> or <a  href="/sparql">SPARQL endpoint</a>.
 				%p{style:"margin-bottom:24px;"}
 					RDF triples in datasets are updated atomically, and share descriptive metadata.

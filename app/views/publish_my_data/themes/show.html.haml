@@ -3,6 +3,12 @@
 - page_kind 'themed list of datasets'
 - set_pmd_page_class 'theme'
 
+- format_options = {only_path:false, page: @pagination_params.page, per_page: @pagination_params.per_page}
+- additional_format('N-triples', url_for(format_options.merge(format: 'nt')))
+- additional_format('Turtle', url_for(format_options.merge(format: 'ttl')))
+- additional_format('RDF/XML', url_for(format_options.merge(format: 'rdf')))
+- additional_format('JSON', url_for(format_options.merge(format: 'json')))
+
 %header
 	= fullwidth do
 		= badge("theme")
