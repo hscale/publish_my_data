@@ -1,0 +1,7 @@
+%nav.pmd_nav_sub
+  = row do
+    = render partial: 'publish_my_data/shared/subnav_box', locals:{ menu: standard_menu_catalogue }
+    = render partial: 'publish_my_data/shared/subnav_box', locals:{ menu: standard_menu_tools }
+    =# render partial: 'publish_my_data/shared/subnav_box', locals:{ menu: example_subnav_box } # <-- # e.g. this line changed:
+    = render partial: 'publish_my_data/shared/subnav_box', locals:{ menu: standard_menu_docs }
+    = render partial: 'publish_my_data/shared/subnav_box', locals:{ menu: standard_menu_pmd }

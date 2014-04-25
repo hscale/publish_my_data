@@ -1,0 +1,10 @@
+!!! 5
+%html{class:@htmlclass}
+  %head
+    = render 'shared/head'
+
+  %body
+    .page-wrap
+      = render 'shared/nav'
+      = content_for?(:publish_my_data_content) ? yield(:publish_my_data_content) : yield
+    

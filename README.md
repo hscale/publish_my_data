@@ -22,113 +22,23 @@ This is the same core code that powers the enterprise, hosted version of Publish
 
 ## Getting started
 
-Also: see our [sample app](http://github.com/swirrl/sample_pmd) where we've already done all the below! (We'll make a _generator_ for these tasks soon).
+1. Generate a new Rails app with the following command, ensuring the path to your `publish_my_data` project is correct:
 
+        rails new hello_world --skip-active-record --skip-test-unit --skip-bundle --template=/path/to/publish_my_data/lib/publish_my_data_template.rb
 
-1. Generate a new rails app (without active record or test-unit)
+2. *If using Fuseki:*
 
-        rails new hello_world -O -T
+   Start your Fuseki server using the generated configuration at `config/pmd.ttl`. For example:
 
-2. Add publish_my_data to your Gemfile. The minimal contents of the gemfile are as follows
+        cd /usr/local/jena-fuseki-1.0.0; ./fuseki-server --config=/path/to/hello_world/config/pmd.ttl
 
-        source 'https://rubygems.org'
-        gem 'rails', '3.2.15'
-        gem 'publish_my_data'
+3. Start your Rails server:
 
-3. Bundle.
+        rails server
 
-        $ bundle
+## Before going live
 
-        Fetching gem metadata from https://rubygems.org/.........
-        Fetching gem metadata from https://rubygems.org/..
-        Resolving dependencies...
-        ...
-        Installing publish_my_data (1.2.0)
-        Your bundle is updated!
-
-If you don't see `publish_my_data (1.2.0)` in the output you may need to run `bundle update publish_my_data`
-
-4. Add the following line to production.rb
-
-        config.assets.precompile += %w(modernizr.js publish_my_data.js) # <-- required for production
-
-5. Configure PublishMyData (in development|production|test.rb`)
-
-        PublishMyData.configure do |config|
-          config.sparql_endpoint = 'http://localhost:3030/pmd/sparql'
-          config.local_domain = 'pmd.dev' # the domain under which your linked data resources URIs are minted
-          config.sparql_timeout_seconds = 30
-          config.tripod_cache_store = nil # Tripod::CacheStores::MemcachedCacheStore.new('localhost:11211')
-          config.application_name = "Your Application Name"
-        end
-
-6. Mount it in your `routes.rb`
-
-        # Note that there is no default home page route for publish_my_data. You need to define your own. e.g.
-
-        get '/', to: redirect('/data'), as: :home # use the data catalogue
-
-        # # or:
-        # match '/' => 'home#home', as: 'home'
-
-
-        mount PublishMyData::Engine, at: "/"
-
-6. In order for PublishMyData provided-views to be able to use helpers defined by our app, add the following to your `application.rb`:
-
-        config.to_prepare do
-          # include only the ApplicationHelper module in the PMD engine
-          PublishMyData::ApplicationController.helper ApplicationHelper
-          # # include all helpers from your application into the PMD engine
-          # PublishMyData::ApplicationController.helper YourApp::Application.helpers
-        end
-
-7. Delete all files from the `public` dir except the `robots.txt`.
-
-8. Create an application layout under `app/views/layouts/publish_my_data` (i.e. called `application.html.haml` or `application.html.erb` etc).  NOTE that if you create `application.html.haml` you should remove the existing `application.html.erb` file.
-   It should provide content for `:head` and `:global_header`, then render `pmd_layout`. e.g.
-
-        - content_for :head do
-          %head
-            %title
-              = appname
-              = yield :page_title
-
-            = yield :page_description
-
-            = javascript_include_tag :modernizr
-            = javascript_include_tag :publish_my_data
-            = stylesheet_link_tag :application
-
-        - content_for :global_header do
-          My header here
-
-        = render template: 'layouts/publish_my_data/pmd_layout'
-
-9. Add the helpers in your app's `ApplicationController`, and derive from the PublishMyData engines application controller
-
-        class ApplicationController < PublishMyData::ApplicationController
-          protect_from_forgery
-          helper PublishMyData::Engine.helpers
-          helper :all
-        end
-
-10. Remove `assets/stylesheets/application.css` and create a new file called `assets/stylesheets/application.scss` which contains the following lines:
-
-        $pmdconfig_colour_link: #da0;
-        /* [...optional style configuration...] */
-        @import "publish_my_data.scss";
-
-11. You can configure the navigation in your application by overriding the `views/publish_my_data/stripes/_subnav.html.haml` partial to pass in different `:menu` locals
-
-        %nav.pmd_nav_sub
-          = row do
-            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_catalogue}
-            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_tools}
-            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:alternative_menu_docs} # <-- # e.g. this line changed:
-            = render partial:'publish_my_data/shared/subnav_box', locals:{menu:standard_menu_pmd}
-
-If you define a new helper method to provide the locals (e.g. in our case `alternative_menu_docs`), it can build upon, and adapt the data stucture provided by the existing helpers in `publish_my_data/subnavigation_helper.rb`.
+1. Foo
 
 ## Best practice: Developing with multiple Gemfiles
 

@@ -1,0 +1,13 @@
+/config/environments/development.rb
+/config/*.ttl
+/.bundle
+/log
+/tmp
+/public/system
+/public/assets
+*.patch
+.sass-cache/
+.ruby-version
+.DS_Store
+/local/Gemfile.lock
+/local/.bundle
