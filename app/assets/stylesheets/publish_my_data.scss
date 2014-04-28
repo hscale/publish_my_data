@@ -104,12 +104,12 @@ $pmdconfig_colour_slickgrid_content_links_hover:	$pmdconfig_colour_link_hover !d
 // so the framework and reset don't stomp on the site's styling
 
 $pmdconfig_scope_global: false !default;
-$scope: "";
+$scope: "" !global;
 
 @if $pmdconfig_scope_global{
-	$scope: "html";
+	$scope: "html" !global;
 } @else {
-	$scope: ".pmd"
+	$scope: ".pmd" !global;
 }
 
 // ==========================================================================
@@ -137,6 +137,7 @@ $scope: "";
 }
 
 @import "publish_my_data/core/8500-colourbars";
+@import "publish_my_data/core/9000-codemirror";
 
 // ==========================================================================
 //   TODO list
