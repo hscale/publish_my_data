@@ -3,7 +3,7 @@ atom_feed(language: 'en') do |feed|
   feed.updated @resource.modified
   feed.rights "Licence terms and conditions apply"
   feed.author do |author|
-    author.name PublishMyData::Resource.find(@resource.publisher).label rescue 'unknown'
+    author.name (PublishMyData::Resource.find(@resource.publisher).label rescue 'unknown')
     author.uri @resource.publisher
     author.email @resource.contact_email.to_s.gsub('mailto:', '')
   end
