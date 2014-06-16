@@ -11,7 +11,7 @@ module PublishMyData
       while try_again
         page_start = Time.now
         # we need to paginate
-        sparql_query = PublishMyData::SparqlQuery.new(sparql, {:request_format => :json} )
+        sparql_query = PublishMyData::SparqlQuery.new(sparql, {:request_format => :sparql_json} )
         sparql_query_result = JSON.parse(sparql_query.paginate(page, page_size).to_s)["results"]["bindings"]
         try_again = (sparql_query_result.length == page_size) # this page is full - keep going!
         page += 1

@@ -48,9 +48,9 @@ module PublishMyData
       begin
         case query_type
           when :select
-            result_str = Tripod::SparqlClient::Query.query(self.query, "*/*", {:output => select_format_str} )
+            result_str = Tripod::SparqlClient::Query.query(self.query, select_or_ask_header)
           when :ask
-            result_str = Tripod::SparqlClient::Query.query(self.query, "*/*", {:output => ask_format_str} )
+            result_str = Tripod::SparqlClient::Query.query(self.query, select_or_ask_header)
           when :construct
             result_str = Tripod::SparqlClient::Query.query(self.query, construct_or_describe_header)
           when :describe
@@ -133,19 +133,17 @@ LIMIT #{limit} OFFSET #{offset}"
       message[start..finish].strip
     end
 
-    def select_format_str
-      if [:json, :csv, :xml, :text].include?(request_format)
-        self.request_format.to_s
-      else
-        'text'
-      end
-    end
-
-    def ask_format_str
-      if [:json, :xml, :text].include?(request_format)
-        self.request_format.to_s
-      else
-        'text'
+    def select_or_ask_header
+      case request_format
+        when :json
+          Mime::Type.lookup_by_extension( :sparql_json.to_s ).to_s
+        when :xml 
+          Mime::Type.lookup_by_extension( :sparql_xml.to_s ).to_s
+        when :html || "*/*"
+          'text/plain'
+        else
+          mime_to_s = Mime::Type.lookup_by_extension( request_format.to_s ).to_s
+          mime_to_s.blank? ? 'text/plain' : mime_to_s
       end
     end
 

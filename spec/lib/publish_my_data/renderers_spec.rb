@@ -59,7 +59,7 @@ module PublishMyData
     end
 
     it "should match 'application/sparql+json' to the right mime type" do
-      Mime::Type.lookup('application/sparql-results+json').should == Mime::JSON
+      Mime::Type.lookup('application/sparql-results+json').should == Mime::SPARQL_JSON
     end
 
     it "should match 'application/json' to the right mime type" do
@@ -67,7 +67,7 @@ module PublishMyData
     end
 
     it "should match 'application/sparql+xml' to the right mime type" do
-      Mime::Type.lookup('application/sparql-results+xml').should == Mime::XML
+      Mime::Type.lookup('application/sparql-results+xml').should == Mime::SPARQL_XML
     end
 
      it "should match 'application/xml' to the right mime type" do

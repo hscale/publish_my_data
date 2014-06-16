@@ -291,8 +291,8 @@ describe "calling a sparql query programmatically (non-html)" do
         visit "/sparql?query=#{URI.encode(@query)}"
       end
 
-      it 'should render the default (in this case "text")' do
-        page.source.should ==  PublishMyData::SparqlQuery.new(@query, :request_format =>:text).execute.to_s
+      it 'should render the default (in this case "application/sparl-results+xml")' do
+        page.source.should == PublishMyData::SparqlQuery.new(@query, :request_format => :sparql_xml).execute.to_s
       end
 
     end

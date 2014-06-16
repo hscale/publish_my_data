@@ -216,7 +216,6 @@ module PublishMyData
       shared_examples_for "a resource collection in non-html" do
         it "should render the collection in the right format" do
           get :index, :page => page, :per_page => per_page, :format => format, use_route: :publish_my_data
-          puts format
           response.body.should == Resource.all.limit(per_page).offset(offset).resources.send("to_#{format}")
         end
 

@@ -132,7 +132,7 @@ module PublishMyData
         end
 
         it "should call Tripod::SparqlClient::Query.select with the right args" do
-          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, "*/*", {:output => @q.send(:select_format_str)}).and_call_original
+          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, @q.send(:select_or_ask_header)).and_call_original
           @q.execute
         end
 
@@ -152,7 +152,7 @@ module PublishMyData
         end
 
         it "should call Tripod::SparqlClient::Query.ask with the right args" do
-          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, "*/*", {:output => @q.send(:ask_format_str)}).and_call_original
+          Tripod::SparqlClient::Query.should_receive(:query).with(@query_str, @q.send(:select_or_ask_header)).and_call_original
           @q.execute
         end
 
@@ -243,7 +243,7 @@ module PublishMyData
 
     end
 
-    describe "#select_format_str" do
+    describe "#select_or_ask_header" do
 
       before do
         @query_str = 'SELECT xyz'
@@ -251,54 +251,54 @@ module PublishMyData
       context "where the request format is not specified" do
         it "should return 'text'" do
           q = PublishMyData::SparqlQuery.new(@query_str)
-          q.send(:select_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
 
       context "where the request format is html" do
         it "should return 'text'" do
           q = PublishMyData::SparqlQuery.new(@query_str)
-          q.send(:select_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
 
        context "where the request format is text" do
         it "should return 'csv'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :text)
-          q.send(:select_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
 
       context "where the request format is json" do
         it "should return 'json'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :json)
-          q.send(:select_format_str).should == "json"
+          q.send(:select_or_ask_header).should == "application/sparql-results+json"
         end
       end
 
       context "where the request format is csv" do
         it "should return 'csv'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :csv)
-          q.send(:select_format_str).should == "csv"
+          q.send(:select_or_ask_header).should == "text/csv"
         end
       end
 
       context "where the request format is xml" do
         it "should return 'xml'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :xml)
-          q.send(:select_format_str).should == "xml"
+          q.send(:select_or_ask_header).should == "application/sparql-results+xml"
         end
       end
 
       context "where the request format is something random" do
-        it "should return 'text'" do
+        it "should return 'text/plain'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :bananas)
-          q.send(:select_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
     end
 
-    describe "#ask_format_str" do
+    describe "#select_or_ask_header" do
 
       before do
         @query_str = 'ASK xyz'
@@ -306,42 +306,42 @@ module PublishMyData
       context "where the request format is not specified" do
         it "should return 'text'" do
           q = PublishMyData::SparqlQuery.new(@query_str)
-          q.send(:ask_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
 
       context "where the request format is html" do
         it "should return 'text'" do
           q = PublishMyData::SparqlQuery.new(@query_str)
-          q.send(:ask_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
 
       context "where the request format is csv" do
         it "should return 'csv'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :text)
-          q.send(:ask_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
 
       context "where the request format is json" do
         it "should return 'json'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :json)
-          q.send(:ask_format_str).should == "json"
+          q.send(:select_or_ask_header).should == "application/sparql-results+json"
         end
       end
 
       context "where the request format is xml" do
         it "should return 'xml'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :xml)
-          q.send(:ask_format_str).should == "xml"
+          q.send(:select_or_ask_header).should == "application/sparql-results+xml"
         end
       end
 
       context "where the request format is something random" do
-        it "should return 'text'" do
+        it "should return 'text/plain'" do
           q = PublishMyData::SparqlQuery.new(@query_str, :request_format => :bananas)
-          q.send(:ask_format_str).should == "text"
+          q.send(:select_or_ask_header).should == "text/plain"
         end
       end
     end
