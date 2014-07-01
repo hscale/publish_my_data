@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "tripod", "~> 0.9.2"
   s.add_dependency "rdf", "~> 1.1.0"
   s.add_dependency "aws-sdk"
-  s.add_dependency "kaminari", "~ 0.15.0"
+  s.add_dependency "kaminari", "~> 0.15.0"
   s.add_dependency "rdiscount"
 
 end
