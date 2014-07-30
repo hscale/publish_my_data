@@ -18,9 +18,9 @@ module PublishMyData
 
       @e = e
 
-      if defined?(Raven)
-        evt = Raven::Event.capture_rack_exception(e, request.env)
-        Raven.send(evt) if evt
+      # will only capture for environments defined in the raven initialiser.
+      if defined?(Raven) 
+        Raven.capture_exception(e)
       end
 
       if Rails.env.development?
