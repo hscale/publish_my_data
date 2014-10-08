@@ -1,5 +1,11 @@
 # PublishMyData Community Edition
 
+## Important: Maintenance mode only
+
+*This repository is for version 1.x of PublishMyData, which is now in maintenance mode only.*
+
+*Version 2.x is now available see ([http://docs.publishmydata.com/changelog.html](changelog)), but is currently not open source. We are considering opening up components in the future.*
+
 ## Overview
 
 PublishMyData is a [Rails Engine](http://guides.rubyonrails.org/engines.html) that adds Linked Data functionality to your Rails app including:
