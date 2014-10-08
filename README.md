@@ -1,10 +1,12 @@
 # PublishMyData Community Edition
 
-## Important: v1.x in Maintenance mode only
+## Important: v1.x retired.
 
-*This repository is for version 1.x of PublishMyData, which is now in maintenance mode only.*
+This repository is for version 1.x of PublishMyData, which is now in maintenace mode and only critical bug fixes are being applied.
 
-*Version 2.x is now available ([changelog](http://docs.publishmydata.com/changelog.html)), but is currently not open source. We are considering opening up components in the future.*
+Version 2.x is now available ([changelog](http://docs.publishmydata.com/changelog.html)), but is currently not open source. We are considering opening up components in the future.
+
+Our [Tripod](/swirrl/tripod) Ruby RDF ORM is still under active development though. Also, check out [Grafter](/swirrl/grafter), our Clojure Linked Data ETL tool.
 
 ## Overview
 
