@@ -1,10 +1,10 @@
 # PublishMyData Community Edition
 
-## Important: Maintenance mode only
+## Important: v1.x in Maintenance mode only
 
 *This repository is for version 1.x of PublishMyData, which is now in maintenance mode only.*
 
-*Version 2.x is now available see ([http://docs.publishmydata.com/changelog.html](changelog)), but is currently not open source. We are considering opening up components in the future.*
+*Version 2.x is now available ([changelog](http://docs.publishmydata.com/changelog.html)), but is currently not open source. We are considering opening up components in the future.*
 
 ## Overview
 
